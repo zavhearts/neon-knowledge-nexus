@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot } from 'lucide-react';
+import { Bot, X } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 const VirtualAssistant = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -96,12 +97,12 @@ const VirtualAssistant = () => {
                     </div>
                   </div>
                 </div>
-                <button 
+                <Button 
                   onClick={() => setIsVisible(false)}
                   className="p-1.5 hover:bg-cyber-light rounded-full transition-colors"
                 >
                   <X className="text-gray-400 hover:text-white" size={16} />
-                </button>
+                </Button>
               </div>
               
               <div className="p-4 bg-cyber-dark">
