@@ -1,9 +1,11 @@
 
 import { useState } from "react";
+import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, BookOpen, Clock, Star, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "@/hooks/use-toast";
 
 // Mock course data
 const COURSES = [
@@ -98,95 +100,127 @@ const Courses = () => {
     return matchesSearch && matchesCategory;
   });
 
+  const handleViewCourse = (courseId: number) => {
+    const course = COURSES.find(c => c.id === courseId);
+    if (course) {
+      toast({
+        title: "Course Selected",
+        description: `You selected ${course.title}. Full course details coming soon!`,
+      });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-cyber-dark bg-circuit-pattern pb-20">
-      <div className="relative holographic-bg py-16 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-cyber-darker opacity-80"></div>
-          <div className="absolute inset-0 bg-gradient-radial from-neon-blue/10 to-transparent"></div>
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold mb-2 animated-text text-center">
-            Explore Courses
-          </h1>
-          <p className="text-xl mb-8 text-white/80 text-center">
-            Discover cutting-edge courses designed to boost your skills and knowledge
-          </p>
+    <MainLayout>
+      <div className="min-h-screen bg-cyber-dark bg-circuit-pattern pb-20">
+        <div className="relative holographic-bg py-16 px-4 sm:px-6 lg:px-8">
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-cyber-darker opacity-80"></div>
+            <div className="absolute inset-0 bg-gradient-radial from-neon-blue/10 to-transparent"></div>
+          </div>
           
-          {/* Search and Filter */}
-          <div className="max-w-3xl mx-auto mb-12">
-            <div className="relative">
-              <Input
-                placeholder="Search courses, topics, or instructors..."
-                className="bg-cyber-light/30 border-neon-blue/50 py-6 pl-12 text-white placeholder:text-white/50"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neon-blue" />
-            </div>
+          <div className="relative z-10 max-w-7xl mx-auto">
+            <h1 className="text-4xl font-bold mb-2 animated-text text-center">
+              Explore Courses
+            </h1>
+            <p className="text-xl mb-8 text-white/80 text-center">
+              Discover cutting-edge courses designed to boost your skills and knowledge
+            </p>
             
-            <div className="flex flex-wrap gap-2 mt-4">
-              {CATEGORIES.map(category => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  className={`${
-                    selectedCategory === category 
-                      ? "bg-neon-blue text-black" 
-                      : "border-neon-blue/50 text-white"
-                  }`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                </Button>
-              ))}
+            {/* Search and Filter */}
+            <div className="max-w-3xl mx-auto mb-12">
+              <div className="relative">
+                <Input
+                  placeholder="Search courses, topics, or instructors..."
+                  className="bg-cyber-light/30 border-neon-blue/50 py-6 pl-12 text-white placeholder:text-white/50"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neon-blue" />
+              </div>
+              
+              <div className="flex flex-wrap gap-2 mt-4">
+                {CATEGORIES.map(category => (
+                  <Button
+                    key={category}
+                    variant={selectedCategory === category ? "default" : "outline"}
+                    className={`${
+                      selectedCategory === category 
+                        ? "bg-neon-blue text-black" 
+                        : "border-neon-blue/50 text-white"
+                    }`}
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </Button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      
-      {/* Course Cards */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredCourses.map(course => (
-            <div key={course.id} className="cyber-card group h-full flex flex-col">
-              <div className="relative h-48 mb-4 overflow-hidden neon-border">
-                <img 
-                  src={course.image} 
-                  alt={course.title} 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-cyber-darker to-transparent"></div>
-                <Badge className="absolute top-3 right-3 bg-neon-blue text-black font-medium">
-                  {course.level}
-                </Badge>
-              </div>
-              
-              <h3 className="text-xl font-bold mb-2">{course.title}</h3>
-              <p className="text-white/70 mb-4 text-sm flex-grow">{course.description}</p>
-              
-              <div className="flex items-center mt-auto text-sm text-white/60 mb-3">
-                <User className="h-4 w-4 mr-1" />
-                <span className="mr-4">{course.instructor}</span>
-                <Clock className="h-4 w-4 mr-1" />
-                <span>{course.duration}</span>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                  <span className="text-white">{course.rating} ({course.students})</span>
+        
+        {/* Course Cards */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredCourses.map(course => (
+              <div key={course.id} className="cyber-card group h-full flex flex-col">
+                <div className="relative h-48 mb-4 overflow-hidden neon-border">
+                  <img 
+                    src={course.image} 
+                    alt={course.title} 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-cyber-darker to-transparent"></div>
+                  <Badge className="absolute top-3 right-3 bg-neon-blue text-black font-medium">
+                    {course.level}
+                  </Badge>
                 </div>
-                <Button className="bg-neon-blue text-black hover:bg-neon-blue/80">
-                  View Course
-                </Button>
+                
+                <h3 className="text-xl font-bold mb-2">{course.title}</h3>
+                <p className="text-white/70 mb-4 text-sm flex-grow">{course.description}</p>
+                
+                <div className="flex items-center mt-auto text-sm text-white/60 mb-3">
+                  <User className="h-4 w-4 mr-1" />
+                  <span className="mr-4">{course.instructor}</span>
+                  <Clock className="h-4 w-4 mr-1" />
+                  <span>{course.duration}</span>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Star className="h-4 w-4 text-yellow-400 mr-1" />
+                    <span className="text-white">{course.rating} ({course.students})</span>
+                  </div>
+                  <Button 
+                    className="bg-neon-blue text-black hover:bg-neon-blue/80"
+                    onClick={() => handleViewCourse(course.id)}
+                  >
+                    View Course
+                  </Button>
+                </div>
               </div>
+            ))}
+          </div>
+          
+          {filteredCourses.length === 0 && (
+            <div className="text-center py-16">
+              <BookOpen className="h-16 w-16 mx-auto mb-4 text-white/20" />
+              <h3 className="text-xl font-semibold mb-2">No courses found</h3>
+              <p className="text-white/60 mb-8">Try changing your search criteria or browse all courses</p>
+              <Button 
+                className="cyber-button"
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedCategory("All");
+                }}
+              >
+                Browse All Courses
+              </Button>
             </div>
-          ))}
+          )}
         </div>
       </div>
-    </div>
+    </MainLayout>
   );
 };
 

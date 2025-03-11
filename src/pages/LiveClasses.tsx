@@ -1,394 +1,328 @@
 
 import { useState } from "react";
+import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Video, Calendar, User, MessageSquare, Clock, Play, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Users, Video, MessageSquare, ThumbsUp, Mic } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 // Mock live classes data
-const UPCOMING_CLASSES = [
+const LIVE_CLASSES = [
   {
     id: 1,
-    title: "Advanced Network Security Concepts",
-    description: "Deep dive into advanced network security protocols and implementation strategies.",
-    instructor: "Dr. Sarah Chen",
-    course: "Introduction to Cybersecurity",
-    date: "2023-10-15",
-    time: "14:00 - 15:30",
-    duration: "90 minutes",
-    enrolled: 42,
-    capacity: 50,
-    status: "upcoming", // upcoming, live, completed
-    image: "https://randomuser.me/api/portraits/women/44.jpg"
+    title: "Advanced Web Development Techniques",
+    instructor: "Mark Anderson",
+    time: "10:00 AM - 11:30 AM",
+    date: "2023-10-25",
+    participants: 34,
+    status: "Live",
+    thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80"
   },
   {
     id: 2,
-    title: "Responsive Design with CSS Grid & Flexbox",
-    description: "Learn how to create responsive layouts using modern CSS techniques.",
-    instructor: "Mark Anderson",
-    course: "Web Development Masterclass",
-    date: "2023-10-16",
-    time: "10:00 - 11:30",
-    duration: "90 minutes",
-    enrolled: 38,
-    capacity: 45,
-    status: "upcoming",
-    image: "https://randomuser.me/api/portraits/men/32.jpg"
+    title: "Introduction to Cybersecurity",
+    instructor: "Dr. Sarah Chen",
+    time: "2:00 PM - 3:30 PM",
+    date: "2023-10-25",
+    participants: 28,
+    status: "Upcoming",
+    thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80"
   },
   {
     id: 3,
-    title: "Data Visualization with Python",
-    description: "Create effective data visualizations using matplotlib, seaborn, and plotly.",
+    title: "Data Science Fundamentals",
     instructor: "Dr. Michael Torres",
-    course: "Data Science Fundamentals",
-    date: "2023-10-12",
-    time: "16:00 - 17:30",
-    duration: "90 minutes",
-    enrolled: 45,
-    capacity: 45,
-    status: "live",
-    image: "https://randomuser.me/api/portraits/men/67.jpg"
+    time: "4:00 PM - 5:30 PM",
+    date: "2023-10-25",
+    participants: 42,
+    status: "Upcoming",
+    thumbnail: "https://images.unsplash.com/photo-1551033406-611cf9a28f67?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80"
   },
   {
     id: 4,
-    title: "UX Research Methods & Techniques",
-    description: "Explore user experience research methodologies and practical applications.",
+    title: "UX/UI Design Workshop",
     instructor: "Emma Richardson",
-    course: "UX/UI Design Principles",
-    date: "2023-10-11",
-    time: "13:00 - 14:30",
-    duration: "90 minutes",
-    enrolled: 36,
-    capacity: 40,
-    status: "completed",
-    image: "https://randomuser.me/api/portraits/women/33.jpg"
+    time: "11:00 AM - 12:30 PM",
+    date: "2023-10-26",
+    participants: 25,
+    status: "Upcoming",
+    thumbnail: "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80"
   }
 ];
 
-// Mock recorded classes
-const RECORDED_CLASSES = [
-  {
-    id: 1,
-    title: "Introduction to Cybersecurity Principles",
-    description: "Overview of key cybersecurity concepts and foundational principles.",
-    instructor: "Dr. Sarah Chen",
-    course: "Introduction to Cybersecurity",
-    date: "2023-09-30",
-    duration: "85 minutes",
-    views: 245,
-    likes: 42,
-    image: "https://randomuser.me/api/portraits/women/44.jpg"
-  },
-  {
-    id: 2,
-    title: "HTML5 Semantic Elements",
-    description: "Detailed explanation of HTML5 semantic tags and their appropriate usage.",
-    instructor: "Mark Anderson",
-    course: "Web Development Masterclass",
-    date: "2023-09-28",
-    duration: "72 minutes",
-    views: 318,
-    likes: 56,
-    image: "https://randomuser.me/api/portraits/men/32.jpg"
-  },
-  {
-    id: 3,
-    title: "Python Data Structures",
-    description: "Comprehensive review of Python data structures for efficient data handling.",
-    instructor: "Dr. Michael Torres",
-    course: "Data Science Fundamentals",
-    date: "2023-09-25",
-    duration: "94 minutes",
-    views: 287,
-    likes: 49,
-    image: "https://randomuser.me/api/portraits/men/67.jpg"
-  }
+// Mock comments for the live chat
+const INITIAL_COMMENTS = [
+  { id: 1, user: "Alex J.", message: "Great explanation of the concepts!", time: "2 minutes ago" },
+  { id: 2, user: "Maria L.", message: "Could you explain more about responsive design?", time: "5 minutes ago" },
+  { id: 3, user: "John D.", message: "Thanks for the detailed walkthrough!", time: "8 minutes ago" }
 ];
 
 const LiveClasses = () => {
-  const [activeTab, setActiveTab] = useState("upcoming");
+  const [activeClass, setActiveClass] = useState<number | null>(1); // Default to first class
+  const [comments, setComments] = useState(INITIAL_COMMENTS);
+  const [newComment, setNewComment] = useState("");
+  const [videoPlaying, setVideoPlaying] = useState(true);
+
+  const handleJoinClass = (classId: number) => {
+    setActiveClass(classId);
+    toast({
+      title: "Joining Live Class",
+      description: "You have joined the live class session.",
+    });
+  };
+
+  const handleRemindMe = (classId: number) => {
+    toast({
+      title: "Reminder Set",
+      description: "You will be notified when this class starts.",
+    });
+  };
+
+  const handleSendComment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newComment.trim()) {
+      const newCommentObj = {
+        id: Date.now(),
+        user: "You",
+        message: newComment,
+        time: "Just now"
+      };
+      setComments([newCommentObj, ...comments]);
+      setNewComment("");
+      
+      // Simulate instructor response after a delay
+      setTimeout(() => {
+        const instructorResponse = {
+          id: Date.now() + 1,
+          user: "Instructor",
+          message: "Thanks for your question! I'll address that shortly.",
+          time: "Just now"
+        };
+        setComments(prevComments => [instructorResponse, ...prevComments]);
+      }, 5000);
+    }
+  };
+
+  const toggleVideoPlayback = () => {
+    setVideoPlaying(!videoPlaying);
+    toast({
+      title: videoPlaying ? "Video Paused" : "Video Playing",
+      description: videoPlaying ? "You've paused the live stream." : "You're now watching the live stream.",
+    });
+  };
+
+  const activeClassData = LIVE_CLASSES.find(cls => cls.id === activeClass);
 
   return (
-    <div className="min-h-screen bg-cyber-dark bg-circuit-pattern pb-20">
-      <div className="relative holographic-bg py-16 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-cyber-darker opacity-80"></div>
-          <div className="absolute inset-0 bg-gradient-radial from-neon-blue/10 to-transparent"></div>
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold mb-2 animated-text text-center">
-            Live Classes
-          </h1>
-          <p className="text-xl mb-8 text-white/80 text-center">
-            Join interactive classes with real-time instructor guidance and peer collaboration
-          </p>
+    <MainLayout>
+      <div className="min-h-screen bg-cyber-dark bg-circuit-pattern pb-20">
+        <div className="relative holographic-bg py-16 px-4 sm:px-6 lg:px-8">
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-cyber-darker opacity-80"></div>
+            <div className="absolute inset-0 bg-gradient-radial from-neon-blue/10 to-transparent"></div>
+          </div>
           
-          <div className="flex justify-center space-x-4">
-            <Button 
-              className={`${activeTab === "upcoming" ? "bg-neon-blue text-black" : "bg-cyber-light/20 text-white"} px-6 py-2`}
-              onClick={() => setActiveTab("upcoming")}
-            >
-              Upcoming & Live
-            </Button>
-            <Button 
-              className={`${activeTab === "recorded" ? "bg-neon-blue text-black" : "bg-cyber-light/20 text-white"} px-6 py-2`}
-              onClick={() => setActiveTab("recorded")}
-            >
-              Recorded Sessions
-            </Button>
+          <div className="relative z-10 max-w-7xl mx-auto">
+            <h1 className="text-4xl font-bold mb-2 animated-text text-center">
+              Live Learning Experience
+            </h1>
+            <p className="text-xl mb-8 text-white/80 text-center">
+              Join real-time interactive classes with expert instructors
+            </p>
           </div>
         </div>
-      </div>
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-        {activeTab === "upcoming" && (
-          <div>
-            {/* Live Now Section */}
-            {UPCOMING_CLASSES.some(cls => cls.status === "live") && (
-              <div className="mb-12">
-                <h2 className="text-2xl font-bold mb-6 flex items-center">
-                  <div className="w-3 h-3 rounded-full bg-red-500 mr-2 animate-pulse"></div>
-                  Live Now
-                </h2>
-                
-                <div className="grid grid-cols-1 gap-6">
-                  {UPCOMING_CLASSES.filter(cls => cls.status === "live").map(cls => (
-                    <Card key={cls.id} className="cyber-card p-6 border border-red-500 shadow-neon-glow">
-                      <div className="flex flex-col md:flex-row">
-                        <div className="md:w-64 mb-4 md:mb-0 md:mr-6">
-                          <div className="aspect-video rounded-lg overflow-hidden neon-border relative bg-cyber-light/20">
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <Video className="h-16 w-16 text-neon-blue animate-pulse" />
-                            </div>
-                            <Badge className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 flex items-center">
-                              <div className="w-2 h-2 rounded-full bg-white mr-2 animate-pulse"></div>
-                              LIVE
-                            </Badge>
-                          </div>
-                          <div className="mt-3 flex items-center justify-between">
-                            <div className="flex items-center">
-                              <div className="w-8 h-8 rounded-full overflow-hidden mr-2">
-                                <img 
-                                  src={cls.image} 
-                                  alt={cls.instructor} 
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                              <span className="text-sm font-medium">{cls.instructor}</span>
-                            </div>
-                            <Badge className="bg-neon-blue/20 text-neon-blue">
-                              <Users className="h-3 w-3 mr-1" />
-                              {cls.enrolled}/{cls.capacity}
-                            </Badge>
-                          </div>
-                        </div>
-                        
-                        <div className="flex-1">
-                          <div className="flex justify-between items-start mb-2">
-                            <h3 className="text-xl font-semibold">{cls.title}</h3>
-                          </div>
-                          <p className="text-white/70 text-sm mb-4">{cls.description}</p>
-                          
-                          <div className="grid grid-cols-2 gap-2 mb-4">
-                            <div className="flex items-center text-sm text-white/60">
-                              <Calendar className="h-4 w-4 mr-1 text-neon-purple" />
-                              <span>{new Date(cls.date).toLocaleDateString()}</span>
-                            </div>
-                            <div className="flex items-center text-sm text-white/60">
-                              <Clock className="h-4 w-4 mr-1 text-neon-purple" />
-                              <span>{cls.time}</span>
-                            </div>
-                          </div>
-                          
-                          <div className="flex flex-wrap gap-4">
-                            <Button className="cyber-button bg-red-500 border-red-500 shadow-none hover:bg-red-600">
-                              Join Live Session
-                            </Button>
-                            <Button variant="outline" className="border-neon-blue text-neon-blue hover:bg-neon-blue/10">
-                              <MessageSquare className="h-4 w-4 mr-2" />
-                              Chat
-                            </Button>
-                            <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10">
-                              <Mic className="h-4 w-4 mr-2" />
-                              Raise Hand
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            {/* Upcoming Classes Section */}
-            <div className="mb-12">
-              <h2 className="text-2xl font-bold mb-6">Upcoming Classes</h2>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {UPCOMING_CLASSES.filter(cls => cls.status === "upcoming").map(cls => (
-                  <Card key={cls.id} className="cyber-card p-6">
-                    <div className="flex">
-                      <div className="w-16 h-16 rounded-full overflow-hidden mr-4 neon-border">
-                        <img 
-                          src={cls.image} 
-                          alt={cls.instructor} 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold mb-1">{cls.title}</h3>
-                        <p className="text-white/60 text-sm mb-2">
-                          Instructor: {cls.instructor} • {cls.course}
-                        </p>
-                        <p className="text-white/70 text-sm mb-3 line-clamp-2">{cls.description}</p>
-                        
-                        <div className="flex flex-wrap items-center gap-3 text-sm">
-                          <Badge className="bg-neon-blue/20 text-neon-blue flex items-center">
-                            <Calendar className="h-3 w-3 mr-1" />
-                            {new Date(cls.date).toLocaleDateString()}
-                          </Badge>
-                          <Badge className="bg-neon-purple/20 text-neon-purple flex items-center">
-                            <Clock className="h-3 w-3 mr-1" />
-                            {cls.time}
-                          </Badge>
-                          <Badge className="bg-neon-green/20 text-neon-green flex items-center">
-                            <Users className="h-3 w-3 mr-1" />
-                            {cls.enrolled}/{cls.capacity}
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center">
-                      <div className="text-sm text-white/60">
-                        Duration: {cls.duration}
-                      </div>
-                      <Button className="bg-neon-blue text-black hover:bg-neon-blue/80">
-                        Set Reminder
-                      </Button>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-            
-            {/* Past Classes Section */}
-            <div>
-              <h2 className="text-2xl font-bold mb-6">Recently Completed</h2>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {UPCOMING_CLASSES.filter(cls => cls.status === "completed").map(cls => (
-                  <Card key={cls.id} className="cyber-card p-6 opacity-80 hover:opacity-100 transition-opacity">
-                    <div className="flex">
-                      <div className="w-16 h-16 rounded-full overflow-hidden mr-4 grayscale">
-                        <img 
-                          src={cls.image} 
-                          alt={cls.instructor} 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold mb-1">{cls.title}</h3>
-                        <p className="text-white/60 text-sm mb-2">
-                          Instructor: {cls.instructor} • {cls.course}
-                        </p>
-                        <p className="text-white/70 text-sm mb-3 line-clamp-2">{cls.description}</p>
-                        
-                        <div className="flex flex-wrap items-center gap-3 text-sm">
-                          <Badge className="bg-gray-500/20 text-gray-300 flex items-center">
-                            <Calendar className="h-3 w-3 mr-1" />
-                            {new Date(cls.date).toLocaleDateString()}
-                          </Badge>
-                          <Badge className="bg-gray-500/20 text-gray-300 flex items-center">
-                            <Clock className="h-3 w-3 mr-1" />
-                            {cls.time}
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-4 pt-4 border-t border-white/10 flex justify-end">
-                      <Button className="bg-gray-500 text-white hover:bg-gray-600">
-                        View Recording
-                      </Button>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
         
-        {activeTab === "recorded" && (
-          <div>
-            <h2 className="text-2xl font-bold mb-6">Recorded Sessions</h2>
-            
-            <div className="grid grid-cols-1 gap-6">
-              {RECORDED_CLASSES.map(cls => (
-                <Card key={cls.id} className="cyber-card p-6">
-                  <div className="flex flex-col md:flex-row">
-                    <div className="md:w-64 mb-4 md:mb-0 md:mr-6">
-                      <div className="aspect-video rounded-lg overflow-hidden neon-border relative bg-cyber-light/20">
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <Video className="h-16 w-16 text-neon-blue" />
-                        </div>
-                      </div>
-                      <div className="mt-3 flex items-center justify-between">
-                        <div className="flex items-center">
-                          <div className="w-8 h-8 rounded-full overflow-hidden mr-2">
-                            <img 
-                              src={cls.image} 
-                              alt={cls.instructor} 
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <span className="text-sm font-medium">{cls.instructor}</span>
-                        </div>
-                        <div className="flex items-center text-sm text-white/60">
-                          <ThumbsUp className="h-3 w-3 mr-1 text-neon-purple" />
-                          <span>{cls.likes}</span>
-                        </div>
-                      </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              {activeClassData && (
+                <div className="cyber-card mb-8">
+                  <div className="relative neon-border overflow-hidden" style={{height: "400px"}}>
+                    <img 
+                      src={activeClassData.thumbnail} 
+                      alt={activeClassData.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-center justify-center">
+                      <Button 
+                        className={`rounded-full p-3 ${videoPlaying ? 'bg-red-500' : 'bg-neon-blue'} hover:scale-110 transition-transform`}
+                        onClick={toggleVideoPlayback}
+                      >
+                        <Play className={`h-8 w-8 ${videoPlaying ? '' : 'text-white'}`} />
+                      </Button>
                     </div>
-                    
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start mb-2">
-                        <h3 className="text-xl font-semibold">{cls.title}</h3>
-                      </div>
-                      <p className="text-white/70 text-sm mb-4">{cls.description}</p>
-                      
-                      <div className="grid grid-cols-3 gap-2 mb-4">
-                        <div className="flex items-center text-sm text-white/60">
-                          <Calendar className="h-4 w-4 mr-1 text-neon-purple" />
-                          <span>{new Date(cls.date).toLocaleDateString()}</span>
-                        </div>
-                        <div className="flex items-center text-sm text-white/60">
-                          <Clock className="h-4 w-4 mr-1 text-neon-purple" />
-                          <span>{cls.duration}</span>
-                        </div>
-                        <div className="flex items-center text-sm text-white/60">
-                          <Users className="h-4 w-4 mr-1 text-neon-purple" />
-                          <span>{cls.views} views</span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-4">
-                        <Button className="cyber-button">
-                          Watch Recording
-                        </Button>
-                        <Button variant="outline" className="border-neon-blue text-neon-blue hover:bg-neon-blue/10">
-                          Download Resources
-                        </Button>
+                    <Badge className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 text-sm font-medium">
+                      LIVE
+                    </Badge>
+                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                      <h2 className="text-2xl font-bold mb-1">{activeClassData.title}</h2>
+                      <div className="flex items-center text-white/80 text-sm">
+                        <User className="h-4 w-4 mr-1" />
+                        <span className="mr-4">{activeClassData.instructor}</span>
+                        <Users className="h-4 w-4 mr-1" />
+                        <span>{activeClassData.participants} participants</span>
                       </div>
                     </div>
                   </div>
-                </Card>
-              ))}
+                  
+                  <div className="mt-4">
+                    <Tabs defaultValue="chat">
+                      <TabsList className="mb-4">
+                        <TabsTrigger value="chat">Live Chat</TabsTrigger>
+                        <TabsTrigger value="notes">Class Notes</TabsTrigger>
+                        <TabsTrigger value="resources">Resources</TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="chat" className="space-y-4">
+                        <div className="h-64 overflow-y-auto p-4 border border-neon-blue/30 rounded-lg bg-cyber-darker">
+                          {comments.map(comment => (
+                            <div key={comment.id} className="mb-3 last:mb-0">
+                              <div className={`flex items-start ${comment.user === "You" ? "justify-end" : ""}`}>
+                                <div className={`max-w-[80%] ${comment.user === "You" ? "bg-neon-blue/20" : "bg-white/10"} p-3 rounded-lg`}>
+                                  <div className="flex justify-between items-start mb-1">
+                                    <span className={`font-medium ${comment.user === "Instructor" ? "text-neon-purple" : ""}`}>{comment.user}</span>
+                                    <span className="text-xs text-white/50 ml-2">{comment.time}</span>
+                                  </div>
+                                  <p className="text-white/90">{comment.message}</p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <form onSubmit={handleSendComment} className="flex gap-2">
+                          <Input 
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            placeholder="Type your message..." 
+                            className="flex-grow"
+                          />
+                          <Button type="submit">Send</Button>
+                        </form>
+                      </TabsContent>
+                      
+                      <TabsContent value="notes">
+                        <div className="cyber-card p-4">
+                          <h3 className="text-xl font-bold mb-3">Class Notes</h3>
+                          <p className="text-white/70 mb-2">Key points covered in this session:</p>
+                          <ul className="list-disc pl-5 space-y-1 text-white/70">
+                            <li>Introduction to web development principles</li>
+                            <li>Responsive design techniques and best practices</li>
+                            <li>Modern CSS frameworks comparison</li>
+                            <li>Performance optimization strategies</li>
+                          </ul>
+                        </div>
+                      </TabsContent>
+                      
+                      <TabsContent value="resources">
+                        <div className="cyber-card p-4">
+                          <h3 className="text-xl font-bold mb-3">Downloadable Resources</h3>
+                          <div className="space-y-2">
+                            <Button variant="outline" className="w-full justify-start" onClick={() => alert("Resource downloading...")}>
+                              <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              Lecture Slides (PDF)
+                            </Button>
+                            <Button variant="outline" className="w-full justify-start" onClick={() => alert("Resource downloading...")}>
+                              <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              Code Examples (ZIP)
+                            </Button>
+                            <Button variant="outline" className="w-full justify-start" onClick={() => alert("Resource downloading...")}>
+                              <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              Additional Readings (PDF)
+                            </Button>
+                          </div>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div>
+              <h2 className="text-2xl font-bold mb-4 animated-text">Upcoming Classes</h2>
+              <div className="space-y-4">
+                {LIVE_CLASSES.map(cls => (
+                  <Card key={cls.id} className={`cyber-card p-4 ${activeClass === cls.id ? 'border-2 border-neon-blue' : ''}`}>
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded overflow-hidden neon-border">
+                        <img src={cls.thumbnail} alt={cls.title} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold">{cls.title}</h3>
+                        <div className="flex items-center text-white/70 text-sm mb-1">
+                          <User className="h-3 w-3 mr-1" />
+                          <span>{cls.instructor}</span>
+                        </div>
+                        <div className="flex items-center text-white/70 text-sm">
+                          <Calendar className="h-3 w-3 mr-1" />
+                          <span className="mr-2">{cls.date}</span>
+                          <Clock className="h-3 w-3 mr-1" />
+                          <span>{cls.time}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-white/10 flex justify-between items-center">
+                      <Badge className={`${cls.status === 'Live' ? 'bg-red-500' : 'bg-neon-blue'}`}>
+                        {cls.status}
+                      </Badge>
+                      {cls.status === 'Live' ? (
+                        <Button size="sm" onClick={() => handleJoinClass(cls.id)}>
+                          Join Now
+                        </Button>
+                      ) : (
+                        <Button size="sm" variant="outline" onClick={() => handleRemindMe(cls.id)}>
+                          Remind Me
+                        </Button>
+                      )}
+                    </div>
+                  </Card>
+                ))}
+              </div>
+              
+              <div className="mt-8 cyber-card p-6">
+                <h3 className="text-xl font-bold mb-3">Your Schedule</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-2 text-neon-blue" />
+                      <span>Today, Oct 25</span>
+                    </div>
+                    <Badge>3 Classes</Badge>
+                  </div>
+                  <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-2 text-neon-purple" />
+                      <span>Tomorrow, Oct 26</span>
+                    </div>
+                    <Badge>2 Classes</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-2 text-neon-pink" />
+                      <span>Friday, Oct 27</span>
+                    </div>
+                    <Badge>1 Class</Badge>
+                  </div>
+                </div>
+                <Button className="w-full mt-4" variant="outline" onClick={() => alert("View complete schedule coming soon!")}>
+                  View Complete Schedule
+                </Button>
+              </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
-    </div>
+    </MainLayout>
   );
 };
 

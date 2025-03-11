@@ -1,11 +1,13 @@
 
 import { useState } from "react";
+import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, FileText, Download, FileImage, Film, Music, Book, FileBox, FilePlus2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "@/hooks/use-toast";
 
 // Mock resource data
 const RESOURCES = [
@@ -150,165 +152,208 @@ const Resources = () => {
     }
   };
 
+  const handleDownload = (resourceId: number) => {
+    const resource = RESOURCES.find(r => r.id === resourceId);
+    if (resource) {
+      toast({
+        title: "Download Started",
+        description: `${resource.title} is downloading...`,
+      });
+    }
+  };
+
+  const handleResourceRequest = () => {
+    toast({
+      title: "Request Submitted",
+      description: "Your resource request has been submitted. Our instructors will be notified.",
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-cyber-dark bg-circuit-pattern pb-20">
-      <div className="relative holographic-bg py-16 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-cyber-darker opacity-80"></div>
-          <div className="absolute inset-0 bg-gradient-radial from-neon-blue/10 to-transparent"></div>
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold mb-2 animated-text text-center">
-            Resource Library
-          </h1>
-          <p className="text-xl mb-8 text-white/80 text-center">
-            Access study materials, presentations, and guides for all your courses
-          </p>
+    <MainLayout>
+      <div className="min-h-screen bg-cyber-dark bg-circuit-pattern pb-20">
+        <div className="relative holographic-bg py-16 px-4 sm:px-6 lg:px-8">
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-cyber-darker opacity-80"></div>
+            <div className="absolute inset-0 bg-gradient-radial from-neon-blue/10 to-transparent"></div>
+          </div>
           
-          {/* Search */}
-          <div className="max-w-3xl mx-auto mb-8">
-            <div className="relative">
-              <Input
-                placeholder="Search resources by title or description..."
-                className="bg-cyber-light/30 border-neon-blue/50 py-6 pl-12 text-white placeholder:text-white/50"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neon-blue" />
+          <div className="relative z-10 max-w-7xl mx-auto">
+            <h1 className="text-4xl font-bold mb-2 animated-text text-center">
+              Resource Library
+            </h1>
+            <p className="text-xl mb-8 text-white/80 text-center">
+              Access study materials, presentations, and guides for all your courses
+            </p>
+            
+            {/* Search */}
+            <div className="max-w-3xl mx-auto mb-8">
+              <div className="relative">
+                <Input
+                  placeholder="Search resources by title or description..."
+                  className="bg-cyber-light/30 border-neon-blue/50 py-6 pl-12 text-white placeholder:text-white/50"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neon-blue" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-        <Tabs defaultValue="all" className="mt-4 mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-            <TabsList className="bg-cyber-light/20 p-1 mb-4 md:mb-0">
-              <TabsTrigger value="all" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
-                All Resources
-              </TabsTrigger>
-              <TabsTrigger value="lectures" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
-                Lecture Notes
-              </TabsTrigger>
-              <TabsTrigger value="handouts" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
-                Handouts
-              </TabsTrigger>
-              <TabsTrigger value="media" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
-                Media
-              </TabsTrigger>
-            </TabsList>
-            
-            <div className="flex space-x-2">
-              <select 
-                className="bg-cyber-light/30 border border-neon-blue/50 rounded text-white px-3 py-2"
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-              >
-                {RESOURCE_TYPES.map(type => (
-                  <option key={type} value={type} className="bg-cyber-dark">
-                    {type}
-                  </option>
-                ))}
-              </select>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+          <Tabs defaultValue="all" className="mt-4 mb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+              <TabsList className="bg-cyber-light/20 p-1 mb-4 md:mb-0">
+                <TabsTrigger value="all" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
+                  All Resources
+                </TabsTrigger>
+                <TabsTrigger value="lectures" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
+                  Lecture Notes
+                </TabsTrigger>
+                <TabsTrigger value="handouts" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
+                  Handouts
+                </TabsTrigger>
+                <TabsTrigger value="media" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
+                  Media
+                </TabsTrigger>
+              </TabsList>
               
-              <select 
-                className="bg-cyber-light/30 border border-neon-blue/50 rounded text-white px-3 py-2"
-                value={selectedCourse}
-                onChange={(e) => setSelectedCourse(e.target.value)}
-              >
-                {COURSES.map(course => (
-                  <option key={course} value={course} className="bg-cyber-dark">
-                    {course}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          
-          <TabsContent value="all" className="mt-0">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {filteredResources.map(resource => {
-                const ResourceIcon = getIconForType(resource.type);
-                const badgeColor = getColorForType(resource.type);
+              <div className="flex space-x-2">
+                <select 
+                  className="bg-cyber-light/30 border border-neon-blue/50 rounded text-white px-3 py-2"
+                  value={selectedType}
+                  onChange={(e) => setSelectedType(e.target.value)}
+                >
+                  {RESOURCE_TYPES.map(type => (
+                    <option key={type} value={type} className="bg-cyber-dark">
+                      {type}
+                    </option>
+                  ))}
+                </select>
                 
-                return (
-                  <Card key={resource.id} className="cyber-card p-6">
-                    <div className="flex">
-                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-neon-blue/10 text-neon-blue mr-4">
-                        <ResourceIcon className="h-6 w-6" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex justify-between items-start mb-2">
-                          <h3 className="text-lg font-semibold">{resource.title}</h3>
-                          <Badge className={`${badgeColor}`}>
-                            {resource.type}
-                          </Badge>
-                        </div>
-                        <p className="text-white/70 text-sm mb-3">{resource.description}</p>
-                        <div className="flex flex-wrap items-center text-sm text-white/60">
-                          <span className="mr-4">{resource.course}</span>
-                          <span className="mr-4">{resource.size}</span>
-                          <span className="mr-4">{new Date(resource.date).toLocaleDateString()}</span>
-                          <span>{resource.downloads} downloads</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-4 pt-4 border-t border-white/10 flex justify-end">
-                      <Button className="bg-neon-blue text-black hover:bg-neon-blue/80">
-                        <Download className="h-4 w-4 mr-2" />
-                        Download
-                      </Button>
-                    </div>
-                  </Card>
-                );
-              })}
+                <select 
+                  className="bg-cyber-light/30 border border-neon-blue/50 rounded text-white px-3 py-2"
+                  value={selectedCourse}
+                  onChange={(e) => setSelectedCourse(e.target.value)}
+                >
+                  {COURSES.map(course => (
+                    <option key={course} value={course} className="bg-cyber-dark">
+                      {course}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             
-            {filteredResources.length === 0 && (
-              <div className="text-center py-16">
-                <FileText className="h-16 w-16 mx-auto mb-4 text-white/20" />
-                <h3 className="text-xl font-semibold mb-2">No resources found</h3>
-                <p className="text-white/60">Try changing your search or filters</p>
+            <TabsContent value="all" className="mt-0">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {filteredResources.map(resource => {
+                  const ResourceIcon = getIconForType(resource.type);
+                  const badgeColor = getColorForType(resource.type);
+                  
+                  return (
+                    <Card key={resource.id} className="cyber-card p-6">
+                      <div className="flex">
+                        <div className="w-12 h-12 rounded-full flex items-center justify-center bg-neon-blue/10 text-neon-blue mr-4">
+                          <ResourceIcon className="h-6 w-6" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex justify-between items-start mb-2">
+                            <h3 className="text-lg font-semibold">{resource.title}</h3>
+                            <Badge className={`${badgeColor}`}>
+                              {resource.type}
+                            </Badge>
+                          </div>
+                          <p className="text-white/70 text-sm mb-3">{resource.description}</p>
+                          <div className="flex flex-wrap items-center text-sm text-white/60">
+                            <span className="mr-4">{resource.course}</span>
+                            <span className="mr-4">{resource.size}</span>
+                            <span className="mr-4">{new Date(resource.date).toLocaleDateString()}</span>
+                            <span>{resource.downloads} downloads</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-white/10 flex justify-end">
+                        <Button 
+                          className="bg-neon-blue text-black hover:bg-neon-blue/80"
+                          onClick={() => handleDownload(resource.id)}
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Download
+                        </Button>
+                      </div>
+                    </Card>
+                  );
+                })}
               </div>
-            )}
-          </TabsContent>
-          
-          {/* Similar content for other tabs */}
-          <TabsContent value="lectures" className="mt-0">
-            {/* Lecture notes specific content */}
-          </TabsContent>
-          
-          <TabsContent value="handouts" className="mt-0">
-            {/* Handouts specific content */}
-          </TabsContent>
-          
-          <TabsContent value="media" className="mt-0">
-            {/* Media specific content */}
-          </TabsContent>
-        </Tabs>
-        
-        <div className="mt-8 mb-4 border-t border-white/10 pt-8">
-          <h2 className="text-2xl font-bold mb-4">Need Additional Resources?</h2>
-          <Card className="cyber-card p-6">
-            <div className="flex flex-col md:flex-row items-center">
-              <div className="mb-4 md:mb-0 md:mr-6">
-                <FilePlus2 className="h-12 w-12 text-neon-purple" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold mb-2">Request Study Materials</h3>
-                <p className="text-white/70 mb-4">
-                  Can't find what you're looking for? Submit a request for specific resources, and our instructors will try to provide them.
-                </p>
-                <Button className="cyber-button">
-                  Submit Resource Request
+              
+              {filteredResources.length === 0 && (
+                <div className="text-center py-16">
+                  <FileText className="h-16 w-16 mx-auto mb-4 text-white/20" />
+                  <h3 className="text-xl font-semibold mb-2">No resources found</h3>
+                  <p className="text-white/60">Try changing your search or filters</p>
+                </div>
+              )}
+            </TabsContent>
+            
+            {/* Similar content for other tabs - Adding placeholder content for demo */}
+            <TabsContent value="lectures" className="mt-0">
+              <div className="cyber-card p-8 text-center">
+                <h3 className="text-xl font-bold mb-3">Lecture Notes</h3>
+                <p className="text-white/70 mb-6">This section will contain all lecture notes and presentations.</p>
+                <Button onClick={() => toast({ title: "Coming Soon", description: "Lecture notes will be available soon!" })}>
+                  Browse Lecture Notes
                 </Button>
               </div>
-            </div>
-          </Card>
+            </TabsContent>
+            
+            <TabsContent value="handouts" className="mt-0">
+              <div className="cyber-card p-8 text-center">
+                <h3 className="text-xl font-bold mb-3">Handouts</h3>
+                <p className="text-white/70 mb-6">This section will contain all course handouts and supplementary materials.</p>
+                <Button onClick={() => toast({ title: "Coming Soon", description: "Handouts will be available soon!" })}>
+                  Browse Handouts
+                </Button>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="media" className="mt-0">
+              <div className="cyber-card p-8 text-center">
+                <h3 className="text-xl font-bold mb-3">Media Resources</h3>
+                <p className="text-white/70 mb-6">This section will contain all videos, podcasts, and other media resources.</p>
+                <Button onClick={() => toast({ title: "Coming Soon", description: "Media resources will be available soon!" })}>
+                  Browse Media
+                </Button>
+              </div>
+            </TabsContent>
+          </Tabs>
+          
+          <div className="mt-8 mb-4 border-t border-white/10 pt-8">
+            <h2 className="text-2xl font-bold mb-4">Need Additional Resources?</h2>
+            <Card className="cyber-card p-6">
+              <div className="flex flex-col md:flex-row items-center">
+                <div className="mb-4 md:mb-0 md:mr-6">
+                  <FilePlus2 className="h-12 w-12 text-neon-purple" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold mb-2">Request Study Materials</h3>
+                  <p className="text-white/70 mb-4">
+                    Can't find what you're looking for? Submit a request for specific resources, and our instructors will try to provide them.
+                  </p>
+                  <Button 
+                    className="cyber-button"
+                    onClick={handleResourceRequest}
+                  >
+                    Submit Resource Request
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+    </MainLayout>
   );
 };
 
