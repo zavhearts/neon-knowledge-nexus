@@ -1,7 +1,6 @@
-
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Robot, X } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Bot } from 'lucide-react';
 
 const VirtualAssistant = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -9,7 +8,6 @@ const VirtualAssistant = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [displayText, setDisplayText] = useState("");
 
-  // Assistant messages to display
   const assistantTexts = [
     "Hello! I'm your AI learning assistant.",
     "Welcome to EasyWin Learning Hub!",
@@ -17,7 +15,6 @@ const VirtualAssistant = () => {
     "How can I help you with your learning journey today?",
   ];
 
-  // Show assistant after page load
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true);
@@ -26,7 +23,6 @@ const VirtualAssistant = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Typing animation effect
   useEffect(() => {
     if (!isVisible) return;
 
@@ -44,7 +40,6 @@ const VirtualAssistant = () => {
         clearInterval(typingInterval);
         setIsTyping(false);
         
-        // Move to next text after timeout
         if (currentTextIndex < assistantTexts.length - 1) {
           const nextTextTimer = setTimeout(() => {
             setCurrentTextIndex((prev) => prev + 1);
@@ -85,15 +80,13 @@ const VirtualAssistant = () => {
           exit="exit"
         >
           <div className="relative rounded-xl shadow-neon-glow overflow-hidden">
-            {/* Border glow effect */}
             <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-blue via-neon-purple to-neon-blue rounded-xl opacity-70 animate-pulse"></div>
             
             <div className="relative glassmorphic rounded-xl">
-              {/* Header */}
               <div className="bg-cyber-darker p-3 flex justify-between items-center border-b border-neon-blue/30">
                 <div className="flex items-center">
                   <div className="w-8 h-8 rounded-full bg-cyber-light flex items-center justify-center mr-3 shadow-neon-glow">
-                    <Robot className="text-neon-blue" size={18} />
+                    <Bot className="text-neon-blue" size={18} />
                   </div>
                   <div>
                     <h3 className="text-white text-sm font-medium">AI Assistant</h3>
@@ -111,7 +104,6 @@ const VirtualAssistant = () => {
                 </button>
               </div>
               
-              {/* Message */}
               <div className="p-4 bg-cyber-dark">
                 <div className="min-h-[80px] flex items-center">
                   <p className="text-gray-300 text-sm">
@@ -123,7 +115,6 @@ const VirtualAssistant = () => {
                 </div>
               </div>
               
-              {/* Input area (simplified for this example) */}
               <div className="p-3 bg-cyber-darker border-t border-neon-blue/30">
                 <div className="bg-cyber-light rounded-full px-4 py-2 text-gray-400 text-sm flex items-center">
                   <span>Type your question...</span>

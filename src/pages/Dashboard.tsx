@@ -1,10 +1,21 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Calendar, Bell, Clock, BarChart, CheckCircle, User, Settings } from "lucide-react";
+import { 
+  BookOpen, 
+  Calendar, 
+  Bell, 
+  Clock, 
+  BarChart, 
+  CheckCircle, 
+  User, 
+  Settings,
+  Video,
+  FileText,
+  TestTube
+} from "lucide-react";
 
 // Mock user data
 const USER = {
@@ -174,7 +185,7 @@ const Dashboard = () => {
                           <span className="text-sm text-white/80">Progress</span>
                           <span className="text-sm font-medium text-neon-blue">{course.progress}%</span>
                         </div>
-                        <Progress value={course.progress} className="h-2 bg-cyber-light" indicatorClassName="bg-neon-blue" />
+                        <Progress value={course.progress} className="h-2 bg-cyber-light" />
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center text-white/70 text-sm">

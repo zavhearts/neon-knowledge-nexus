@@ -13,7 +13,7 @@ import {
   User,
   LogIn,
   ChevronDown,
-  Graduation,
+  GraduationCap, // Changed from Graduation to GraduationCap
   Search
 } from "lucide-react";
 
