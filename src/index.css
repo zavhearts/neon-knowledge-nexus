@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,200 +7,298 @@
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
+    /* Cyberpunk theme colors */
+    --cyber-dark: 230 60% 5%;
+    --cyber-darker: 230 50% 2%;
+    --cyber-light: 230 30% 15%;
+    --neon-blue: 186 100% 50%;
+    --neon-purple: 280 100% 60%;
+    --neon-pink: 320 100% 60%;
+    --neon-green: 120 100% 50%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-
-    --radius: 0.75rem;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
   }
 }
 
 @layer base {
   * {
-    @apply border-border selection:bg-white/10 selection:text-white;
+    @apply border-border;
   }
-  
   body {
-    @apply bg-cyber-dark text-foreground antialiased overflow-x-hidden;
-    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
-  }
-
-  html {
-    @apply scroll-smooth;
-  }
-
-  h1, h2, h3, .cyber-font {
-    font-family: 'Orbitron', sans-serif;
-  }
-  
-  body {
-    font-family: 'Roboto', sans-serif;
+    @apply bg-background text-foreground;
   }
 }
 
 @layer components {
-  .neon-border {
-    @apply border border-neon-blue/50 shadow-neon-glow relative overflow-hidden;
+  .font-orbitron {
+    font-family: 'Orbitron', sans-serif;
+  }
+  
+  .font-rajdhani {
+    font-family: 'Rajdhani', sans-serif;
+  }
+  
+  .animated-text {
+    @apply text-white;
+    text-shadow: 0 0 10px theme('colors.blue.400'), 0 0 20px rgba(0, 200, 255, 0.5);
+    animation: textPulse 3s infinite;
   }
 
-  .neon-border::after {
+  .cyber-font {
+    font-family: 'Orbitron', sans-serif;
+  }
+  
+  .holographic-bg {
+    position: relative;
+  }
+  
+  .holographic-bg::before {
     content: '';
-    @apply absolute inset-0 opacity-20 bg-gradient-to-r from-transparent via-neon-blue to-transparent;
-    animation: shimmer 2s infinite;
-    transform: translateX(-100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(0, 200, 255, 0.1) 0%, transparent 70%);
+    z-index: 0;
+    animation: holographicGlow 10s ease-in-out infinite;
   }
-
-  .glassmorphic {
-    @apply backdrop-blur-lg bg-white/5 border border-white/10 shadow-lg;
+  
+  .bg-cyber-dark {
+    @apply bg-[#040b18];
   }
-
-  .cyber-button {
-    @apply relative py-2 px-6 bg-cyber-dark border border-neon-blue text-neon-blue shadow-neon-glow
-           flex items-center justify-center overflow-hidden transition-all duration-300
-           hover:shadow-neon-glow hover:text-white font-medium uppercase tracking-wider;
+  
+  .bg-cyber-darker {
+    @apply bg-[#020814];
   }
-
-  .cyber-button::before {
-    content: '';
-    @apply absolute inset-0 bg-neon-blue -z-10 transform scale-x-0 origin-left transition-transform duration-300;
+  
+  .bg-cyber-light {
+    @apply bg-[#0a1428];
   }
-
-  .cyber-button:hover::before {
-    @apply scale-x-100;
+  
+  .bg-circuit-pattern {
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(0, 40, 80, 0.8) 0%, transparent 40%),
+      linear-gradient(to bottom, transparent, rgba(0, 200, 255, 0.05));
+    background-size: cover;
+    background-attachment: fixed;
   }
 
   .cyber-card {
-    @apply glassmorphic p-6 rounded-lg transition-all duration-300 border border-neon-blue/30 
-           hover:shadow-neon-glow hover:border-neon-blue/80;
-  }
-
-  .animated-text {
-    @apply bg-gradient-to-r from-neon-blue via-neon-purple to-neon-pink bg-clip-text text-transparent bg-[length:200%_auto] animate-text-shimmer;
-  }
-
-  .holographic-bg {
-    @apply relative bg-cyber-dark overflow-hidden z-0;
-  }
-
-  .holographic-bg::before {
-    content: '';
-    @apply absolute inset-0 bg-gradient-radial from-neon-blue/20 to-transparent opacity-30 z-[-1] blur-xl;
+    @apply bg-cyber-light border border-neon-blue/30 p-6 rounded-lg transition-transform duration-300 hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,200,255,0.3)] relative overflow-hidden;
   }
   
-  /* Admin dashboard specific styling */
-  .admin-card {
-    @apply bg-cyber-darker border-2 border-neon-blue/40 rounded-lg p-6 transition-all duration-300
-           hover:transform hover:scale-[1.03] hover:rotate-[1deg] hover:shadow-neon-glow;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .admin-card::after {
+  .cyber-card::after {
     content: '';
     position: absolute;
     top: 0;
     left: -100%;
-    width: 50%;
+    width: 100%;
     height: 100%;
     background: linear-gradient(
       to right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(0, 247, 255, 0.2) 50%,
-      rgba(255, 255, 255, 0) 100%
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
     );
-    animation: shine 3s infinite;
+    transition: all 0.6s ease;
   }
   
-  .holographic-background {
-    position: fixed;
+  .cyber-card:hover::after {
+    left: 100%;
+  }
+  
+  .cyber-button {
+    @apply bg-neon-blue text-black font-semibold relative overflow-hidden transition-all duration-300 border border-neon-blue/80 shadow-[0_0_10px_rgba(0,200,255,0.5)];
+  }
+  
+  .cyber-button:hover {
+    @apply shadow-[0_0_20px_rgba(0,200,255,0.8)] translate-y-[-3px];
+  }
+  
+  .cyber-button::before {
+    content: '';
+    position: absolute;
     top: 0;
-    left: 0;
+    left: -100%;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, rgba(0, 247, 255, 0.1) 0%, transparent 70%);
-    z-index: -1;
-    animation: holographicGlow 10s ease-in-out infinite;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.6s ease;
   }
   
-  .logo-text {
-    font-family: 'Orbitron', sans-serif;
-    @apply text-neon-blue font-bold text-xl md:text-2xl;
-    text-shadow: 0 0 10px rgba(0, 247, 255, 0.8);
-    animation: logoPulse 2s infinite;
+  .cyber-button:hover::before {
+    left: 100%;
+  }
+  
+  .glassmorphic {
+    background: rgba(9, 20, 40, 0.8);
+    backdrop-filter: blur(10px);
+    transition: background 0.3s ease;
+  }
+  
+  .bg-cyber-grid {
+    background-size: 50px 50px;
+    background-image:
+      linear-gradient(to right, rgba(0, 200, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 200, 255, 0.1) 1px, transparent 1px);
+  }
+
+  .neon-border {
+    @apply border border-neon-blue/50 shadow-[0_0_10px_rgba(0,200,255,0.5)];
+  }
+
+  .neon-text {
+    @apply text-neon-blue;
+    text-shadow: 0 0 5px theme('colors.blue.400'), 0 0 10px rgba(0, 200, 255, 0.5);
+  }
+  
+  .animate-pulse-glow {
+    animation: pulseGlow 2s infinite;
   }
 }
 
-@keyframes shimmer {
-  100% {
-    transform: translateX(100%);
+@keyframes textPulse {
+  0%, 100% {
+    text-shadow: 0 0 10px theme('colors.blue.400'), 0 0 20px rgba(0, 200, 255, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 15px theme('colors.blue.400'), 0 0 30px rgba(0, 200, 255, 0.8);
   }
 }
 
-@keyframes shine {
-  100% { left: 200%; }
-}
-
-@keyframes logoPulse {
-  0% { text-shadow: 0 0 10px rgba(0, 247, 255, 0.8); }
-  50% { text-shadow: 0 0 20px rgba(0, 247, 255, 0.8); }
-  100% { text-shadow: 0 0 10px rgba(0, 247, 255, 0.8); }
+@keyframes pulseGlow {
+  0%, 100% {
+    text-shadow: 0 0 10px theme('colors.blue.400'), 0 0 20px rgba(0, 200, 255, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 20px theme('colors.blue.400'), 0 0 40px rgba(0, 200, 255, 0.8);
+  }
 }
 
 @keyframes holographicGlow {
-  0% { background: radial-gradient(circle, rgba(0, 247, 255, 0.1) 0%, transparent 70%); }
-  50% { background: radial-gradient(circle, rgba(123, 97, 255, 0.1) 0%, transparent 70%); }
-  100% { background: radial-gradient(circle, rgba(0, 247, 255, 0.1) 0%, transparent 70%); }
+  0%, 100% {
+    background: radial-gradient(circle at center, rgba(0, 200, 255, 0.1) 0%, transparent 70%);
+  }
+  50% {
+    background: radial-gradient(circle at center, rgba(123, 97, 255, 0.1) 0%, transparent 70%);
+  }
 }
 
-/* Custom scrollbar for the cyber theme */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+@keyframes scanLine {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
 }
 
-::-webkit-scrollbar-track {
-  @apply bg-cyber-dark;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-neon-blue/50 rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-neon-blue/80;
-}
-
+/* Additional utility classes for tailwind */
 @layer utilities {
-  .scrollbar-none {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  .text-neon-blue {
+    color: #00f3ff;
   }
   
-  .scrollbar-none::-webkit-scrollbar {
-    display: none;
+  .text-neon-purple {
+    color: #7b61ff;
+  }
+  
+  .text-neon-pink {
+    color: #ff61dc;
+  }
+  
+  .text-neon-green {
+    color: #61ff73;
+  }
+  
+  .bg-neon-blue {
+    background-color: #00f3ff;
+  }
+  
+  .bg-neon-purple {
+    background-color: #7b61ff;
+  }
+  
+  .bg-neon-pink {
+    background-color: #ff61dc;
+  }
+  
+  .bg-neon-green {
+    background-color: #61ff73;
+  }
+  
+  .border-neon-blue {
+    border-color: #00f3ff;
+  }
+  
+  .border-neon-purple {
+    border-color: #7b61ff;
+  }
+  
+  .border-neon-pink {
+    border-color: #ff61dc;
+  }
+  
+  .border-neon-green {
+    border-color: #61ff73;
   }
 }

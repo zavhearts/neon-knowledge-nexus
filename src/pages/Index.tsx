@@ -1,10 +1,13 @@
 
+import { useNavigate } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ChevronRight, BookOpen, Video, Users, FileText, TestTube } from "lucide-react";
 
 const Index = () => {
+  const navigate = useNavigate();
+
   return (
     <MainLayout>
       <div className="min-h-screen bg-cyber-dark bg-circuit-pattern">
@@ -26,12 +29,13 @@ const Index = () => {
               Dive into our futuristic e-learning platform with interactive courses, live classes, 
               comprehensive resources, and an innovative learning experience.
             </p>
-            <Link to="/courses">
-              <Button className="cyber-button group text-lg">
-                Get Started 
-                <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
+            <Button 
+              className="cyber-button group text-lg"
+              onClick={() => navigate('/courses')}
+            >
+              Get Started 
+              <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
           </div>
         </section>
 
@@ -45,7 +49,10 @@ const Index = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {/* Feature 1 */}
-              <div className="cyber-card group">
+              <div 
+                className="cyber-card group cursor-pointer" 
+                onClick={() => navigate('/courses')}
+              >
                 <div className="mb-4 text-neon-blue">
                   <BookOpen className="h-10 w-10 mb-2" />
                 </div>
@@ -56,7 +63,10 @@ const Index = () => {
               </div>
               
               {/* Feature 2 */}
-              <div className="cyber-card group">
+              <div 
+                className="cyber-card group cursor-pointer" 
+                onClick={() => navigate('/live-classes')}
+              >
                 <div className="mb-4 text-neon-purple">
                   <Video className="h-10 w-10 mb-2" />
                 </div>
@@ -67,7 +77,10 @@ const Index = () => {
               </div>
               
               {/* Feature 3 */}
-              <div className="cyber-card group">
+              <div 
+                className="cyber-card group cursor-pointer" 
+                onClick={() => navigate('/dashboard')}
+              >
                 <div className="mb-4 text-neon-pink">
                   <Users className="h-10 w-10 mb-2" />
                 </div>
@@ -78,7 +91,10 @@ const Index = () => {
               </div>
               
               {/* Feature 4 */}
-              <div className="cyber-card group">
+              <div 
+                className="cyber-card group cursor-pointer" 
+                onClick={() => navigate('/resources')}
+              >
                 <div className="mb-4 text-neon-green">
                   <FileText className="h-10 w-10 mb-2" />
                 </div>
@@ -89,7 +105,10 @@ const Index = () => {
               </div>
               
               {/* Feature 5 */}
-              <div className="cyber-card group">
+              <div 
+                className="cyber-card group cursor-pointer" 
+                onClick={() => navigate('/dashboard')}
+              >
                 <div className="mb-4 text-neon-blue">
                   <TestTube className="h-10 w-10 mb-2" />
                 </div>
@@ -100,7 +119,10 @@ const Index = () => {
               </div>
               
               {/* Feature 6 */}
-              <div className="cyber-card group">
+              <div 
+                className="cyber-card group cursor-pointer" 
+                onClick={() => navigate('/dashboard')}
+              >
                 <div className="mb-4 text-neon-purple">
                   <svg className="h-10 w-10 mb-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 16V21M12 21H7M12 21H17M17 12H19C20.1046 12 21 11.1046 21 10V6C21 4.89543 20.1046 4 19 4H5C3.89543 4 3 4.89543 3 6V10C3 11.1046 3.89543 12 5 12H7M17 12L12 16L7 12M17 12H7" 
@@ -131,16 +153,19 @@ const Index = () => {
               Join thousands of students already using Easy Win Learning Hub to accelerate their education and career.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/courses">
-                <Button className="cyber-button">
-                  Explore Courses
-                </Button>
-              </Link>
-              <Link to="/live-classes">
-                <Button variant="outline" className="border-neon-blue text-neon-blue hover:bg-neon-blue/10">
-                  Join Live Classes
-                </Button>
-              </Link>
+              <Button 
+                className="cyber-button"
+                onClick={() => navigate('/courses')}
+              >
+                Explore Courses
+              </Button>
+              <Button 
+                variant="outline" 
+                className="border-neon-blue text-neon-blue hover:bg-neon-blue/10"
+                onClick={() => navigate('/live-classes')}
+              >
+                Join Live Classes
+              </Button>
             </div>
           </div>
         </section>
