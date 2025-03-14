@@ -38,7 +38,7 @@ const Login = () => {
         if (user.role === "admin") {
           navigate("/admin");
         } else if (user.role === "teacher") {
-          navigate("/dashboard");
+          navigate("/teacher");
         } else {
           navigate("/dashboard");
         }
@@ -140,6 +140,17 @@ const Login = () => {
                 Sign Up
               </Link>
             </p>
+          </div>
+          
+          <div className="mt-4 pt-4 border-t border-white/10 text-center">
+            <p className="text-white/70 mb-2">Quick access for demo purposes:</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              <Link to="/dashboard" className="text-neon-green hover:underline">Student Dashboard</Link>
+              <span className="text-white/30">|</span>
+              <Link to="/teacher" className="text-neon-purple hover:underline">Teacher Dashboard</Link>
+              <span className="text-white/30">|</span>
+              <Link to="/admin" className="text-neon-blue hover:underline">Admin Dashboard</Link>
+            </div>
           </div>
         </div>
       </div>
