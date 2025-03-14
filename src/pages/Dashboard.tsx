@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -14,13 +15,18 @@ import {
   Settings,
   Video,
   FileText,
-  TestTube
+  TestTube,
+  Home,
+  LogOut,
+  DownloadCloud,
+  Upload
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 // Mock user data
 const USER = {
   name: "Alex Johnson",
-  email: "alex.johnson@example.com",
+  email: "student@example.com",
   avatar: "https://randomuser.me/api/portraits/men/32.jpg"
 };
 
@@ -102,21 +108,115 @@ const NOTIFICATIONS = [
   }
 ];
 
+// Mock resources
+const RESOURCES = [
+  {
+    id: 1,
+    title: "Cybersecurity Fundamentals PDF",
+    type: "PDF",
+    size: "2.4 MB",
+    course: "Introduction to Cybersecurity",
+    date: "2023-09-15"
+  },
+  {
+    id: 2,
+    title: "Web Development Cheatsheet",
+    type: "PDF",
+    size: "1.2 MB",
+    course: "Web Development Masterclass",
+    date: "2023-09-20"
+  },
+  {
+    id: 3,
+    title: "Data Science Case Study",
+    type: "ZIP",
+    size: "4.7 MB",
+    course: "Data Science Fundamentals",
+    date: "2023-09-18"
+  },
+  {
+    id: 4,
+    title: "Python Programming - Video Tutorial",
+    type: "MP4",
+    size: "156 MB",
+    course: "Data Science Fundamentals",
+    date: "2023-09-22"
+  }
+];
+
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("courses");
+  const [darkMode, setDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    document.documentElement.classList.toggle('dark');
+  };
 
   return (
-    <div className="min-h-screen bg-cyber-dark bg-circuit-pattern pb-20">
-      <div className="relative holographic-bg py-8 px-4 sm:px-6 lg:px-8 mb-8">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-cyber-darker opacity-80"></div>
-          <div className="absolute inset-0 bg-gradient-radial from-neon-blue/10 to-transparent"></div>
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-blue pb-20">
+      {/* Top Navigation */}
+      <div className="bg-white dark:bg-dark-blue/50 shadow-md sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <Link to="/" className="flex-shrink-0">
+                <img 
+                  src="/lovable-uploads/6d0b63c4-3fcf-4756-8c97-c249e6e91073.png" 
+                  alt="Easy Win Learning Hub" 
+                  className="h-10"
+                />
+              </Link>
+            </div>
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={toggleDarkMode}
+                className="rounded-full"
+              >
+                {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-gray-700 dark:text-gray-300"
+                asChild
+              >
+                <Link to="/">
+                  <Home className="h-4 w-4 mr-2" />
+                  Home
+                </Link>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-gray-700 dark:text-gray-300"
+                asChild
+              >
+                <Link to="/login">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Link>
+              </Button>
+              <div className="flex items-center">
+                <img
+                  className="h-8 w-8 rounded-full border-2 border-royal-blue"
+                  src={USER.avatar}
+                  alt={USER.name}
+                />
+              </div>
+            </div>
+          </div>
         </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto">
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        {/* User Welcome Section */}
+        <div className="bg-white dark:bg-dark-blue/50 rounded-lg shadow-md p-6 mb-6">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="flex items-center mb-4 md:mb-0">
-              <div className="w-16 h-16 rounded-full overflow-hidden neon-border mr-4">
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-royal-blue mr-4">
                 <img 
                   src={USER.avatar} 
                   alt={USER.name} 
@@ -124,222 +224,340 @@ const Dashboard = () => {
                 />
               </div>
               <div>
-                <h1 className="text-2xl font-bold mb-1">{USER.name}</h1>
-                <p className="text-white/70">{USER.email}</p>
+                <h1 className="text-2xl font-bold mb-1 text-dark-blue dark:text-white">Welcome, {USER.name}</h1>
+                <p className="text-gray-600 dark:text-gray-300">{USER.email}</p>
               </div>
             </div>
             
             <div className="flex space-x-2">
-              <Button variant="outline" className="border-neon-blue text-neon-blue">
+              <Button variant="outline" className="border-royal-blue text-royal-blue hover:bg-royal-blue/10">
                 <Bell className="h-4 w-4 mr-2" />
                 Notifications
               </Button>
-              <Button variant="outline" className="border-neon-purple text-neon-purple">
+              <Button variant="outline" className="border-teal text-teal hover:bg-teal/10">
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
               </Button>
             </div>
           </div>
         </div>
-      </div>
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Tabs defaultValue="courses" className="mt-4" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 mb-8 bg-cyber-light/20 p-1">
-            <TabsTrigger value="courses" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
-              <BookOpen className="h-4 w-4 mr-2" />
-              My Courses
-            </TabsTrigger>
-            <TabsTrigger value="schedule" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
-              <Calendar className="h-4 w-4 mr-2" />
-              Schedule
-            </TabsTrigger>
-            <TabsTrigger value="notifications" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
-              <Bell className="h-4 w-4 mr-2" />
-              Notifications
-            </TabsTrigger>
-            <TabsTrigger value="profile" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
-              <User className="h-4 w-4 mr-2" />
-              Profile
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="courses" className="mt-6">
-            <h2 className="text-2xl font-bold mb-6">My Enrolled Courses</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {ENROLLED_COURSES.map(course => (
-                <Card key={course.id} className="cyber-card p-6">
-                  <div className="flex">
-                    <div className="w-24 h-24 rounded overflow-hidden mr-4 neon-border">
-                      <img 
-                        src={course.image} 
-                        alt={course.title} 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold mb-1">{course.title}</h3>
-                      <p className="text-white/70 text-sm mb-2">Instructor: {course.instructor}</p>
-                      <div className="mb-2">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm text-white/80">Progress</span>
-                          <span className="text-sm font-medium text-neon-blue">{course.progress}%</span>
-                        </div>
-                        <Progress value={course.progress} className="h-2 bg-cyber-light" />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center text-white/70 text-sm">
-                          <Clock className="h-4 w-4 mr-1 text-neon-purple" />
-                          <span>Due: {new Date(course.dueDate).toLocaleDateString()}</span>
-                        </div>
-                        <Button size="sm" className="bg-neon-blue text-black hover:bg-neon-blue/80">
-                          Continue
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-white/10">
-                    <p className="text-sm flex items-center">
-                      <BookOpen className="h-4 w-4 mr-2 text-neon-purple" />
-                      <span className="text-white/80">Next Lesson:</span>
-                      <span className="ml-2 text-white">{course.nextLesson}</span>
-                    </p>
-                  </div>
-                </Card>
-              ))}
+        
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Sidebar Navigation */}
+          <div className="lg:col-span-1">
+            <div className="bg-white dark:bg-dark-blue/50 rounded-lg shadow-md overflow-hidden">
+              <div className="p-4 bg-royal-blue/10 border-l-4 border-royal-blue">
+                <h2 className="font-bold text-dark-blue dark:text-white">Dashboard Menu</h2>
+              </div>
+              <nav className="p-2">
+                <button 
+                  onClick={() => setActiveTab("courses")}
+                  className={`flex items-center w-full p-3 rounded-md text-left mb-1 ${
+                    activeTab === "courses" 
+                      ? "bg-royal-blue/10 text-royal-blue" 
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-blue/30"
+                  }`}
+                >
+                  <BookOpen className="h-5 w-5 mr-3" />
+                  My Courses
+                </button>
+                <button 
+                  onClick={() => setActiveTab("schedule")}
+                  className={`flex items-center w-full p-3 rounded-md text-left mb-1 ${
+                    activeTab === "schedule" 
+                      ? "bg-royal-blue/10 text-royal-blue" 
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-blue/30"
+                  }`}
+                >
+                  <Calendar className="h-5 w-5 mr-3" />
+                  Schedule
+                </button>
+                <button 
+                  onClick={() => setActiveTab("resources")}
+                  className={`flex items-center w-full p-3 rounded-md text-left mb-1 ${
+                    activeTab === "resources" 
+                      ? "bg-royal-blue/10 text-royal-blue" 
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-blue/30"
+                  }`}
+                >
+                  <FileText className="h-5 w-5 mr-3" />
+                  Resources
+                </button>
+                <button 
+                  onClick={() => setActiveTab("notifications")}
+                  className={`flex items-center w-full p-3 rounded-md text-left mb-1 ${
+                    activeTab === "notifications" 
+                      ? "bg-royal-blue/10 text-royal-blue" 
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-blue/30"
+                  }`}
+                >
+                  <Bell className="h-5 w-5 mr-3" />
+                  Notifications
+                </button>
+                <button 
+                  onClick={() => setActiveTab("profile")}
+                  className={`flex items-center w-full p-3 rounded-md text-left mb-1 ${
+                    activeTab === "profile" 
+                      ? "bg-royal-blue/10 text-royal-blue" 
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-blue/30"
+                  }`}
+                >
+                  <User className="h-5 w-5 mr-3" />
+                  Profile
+                </button>
+              </nav>
             </div>
-            <div className="mt-8 text-center">
-              <Button className="cyber-button">
-                Browse More Courses
-              </Button>
-            </div>
-          </TabsContent>
+          </div>
           
-          <TabsContent value="schedule" className="mt-6">
-            <h2 className="text-2xl font-bold mb-6">Upcoming Schedule</h2>
-            <div className="space-y-4">
-              {UPCOMING_EVENTS.map(event => (
-                <Card key={event.id} className="cyber-card p-6">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between">
-                    <div>
-                      <div className="flex items-center mb-2">
-                        {event.type === "Live Class" && (
-                          <div className="w-8 h-8 rounded-full flex items-center justify-center bg-neon-purple/20 text-neon-purple mr-3">
-                            <Video className="h-4 w-4" />
+          {/* Main Content */}
+          <div className="lg:col-span-3">
+            {/* Courses Tab */}
+            {activeTab === "courses" && (
+              <div>
+                <h2 className="text-2xl font-bold mb-6 text-dark-blue dark:text-white">My Enrolled Courses</h2>
+                <div className="grid grid-cols-1 gap-6">
+                  {ENROLLED_COURSES.map(course => (
+                    <Card key={course.id} className="overflow-hidden bg-white dark:bg-dark-blue/50 shadow-md">
+                      <div className="p-6">
+                        <div className="flex flex-col md:flex-row gap-4">
+                          <div className="w-full md:w-24 h-24 rounded overflow-hidden">
+                            <img 
+                              src={course.image} 
+                              alt={course.title} 
+                              className="w-full h-full object-cover"
+                            />
                           </div>
-                        )}
-                        {event.type === "Assignment" && (
-                          <div className="w-8 h-8 rounded-full flex items-center justify-center bg-neon-green/20 text-neon-green mr-3">
-                            <FileText className="h-4 w-4" />
+                          <div className="flex-1">
+                            <h3 className="text-lg font-semibold mb-1 text-dark-blue dark:text-white">{course.title}</h3>
+                            <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">Instructor: {course.instructor}</p>
+                            <div className="mb-2">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Progress</span>
+                                <span className="text-sm font-medium text-royal-blue">{course.progress}%</span>
+                              </div>
+                              <Progress value={course.progress} className="h-2 bg-gray-200 dark:bg-dark-blue" />
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center text-gray-600 dark:text-gray-300 text-sm">
+                                <Clock className="h-4 w-4 mr-1 text-teal" />
+                                <span>Due: {new Date(course.dueDate).toLocaleDateString()}</span>
+                              </div>
+                              <Button size="sm" className="bg-royal-blue hover:bg-royal-blue/80 text-white">
+                                Continue
+                              </Button>
+                            </div>
                           </div>
-                        )}
-                        {event.type === "Test" && (
-                          <div className="w-8 h-8 rounded-full flex items-center justify-center bg-neon-blue/20 text-neon-blue mr-3">
-                            <TestTube className="h-4 w-4" />
-                          </div>
-                        )}
-                        <div>
-                          <h3 className="text-lg font-semibold">{event.title}</h3>
-                          <p className="text-white/70 text-sm">{event.course}</p>
+                        </div>
+                        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                          <p className="text-sm flex items-center">
+                            <BookOpen className="h-4 w-4 mr-2 text-teal" />
+                            <span className="text-gray-600 dark:text-gray-300">Next Lesson:</span>
+                            <span className="ml-2 text-dark-blue dark:text-white">{course.nextLesson}</span>
+                          </p>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex items-center mt-2 md:mt-0">
-                      <div className="text-white/80 text-sm mr-4">
-                        <Calendar className="h-4 w-4 inline mr-1" />
-                        {new Date(event.date).toLocaleDateString()} at {new Date(event.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                      </div>
-                      <Button size="sm" className="bg-neon-blue text-black hover:bg-neon-blue/80">
-                        {event.type === "Live Class" ? "Join" : "View"}
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="notifications" className="mt-6">
-            <h2 className="text-2xl font-bold mb-6">Recent Notifications</h2>
-            <div className="space-y-4">
-              {NOTIFICATIONS.map(notification => (
-                <Card key={notification.id} className="cyber-card p-6">
-                  <div className="flex justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold mb-1">{notification.title}</h3>
-                      <p className="text-white/80">{notification.message}</p>
-                    </div>
-                    <div className="text-white/60 text-sm">
-                      {notification.time}
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="profile" className="mt-6">
-            <h2 className="text-2xl font-bold mb-6">Your Profile</h2>
-            <Card className="cyber-card p-6">
-              <div className="flex flex-col md:flex-row">
-                <div className="md:w-1/3 mb-6 md:mb-0">
-                  <div className="w-40 h-40 mx-auto rounded-full overflow-hidden neon-border">
-                    <img 
-                      src={USER.avatar} 
-                      alt={USER.name} 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="mt-4 text-center">
-                    <Button size="sm" className="bg-neon-blue text-black hover:bg-neon-blue/80">
-                      Change Avatar
-                    </Button>
-                  </div>
+                    </Card>
+                  ))}
                 </div>
-                <div className="md:w-2/3 md:pl-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-white/60 text-sm mb-1">Full Name</label>
-                      <input 
-                        type="text" 
-                        value={USER.name} 
-                        className="w-full bg-cyber-light/30 border border-neon-blue/50 rounded px-4 py-2 text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-white/60 text-sm mb-1">Email</label>
-                      <input 
-                        type="email" 
-                        value={USER.email} 
-                        className="w-full bg-cyber-light/30 border border-neon-blue/50 rounded px-4 py-2 text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-white/60 text-sm mb-1">Phone Number</label>
-                      <input 
-                        type="tel" 
-                        placeholder="+1 (123) 456-7890" 
-                        className="w-full bg-cyber-light/30 border border-neon-blue/50 rounded px-4 py-2 text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-white/60 text-sm mb-1">Date of Birth</label>
-                      <input 
-                        type="date" 
-                        className="w-full bg-cyber-light/30 border border-neon-blue/50 rounded px-4 py-2 text-white"
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-6">
-                    <Button className="cyber-button">
-                      Save Changes
+                <div className="mt-8 text-center">
+                  <Button className="bg-royal-blue hover:bg-royal-blue/80 text-white">
+                    Browse More Courses
+                  </Button>
+                </div>
+              </div>
+            )}
+            
+            {/* Schedule Tab */}
+            {activeTab === "schedule" && (
+              <div>
+                <h2 className="text-2xl font-bold mb-6 text-dark-blue dark:text-white">Upcoming Schedule</h2>
+                <div className="space-y-4">
+                  {UPCOMING_EVENTS.map(event => (
+                    <Card key={event.id} className="bg-white dark:bg-dark-blue/50 shadow-md">
+                      <div className="p-6">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between">
+                          <div>
+                            <div className="flex items-center mb-2">
+                              {event.type === "Live Class" && (
+                                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-teal/20 text-teal mr-3">
+                                  <Video className="h-4 w-4" />
+                                </div>
+                              )}
+                              {event.type === "Assignment" && (
+                                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gold/20 text-gold mr-3">
+                                  <FileText className="h-4 w-4" />
+                                </div>
+                              )}
+                              {event.type === "Test" && (
+                                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-royal-blue/20 text-royal-blue mr-3">
+                                  <TestTube className="h-4 w-4" />
+                                </div>
+                              )}
+                              <div>
+                                <h3 className="text-lg font-semibold text-dark-blue dark:text-white">{event.title}</h3>
+                                <p className="text-gray-600 dark:text-gray-300 text-sm">{event.course}</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center mt-2 md:mt-0">
+                            <div className="text-gray-600 dark:text-gray-300 text-sm mr-4">
+                              <Calendar className="h-4 w-4 inline mr-1" />
+                              {new Date(event.date).toLocaleDateString()} at {new Date(event.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                            </div>
+                            <Button size="sm" className="bg-royal-blue hover:bg-royal-blue/80 text-white">
+                              {event.type === "Live Class" ? "Join" : "View"}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Resources Tab */}
+            {activeTab === "resources" && (
+              <div>
+                <h2 className="text-2xl font-bold mb-6 text-dark-blue dark:text-white">Learning Resources</h2>
+                <div className="bg-white dark:bg-dark-blue/50 rounded-lg shadow-md p-6 mb-6">
+                  <div className="flex flex-col md:flex-row items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-dark-blue dark:text-white mb-2 md:mb-0">Downloadable Materials</h3>
+                    <Button variant="outline" className="border-royal-blue text-royal-blue">
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload Assignment
                     </Button>
+                  </div>
+                  
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full bg-white dark:bg-dark-blue/30 rounded-lg overflow-hidden">
+                      <thead className="bg-gray-100 dark:bg-dark-blue/70">
+                        <tr>
+                          <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold">Title</th>
+                          <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold">Type</th>
+                          <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold">Course</th>
+                          <th className="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold">Date</th>
+                          <th className="py-3 px-4 text-right text-gray-700 dark:text-gray-300 font-semibold">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                        {RESOURCES.map(resource => (
+                          <tr key={resource.id} className="hover:bg-gray-50 dark:hover:bg-dark-blue/40">
+                            <td className="py-3 px-4 text-dark-blue dark:text-white">{resource.title}</td>
+                            <td className="py-3 px-4 text-gray-600 dark:text-gray-300">{resource.type}</td>
+                            <td className="py-3 px-4 text-gray-600 dark:text-gray-300">{resource.course}</td>
+                            <td className="py-3 px-4 text-gray-600 dark:text-gray-300">{resource.date}</td>
+                            <td className="py-3 px-4 text-right">
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                className="text-royal-blue border-royal-blue hover:bg-royal-blue/10"
+                              >
+                                <DownloadCloud className="h-4 w-4 mr-1" />
+                                Download
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
-            </Card>
-          </TabsContent>
-        </Tabs>
+            )}
+            
+            {/* Notifications Tab */}
+            {activeTab === "notifications" && (
+              <div>
+                <h2 className="text-2xl font-bold mb-6 text-dark-blue dark:text-white">Recent Notifications</h2>
+                <div className="space-y-4">
+                  {NOTIFICATIONS.map(notification => (
+                    <Card key={notification.id} className="bg-white dark:bg-dark-blue/50 shadow-md">
+                      <div className="p-6">
+                        <div className="flex justify-between">
+                          <div>
+                            <h3 className="text-lg font-semibold mb-1 text-dark-blue dark:text-white">{notification.title}</h3>
+                            <p className="text-gray-600 dark:text-gray-300">{notification.message}</p>
+                          </div>
+                          <div className="text-gray-500 dark:text-gray-400 text-sm">
+                            {notification.time}
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Profile Tab */}
+            {activeTab === "profile" && (
+              <div>
+                <h2 className="text-2xl font-bold mb-6 text-dark-blue dark:text-white">Your Profile</h2>
+                <Card className="bg-white dark:bg-dark-blue/50 shadow-md">
+                  <div className="p-6">
+                    <div className="flex flex-col md:flex-row">
+                      <div className="md:w-1/3 mb-6 md:mb-0">
+                        <div className="w-40 h-40 mx-auto rounded-full overflow-hidden border-4 border-royal-blue/50">
+                          <img 
+                            src={USER.avatar} 
+                            alt={USER.name} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="mt-4 text-center">
+                          <Button size="sm" className="bg-royal-blue hover:bg-royal-blue/80 text-white">
+                            Change Avatar
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="md:w-2/3 md:pl-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="block text-gray-600 dark:text-gray-300 text-sm mb-1">Full Name</label>
+                            <input 
+                              type="text" 
+                              value={USER.name} 
+                              className="w-full bg-white dark:bg-dark-blue/30 border border-gray-300 dark:border-gray-600 rounded px-4 py-2 text-dark-blue dark:text-white"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-gray-600 dark:text-gray-300 text-sm mb-1">Email</label>
+                            <input 
+                              type="email" 
+                              value={USER.email} 
+                              className="w-full bg-white dark:bg-dark-blue/30 border border-gray-300 dark:border-gray-600 rounded px-4 py-2 text-dark-blue dark:text-white"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-gray-600 dark:text-gray-300 text-sm mb-1">Phone Number</label>
+                            <input 
+                              type="tel" 
+                              placeholder="+1 (123) 456-7890" 
+                              className="w-full bg-white dark:bg-dark-blue/30 border border-gray-300 dark:border-gray-600 rounded px-4 py-2 text-dark-blue dark:text-white"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-gray-600 dark:text-gray-300 text-sm mb-1">Date of Birth</label>
+                            <input 
+                              type="date" 
+                              className="w-full bg-white dark:bg-dark-blue/30 border border-gray-300 dark:border-gray-600 rounded px-4 py-2 text-dark-blue dark:text-white"
+                            />
+                          </div>
+                        </div>
+                        <div className="mt-6">
+                          <Button className="bg-royal-blue hover:bg-royal-blue/80 text-white">
+                            Save Changes
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

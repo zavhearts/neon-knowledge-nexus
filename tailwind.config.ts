@@ -63,18 +63,16 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Sci-fi theme colors
-				neon: {
-					blue: "#00f7ff",
-					purple: "#8B5CF6",
-					pink: "#D946EF",
-					green: "#10B981"
-				},
-				cyber: {
-					dark: "#121212",
-					darker: "#0a0a0a",
-					light: "#2a2a2a"
-				}
+				// Custom theme colors
+				'dark-blue': '#2C3E50',
+				'royal-blue': '#007BFF',
+				'teal': '#17A2B8',
+				'gold': '#FFC107',
+			},
+			fontFamily: {
+				'montserrat': ['Montserrat', 'sans-serif'],
+				'open-sans': ['Open Sans', 'sans-serif'],
+				'fira-code': ['Fira Code', 'monospace'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -92,10 +90,10 @@ export default {
 				},
 				'pulse-glow': {
 					'0%, 100%': {
-						boxShadow: '0 0 15px 5px rgba(0, 247, 255, 0.4)'
+						boxShadow: '0 0 15px 5px rgba(0, 123, 255, 0.4)'
 					},
 					'50%': {
-						boxShadow: '0 0 25px 10px rgba(0, 247, 255, 0.7)'
+						boxShadow: '0 0 25px 10px rgba(0, 123, 255, 0.7)'
 					}
 				},
 				'text-shimmer': {
@@ -144,10 +142,18 @@ export default {
 				},
 				'glow-pulse': {
 					'0%, 100%': {
-						filter: 'drop-shadow(0 0 8px rgba(0, 247, 255, 0.7))'
+						filter: 'drop-shadow(0 0 8px rgba(0, 123, 255, 0.7))'
 					},
 					'50%': {
-						filter: 'drop-shadow(0 0 16px rgba(0, 247, 255, 1))'
+						filter: 'drop-shadow(0 0 16px rgba(0, 123, 255, 1))'
+					}
+				},
+				'count-up': {
+					'0%': {
+						content: '0'
+					},
+					'100%': {
+						content: 'attr(data-count)'
 					}
 				}
 			},
@@ -160,18 +166,16 @@ export default {
 				'circuit-animation': 'circuit-animation 20s linear infinite',
 				'fade-in': 'fade-in 0.7s ease-out forwards',
 				'slide-up': 'slide-up 0.9s ease-out forwards',
-				'glow-pulse': 'glow-pulse 2s infinite'
+				'glow-pulse': 'glow-pulse 2s infinite',
+				'count-up': 'count-up 2s forwards'
 			},
 			backgroundImage: {
-				'circuit-pattern': "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSIxMDAiPgo8cmVjdCB3aWR0aD0iNTYiIGhlaWdodD0iMTAwIiBmaWxsPSIjMTIxMjEyIj48L3JlY3Q+CjxwYXRoIGQ9Ik0yOCA2NkwwIDUwTDAgMTZMMjggMEw1NiAxNkw1NiA1MEwyOCA2NkwyOCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwZjdmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMTUiIHN0cm9rZS13aWR0aD0iMiI+PC9wYXRoPgo8cGF0aCBkPSJNMjggMEwyOCAzNEw1NiA1MEw1NiAxNkwyOCAwWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBmN2ZmIiBzdHJva2Utb3BhY2l0eT0iMC4xIiBzdHJva2Utd2lkdGg9IjEiPjwvcGF0aD4KPC9zdmc+')",
-				'cyber-grid': "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KPHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiMwYTBhMGEiPjwvcmVjdD4KPGcgc3Ryb2tlPSIjMDBmN2ZmIiBzdHJva2Utd2lkdGg9IjAuNSIgc3Ryb2tlLW9wYWNpdHk9IjAuMiI+CiAgPGxpbmUgeDE9IjEwMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMTAwIj48L2xpbmU+CiAgPGxpbmUgeDE9IjAiIHkxPSIwIiB4Mj0iMTAwIiB5Mj0iMTAwIj48L2xpbmU+CiAgPGxpbmUgeDE9IjUwIiB5MT0iMCIgeDI9IjUwIiB5Mj0iMTAwIj48L2xpbmU+CiAgPGxpbmUgeDE9IjAgIiB5MT0iNTAiIHgyPSIxMDAiIHkyPSI1MCI+PC9saW5lPgo8L2c+Cjwvc3ZnPg==')",
 				'gradient-radial': 'radial-gradient(circle, var(--tw-gradient-stops))'
 			},
 			boxShadow: {
-				'neon-glow': '0 0 15px 5px rgba(0, 247, 255, 0.5)',
-				'neon-purple': '0 0 15px 5px rgba(139, 92, 246, 0.5)',
-				'neon-pink': '0 0 15px 5px rgba(217, 70, 239, 0.5)',
-				'neon-green': '0 0 15px 5px rgba(16, 185, 129, 0.5)',
+				'neon-glow': '0 0 15px 5px rgba(0, 123, 255, 0.5)',
+				'teal-glow': '0 0 15px 5px rgba(23, 162, 184, 0.5)',
+				'gold-glow': '0 0 15px 5px rgba(255, 193, 7, 0.5)',
 			}
 		}
 	},
