@@ -19,7 +19,9 @@ import {
   Home,
   LogOut,
   DownloadCloud,
-  Upload
+  Upload,
+  Sun, // Added Sun icon import
+  Moon  // Added Moon icon import
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
