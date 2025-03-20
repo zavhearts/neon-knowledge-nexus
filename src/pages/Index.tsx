@@ -1,10 +1,10 @@
-
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Rocket, BookOpen, Video, Users, FileText, TestTube, Star } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
+import LiveClassesSlider from "@/components/landing/LiveClassesSlider";
 
 // Animated counter component
 const Counter = ({ end, label, icon: Icon, delay = 0 }) => {
@@ -286,6 +286,7 @@ const Index = () => {
   return (
     <MainLayout hideHomeButton={true}>
       <HeroSection />
+      <LiveClassesSlider />
       <StatsSection />
       <FeaturesSection />
       <CTASection />

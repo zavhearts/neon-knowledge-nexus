@@ -1,7 +1,8 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Video, Calendar } from "lucide-react";
+import { Video, Calendar, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface DashboardHeaderProps {
   onUploadClick: (type: string) => void;
@@ -43,6 +44,16 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onUploadClick, onSche
                 Schedule Zoom
               </Button>
             )}
+            
+            <Link to="/">
+              <Button
+                variant="outline"
+                className="border-neon-green text-neon-green hover:bg-neon-green/10"
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                View Live Classes
+              </Button>
+            </Link>
             
             <Button
               className="cyber-button"
