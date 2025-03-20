@@ -5,12 +5,17 @@ import DashboardHeader from "@/components/teacher/DashboardHeader";
 import StatsSection from "@/components/teacher/StatsSection";
 import TabsContainer from "@/components/teacher/TabsContainer";
 
+interface UploadedFiles {
+  video: File[];
+  resource: File[];
+}
+
 const TeacherDashboard = () => {
   const [activeTab, setActiveTab] = useState("classes");
   const [searchTerm, setSearchTerm] = useState("");
   const videoFileInputRef = useRef<HTMLInputElement>(null);
   const resourceFileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadedFiles, setUploadedFiles] = useState<{[key: string]: File[]}>({
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFiles>({
     video: [],
     resource: []
   });
