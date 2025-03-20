@@ -1,6 +1,7 @@
-
 import { useState, useRef, useEffect } from "react";
+import { format, parseISO } from "date-fns";
 import { toast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 import DashboardHeader from "@/components/teacher/DashboardHeader";
 import StatsSection from "@/components/teacher/StatsSection";
 import TabsContainer from "@/components/teacher/TabsContainer";
@@ -24,7 +25,6 @@ const TeacherDashboard = () => {
     resource: []
   });
   
-  // Zoom meeting states
   const [showMeetingForm, setShowMeetingForm] = useState(false);
   const [meetingsRefreshTrigger, setMeetingsRefreshTrigger] = useState(0);
   const [selectedMeeting, setSelectedMeeting] = useState<ZoomMeeting | null>(null);
@@ -117,7 +117,6 @@ const TeacherDashboard = () => {
         />
       </div>
       
-      {/* Zoom Meeting Creation Dialog */}
       <Dialog open={showMeetingForm} onOpenChange={setShowMeetingForm}>
         <DialogContent className="bg-cyber-darker border-neon-blue/50 max-w-2xl">
           <ZoomMeetingForm 
@@ -127,7 +126,6 @@ const TeacherDashboard = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Meeting Details Dialog */}
       <Dialog open={!!selectedMeeting} onOpenChange={handleCloseMeetingDialog}>
         <DialogContent className="bg-cyber-darker border-neon-blue/50">
           {selectedMeeting && (

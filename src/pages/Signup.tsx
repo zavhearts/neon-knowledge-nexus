@@ -15,7 +15,8 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [verificationMethod, setVerificationMethod] = useState<"email" | "phone" | "">("");
+  // Fix type error by changing the initial value to "email" instead of ""
+  const [verificationMethod, setVerificationMethod] = useState<"email" | "phone">("email");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
