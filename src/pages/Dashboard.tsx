@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -20,19 +19,20 @@ import {
   LogOut,
   DownloadCloud,
   Upload,
-  Sun, // Added Sun icon import
-  Moon  // Added Moon icon import
+  Sun,
+  Moon
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import GamificationBar from "@/components/gamification/GamificationBar";
+import SmartMockTest from "@/components/quiz/SmartMockTest";
+import VirtualAssistant from "@/components/landing/VirtualAssistant";
 
-// Mock user data
 const USER = {
   name: "Alex Johnson",
   email: "student@example.com",
   avatar: "https://randomuser.me/api/portraits/men/32.jpg"
 };
 
-// Mock enrolled courses
 const ENROLLED_COURSES = [
   {
     id: 1,
@@ -63,7 +63,6 @@ const ENROLLED_COURSES = [
   }
 ];
 
-// Mock upcoming events
 const UPCOMING_EVENTS = [
   {
     id: 1,
@@ -88,7 +87,6 @@ const UPCOMING_EVENTS = [
   }
 ];
 
-// Mock recent notifications
 const NOTIFICATIONS = [
   {
     id: 1,
@@ -110,7 +108,6 @@ const NOTIFICATIONS = [
   }
 ];
 
-// Mock resources
 const RESOURCES = [
   {
     id: 1,
@@ -146,9 +143,54 @@ const RESOURCES = [
   }
 ];
 
+const userGamification = {
+  xp: 320,
+  level: 4,
+  xpToNextLevel: 500,
+  totalXp: 1820,
+  badges: [
+    {
+      id: "badge1",
+      name: "First Course",
+      icon: "trophy",
+      achieved: true,
+      description: "Completed your first course"
+    },
+    {
+      id: "badge2",
+      name: "Quiz Master",
+      icon: "award",
+      achieved: true,
+      description: "Scored 100% on 3 quizzes"
+    },
+    {
+      id: "badge3",
+      name: "Early Bird",
+      icon: "star",
+      achieved: true,
+      description: "Attended 5 live sessions"
+    },
+    {
+      id: "badge4",
+      name: "Consistent Learner",
+      icon: "medal",
+      achieved: false,
+      description: "Study for 7 consecutive days"
+    },
+    {
+      id: "badge5",
+      name: "Resource Explorer",
+      icon: "star",
+      achieved: false,
+      description: "Download 10 learning resources"
+    }
+  ]
+};
+
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("courses");
   const [darkMode, setDarkMode] = useState(false);
+  const [showMockTest, setShowMockTest] = useState(false);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -157,7 +199,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-blue pb-20">
-      {/* Top Navigation */}
       <div className="bg-white dark:bg-dark-blue/50 shadow-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -214,7 +255,6 @@ const Dashboard = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        {/* User Welcome Section */}
         <div className="bg-white dark:bg-dark-blue/50 rounded-lg shadow-md p-6 mb-6">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="flex items-center mb-4 md:mb-0">
@@ -245,7 +285,6 @@ const Dashboard = () => {
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar Navigation */}
           <div className="lg:col-span-1">
             <div className="bg-white dark:bg-dark-blue/50 rounded-lg shadow-md overflow-hidden">
               <div className="p-4 bg-royal-blue/10 border-l-4 border-royal-blue">
@@ -311,9 +350,7 @@ const Dashboard = () => {
             </div>
           </div>
           
-          {/* Main Content */}
           <div className="lg:col-span-3">
-            {/* Courses Tab */}
             {activeTab === "courses" && (
               <div>
                 <h2 className="text-2xl font-bold mb-6 text-dark-blue dark:text-white">My Enrolled Courses</h2>
@@ -369,7 +406,6 @@ const Dashboard = () => {
               </div>
             )}
             
-            {/* Schedule Tab */}
             {activeTab === "schedule" && (
               <div>
                 <h2 className="text-2xl font-bold mb-6 text-dark-blue dark:text-white">Upcoming Schedule</h2>
@@ -418,7 +454,6 @@ const Dashboard = () => {
               </div>
             )}
             
-            {/* Resources Tab */}
             {activeTab === "resources" && (
               <div>
                 <h2 className="text-2xl font-bold mb-6 text-dark-blue dark:text-white">Learning Resources</h2>
@@ -468,7 +503,6 @@ const Dashboard = () => {
               </div>
             )}
             
-            {/* Notifications Tab */}
             {activeTab === "notifications" && (
               <div>
                 <h2 className="text-2xl font-bold mb-6 text-dark-blue dark:text-white">Recent Notifications</h2>
@@ -492,7 +526,6 @@ const Dashboard = () => {
               </div>
             )}
             
-            {/* Profile Tab */}
             {activeTab === "profile" && (
               <div>
                 <h2 className="text-2xl font-bold mb-6 text-dark-blue dark:text-white">Your Profile</h2>
@@ -558,9 +591,93 @@ const Dashboard = () => {
                 </Card>
               </div>
             )}
+            
+            {activeTab === "mock-tests" && (
+              <div>
+                <h2 className="text-2xl font-bold mb-6 text-dark-blue dark:text-white">Smart Mock Tests</h2>
+                
+                {!showMockTest ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <Card className="p-6 bg-white dark:bg-dark-blue/50 shadow-md hover:shadow-lg transition-all">
+                      <div className="flex items-center mb-4">
+                        <div className="w-10 h-10 rounded-full bg-royal-blue/20 flex items-center justify-center mr-3">
+                          <TestTube className="h-5 w-5 text-royal-blue" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-dark-blue dark:text-white">Programming Fundamentals</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">Test your coding knowledge</p>
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm text-gray-600 dark:text-gray-300">Difficulty</span>
+                          <div className="flex items-center">
+                            <span className="w-2 h-2 rounded-full bg-green-500 mr-1"></span>
+                            <span className="w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>
+                            <span className="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-700"></span>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300">
+                          <span>3 questions</span>
+                          <span>~5 min</span>
+                        </div>
+                      </div>
+                      <Button 
+                        className="w-full bg-royal-blue hover:bg-royal-blue/80 text-white"
+                        onClick={() => setShowMockTest(true)}
+                      >
+                        Start Test
+                      </Button>
+                    </Card>
+                    
+                    <Card className="p-6 bg-white dark:bg-dark-blue/50 shadow-md hover:shadow-lg transition-all">
+                      <div className="flex items-center mb-4">
+                        <div className="w-10 h-10 rounded-full bg-teal/20 flex items-center justify-center mr-3">
+                          <TestTube className="h-5 w-5 text-teal" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-dark-blue dark:text-white">Data Structures</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">Advanced algorithms & structures</p>
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm text-gray-600 dark:text-gray-300">Difficulty</span>
+                          <div className="flex items-center">
+                            <span className="w-2 h-2 rounded-full bg-green-500 mr-1"></span>
+                            <span className="w-2 h-2 rounded-full bg-yellow-500 mr-1"></span>
+                            <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300">
+                          <span>10 questions</span>
+                          <span>~15 min</span>
+                        </div>
+                      </div>
+                      <Button className="w-full bg-teal hover:bg-teal/80 text-white">
+                        Start Test
+                      </Button>
+                    </Card>
+                  </div>
+                ) : (
+                  <div>
+                    <Button 
+                      variant="outline" 
+                      className="mb-4 border-gray-300 dark:border-gray-700" 
+                      onClick={() => setShowMockTest(false)}
+                    >
+                      ← Back to Tests
+                    </Button>
+                    <SmartMockTest />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
+      
+      <VirtualAssistant />
     </div>
   );
 };

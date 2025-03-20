@@ -7,6 +7,7 @@ import Footer from "./Footer";
 import { Home, UserCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import VirtualAssistant from "@/components/landing/VirtualAssistant";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -42,6 +43,9 @@ const MainLayout: React.FC<LayoutProps> = ({ children, hideHomeButton }) => {
       </main>
       <Footer />
       <Toaster />
+      
+      {/* Virtual Assistant is included in the layout so it's available on all pages */}
+      <VirtualAssistant />
     </div>
   );
 };

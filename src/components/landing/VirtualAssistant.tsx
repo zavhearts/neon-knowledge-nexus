@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X } from 'lucide-react';
+import { Bot, X, Mic, Volume2, MessageSquare, Globe, Lightbulb, BookOpen, Send } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 const VirtualAssistant = () => {
@@ -8,6 +9,12 @@ const VirtualAssistant = () => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
   const [displayText, setDisplayText] = useState("");
+  const [message, setMessage] = useState("");
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [chatHistory, setChatHistory] = useState([
+    { sender: 'bot', text: 'Hello! I\'m your AI learning assistant. How can I help with your studies today?' }
+  ]);
+  const messageEndRef = useRef<HTMLDivElement>(null);
 
   const assistantTexts = [
     "Hello! I'm your AI learning assistant.",
@@ -54,6 +61,11 @@ const VirtualAssistant = () => {
     return () => clearInterval(typingInterval);
   }, [currentTextIndex, isVisible]);
 
+  useEffect(() => {
+    // Scroll to the bottom of the chat when new messages are added
+    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatHistory]);
+
   const containerVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.9 },
     visible: { 
@@ -70,11 +82,107 @@ const VirtualAssistant = () => {
     }
   };
 
+  const handleSendMessage = () => {
+    if (!message.trim()) return;
+
+    // Add user message to chat
+    setChatHistory([...chatHistory, { sender: 'user', text: message }]);
+    
+    // Simulate AI response (in a real app, this would call an AI API)
+    setTimeout(() => {
+      let response = '';
+      
+      // Simple pattern matching for demo purposes
+      if (message.toLowerCase().includes('course')) {
+        response = 'We offer many courses in various subjects. Would you like me to recommend some based on your interests?';
+      } else if (message.toLowerCase().includes('exam') || message.toLowerCase().includes('test')) {
+        response = 'Our platform offers AI-powered mock tests that adapt to your skill level. Would you like to try one?';
+      } else if (message.toLowerCase().includes('language')) {
+        response = 'We support multiple languages! You can change your preferred language from the language selector in the header.';
+      } else {
+        response = 'Thank you for your message. How else can I assist you with your learning journey?';
+      }
+      
+      setChatHistory(prev => [...prev, { sender: 'bot', text: response }]);
+    }, 1000);
+    
+    setMessage('');
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSendMessage();
+    }
+  };
+
+  const handleVoiceInput = () => {
+    // In a real implementation, this would trigger the browser's speech recognition API
+    alert('Voice input feature coming soon!');
+  };
+
+  const handleTextToSpeech = () => {
+    // Toggle speaking state for UI feedback
+    setIsSpeaking(!isSpeaking);
+    
+    // In a real implementation, this would use the Web Speech API
+    if (!isSpeaking) {
+      // Simple demo of text-to-speech using browser's built-in speech synthesis
+      if ('speechSynthesis' in window) {
+        const latestBotMessage = [...chatHistory].reverse().find(msg => msg.sender === 'bot');
+        if (latestBotMessage) {
+          const utterance = new SpeechSynthesisUtterance(latestBotMessage.text);
+          window.speechSynthesis.speak(utterance);
+        }
+      } else {
+        alert('Text-to-speech is not supported in this browser.');
+      }
+    } else {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
+  };
+
+  const handleQuickAction = (action: string) => {
+    let actionMessage = '';
+    
+    switch(action) {
+      case 'explain':
+        actionMessage = 'Can you explain this topic in more detail?';
+        break;
+      case 'example':
+        actionMessage = 'Can you give me an example?';
+        break;
+      case 'translate':
+        actionMessage = 'Can you translate this to another language?';
+        break;
+      default:
+        actionMessage = 'I need help with this topic.';
+    }
+    
+    setChatHistory([...chatHistory, { sender: 'user', text: actionMessage }]);
+    
+    // Simulate AI response
+    setTimeout(() => {
+      const responses = {
+        'explain': 'I\'d be happy to explain this in more detail. What specific aspects are you finding challenging?',
+        'example': 'Here\'s an example that might help illustrate this concept...',
+        'translate': 'I can help translate content. Which language would you prefer?',
+        'default': 'I\'m here to help! Please let me know what you need assistance with.'
+      };
+      
+      setChatHistory(prev => [...prev, { 
+        sender: 'bot', 
+        text: responses[action as keyof typeof responses] || responses.default 
+      }]);
+    }, 1000);
+  };
+
   return (
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className="fixed bottom-6 right-6 z-50 max-w-xs w-full"
+          className="fixed bottom-6 right-6 z-50 max-w-md w-full"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -97,32 +205,121 @@ const VirtualAssistant = () => {
                     </div>
                   </div>
                 </div>
-                <Button 
-                  onClick={() => setIsVisible(false)}
-                  className="p-1.5 hover:bg-cyber-light rounded-full transition-colors"
-                >
-                  <X className="text-gray-400 hover:text-white" size={16} />
-                </Button>
-              </div>
-              
-              <div className="p-4 bg-cyber-dark">
-                <div className="min-h-[80px] flex items-center">
-                  <p className="text-gray-300 text-sm">
-                    {displayText}
-                    {isTyping && (
-                      <span className="inline-block h-3 w-0.5 bg-neon-blue ml-1 animate-pulse"></span>
-                    )}
-                  </p>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    onClick={handleTextToSpeech}
+                    className={`p-1.5 hover:bg-cyber-light rounded-full transition-colors ${isSpeaking ? 'bg-royal-blue/20' : ''}`}
+                    aria-label="Text to speech"
+                  >
+                    <Volume2 className={`${isSpeaking ? 'text-royal-blue' : 'text-gray-400 hover:text-white'}`} size={16} />
+                  </Button>
+                  <Button 
+                    onClick={() => setIsVisible(false)}
+                    className="p-1.5 hover:bg-cyber-light rounded-full transition-colors"
+                    aria-label="Close assistant"
+                  >
+                    <X className="text-gray-400 hover:text-white" size={16} />
+                  </Button>
                 </div>
               </div>
               
-              <div className="p-3 bg-cyber-darker border-t border-neon-blue/30">
-                <div className="bg-cyber-light rounded-full px-4 py-2 text-gray-400 text-sm flex items-center">
-                  <span>Type your question...</span>
+              <div className="p-4 bg-cyber-dark max-h-80 overflow-y-auto">
+                <div className="space-y-4">
+                  {chatHistory.map((msg, index) => (
+                    <div 
+                      key={index} 
+                      className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div 
+                        className={`max-w-[80%] rounded-lg p-3 ${
+                          msg.sender === 'user' 
+                            ? 'bg-royal-blue text-white ml-auto rounded-tr-none' 
+                            : 'bg-cyber-light text-gray-200 mr-auto rounded-tl-none'
+                        }`}
+                      >
+                        <p className="text-sm">{msg.text}</p>
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={messageEndRef} />
+                </div>
+              </div>
+              
+              <div className="p-2 bg-cyber-darker border-t border-neon-blue/30">
+                <div className="flex flex-wrap gap-1 mb-2">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="text-xs py-1 h-7 bg-royal-blue/10 border-royal-blue/30 text-royal-blue hover:bg-royal-blue/20"
+                    onClick={() => handleQuickAction('explain')}
+                  >
+                    <Lightbulb className="h-3 w-3 mr-1" />
+                    Explain More
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="text-xs py-1 h-7 bg-royal-blue/10 border-royal-blue/30 text-royal-blue hover:bg-royal-blue/20"
+                    onClick={() => handleQuickAction('example')}
+                  >
+                    <BookOpen className="h-3 w-3 mr-1" />
+                    Give Example
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="text-xs py-1 h-7 bg-royal-blue/10 border-royal-blue/30 text-royal-blue hover:bg-royal-blue/20"
+                    onClick={() => handleQuickAction('translate')}
+                  >
+                    <Globe className="h-3 w-3 mr-1" />
+                    Translate
+                  </Button>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 bg-cyber-light rounded-full px-4 py-2 text-gray-200 text-sm flex items-center">
+                    <input 
+                      type="text" 
+                      placeholder="Type your question..." 
+                      className="bg-transparent outline-none w-full"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                    />
+                  </div>
+                  <Button 
+                    onClick={handleVoiceInput}
+                    className="p-2 rounded-full bg-royal-blue/10 text-royal-blue hover:bg-royal-blue/20"
+                    aria-label="Voice input"
+                  >
+                    <Mic size={18} />
+                  </Button>
+                  <Button 
+                    onClick={handleSendMessage}
+                    className="p-2 rounded-full bg-royal-blue text-white hover:bg-royal-blue/80"
+                    aria-label="Send message"
+                    disabled={!message.trim()}
+                  >
+                    <Send size={18} />
+                  </Button>
                 </div>
               </div>
             </div>
           </div>
+          
+          {/* Collapsed chat bubble */}
+          {!isVisible && (
+            <motion.button
+              className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-royal-blue text-white shadow-neon-glow flex items-center justify-center"
+              onClick={() => setIsVisible(true)}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <MessageSquare size={24} />
+            </motion.button>
+          )}
         </motion.div>
       )}
     </AnimatePresence>
