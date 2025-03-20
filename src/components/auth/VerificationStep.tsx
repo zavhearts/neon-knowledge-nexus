@@ -5,7 +5,7 @@ import { toast } from "@/hooks/use-toast";
 import { Mail, Phone, ArrowLeft, RotateCcw } from "lucide-react";
 
 interface VerificationStepProps {
-  method: "email" | "phone" | "";
+  method: "email" | "phone";
   email: string;
   phone: string;
   onComplete: (method: "email" | "phone") => void;

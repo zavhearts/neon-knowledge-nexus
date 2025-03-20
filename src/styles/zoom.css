@@ -1,0 +1,48 @@
+
+/* Spinner for loading states */
+.cyber-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(0, 183, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: rgb(0, 183, 255);
+  animation: cyber-spin 1s linear infinite;
+}
+
+@keyframes cyber-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animated glow for meeting cards */
+.meeting-card-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.meeting-card-glow::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgba(0, 183, 255, 0.1) 25%,
+    transparent 50%
+  );
+  animation: rotate 4s linear infinite;
+  z-index: -1;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

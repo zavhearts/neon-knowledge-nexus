@@ -1,13 +1,14 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Video } from "lucide-react";
+import { Video, Calendar } from "lucide-react";
 
 interface DashboardHeaderProps {
   onUploadClick: (type: string) => void;
+  onScheduleZoom?: () => void;
 }
 
-const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onUploadClick }) => {
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onUploadClick, onScheduleZoom }) => {
   return (
     <div className="relative holographic-bg py-8 px-4 sm:px-6 lg:px-8">
       <div className="absolute inset-0 z-0">
@@ -31,6 +32,17 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onUploadClick }) => {
               <Video className="h-4 w-4 mr-2" />
               Add Class
             </Button>
+            
+            {onScheduleZoom && (
+              <Button 
+                variant="outline" 
+                className="border-neon-purple text-neon-purple hover:bg-neon-purple/10"
+                onClick={onScheduleZoom}
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                Schedule Zoom
+              </Button>
+            )}
             
             <Button
               className="cyber-button"
