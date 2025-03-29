@@ -3,7 +3,7 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Eye, Trash2, Download } from "lucide-react";
+import { PlusCircle, Eye, Trash2, Download, FilePdf } from "lucide-react";
 
 interface ResourceItem {
   id: number;

@@ -1,9 +1,8 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, FileText, Download, FileImage, Film, Music, Book, FileBox, FilePlus2 } from "lucide-react";
+import { Search, FileText, Download, FileImage, Film, Music, Book, FileBox, FilePlus2, FilePdf } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -101,6 +100,46 @@ const RESOURCES = [
   }
 ];
 
+// Tax Notes PDFs
+const TAX_NOTES_PDFS = [
+  { 
+    id: 1001, 
+    title: "6th Semester Income Tax Notes - Version 1",
+    description: "Comprehensive guide covering income tax fundamentals for 6th semester students.",
+    type: "PDF",
+    size: "5.8 MB",
+    course: "Income Tax",
+    date: "2023-09-25", 
+    downloads: 42,
+    thumbnailUrl: "/lovable-uploads/052ffcf4-d984-4cf5-8e56-67e1638a8861.png",
+    downloadUrl: "https://drive.google.com/file/d/1aif8Mvb2Xmd-zWpUIPwcpCZOkwhtrt44/view?usp=sharing"
+  },
+  { 
+    id: 1002, 
+    title: "6th Semester Income Tax Notes - Version 2",
+    description: "Updated guide with additional examples and practice problems for tax calculations.",
+    type: "PDF",
+    size: "4.7 MB",
+    course: "Income Tax",
+    date: "2023-09-22", 
+    downloads: 38,
+    thumbnailUrl: "/lovable-uploads/984ee3a5-dd97-4840-a6a5-0674bed8a14c.png",
+    downloadUrl: "https://drive.google.com/file/d/1R8AI-pMEYUGXokdKL_SaxKmrPDrH-3ua/view?usp=sharing"
+  },
+  { 
+    id: 1003, 
+    title: "6th Semester Income Tax Notes - Version 3",
+    description: "Final version with the latest tax regulations and calculation examples.",
+    type: "PDF",
+    size: "6.2 MB",
+    course: "Income Tax",
+    date: "2023-09-20", 
+    downloads: 27,
+    thumbnailUrl: "/lovable-uploads/be7cd394-80f3-46fa-8104-9d48420425ae.png",
+    downloadUrl: "https://drive.google.com/file/d/1ejrsIX9czXyu01fdfQivonlQRIN2lRN3/view?usp=sharing"
+  }
+];
+
 // Resource types for filtering
 const RESOURCE_TYPES = ["All", "PDF", "PPT", "MP4", "ZIP", "XLSX"];
 
@@ -112,17 +151,19 @@ const COURSES = [
   "Web Development Masterclass",
   "AI and Machine Learning Fundamentals",
   "UX/UI Design Principles",
-  "Digital Marketing Essentials"
+  "Digital Marketing Essentials",
+  "Income Tax"
 ];
 
 const Resources = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("All");
   const [selectedCourse, setSelectedCourse] = useState("All Courses");
-
-  const filteredResources = RESOURCES.filter(resource => {
+  const [allResources, setAllResources] = useState([...RESOURCES, ...TAX_NOTES_PDFS]);
+  
+  const filteredResources = allResources.filter(resource => {
     const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         resource.description.toLowerCase().includes(searchTerm.toLowerCase());
+                         (resource.description && resource.description.toLowerCase().includes(searchTerm.toLowerCase()));
     
     const matchesType = selectedType === "All" || resource.type === selectedType;
     const matchesCourse = selectedCourse === "All Courses" || resource.course === selectedCourse;
@@ -132,7 +173,7 @@ const Resources = () => {
 
   const getIconForType = (type: string) => {
     switch(type) {
-      case "PDF": return FileText;
+      case "PDF": return FilePdf;
       case "PPT": return FileImage;
       case "MP4": return Film;
       case "ZIP": return FileBox;
@@ -153,6 +194,18 @@ const Resources = () => {
   };
 
   const handleDownload = (resourceId: number) => {
+    const taxNotePdf = TAX_NOTES_PDFS.find(pdf => pdf.id === resourceId);
+    
+    if (taxNotePdf) {
+      window.open(taxNotePdf.downloadUrl, "_blank");
+      
+      toast({
+        title: "Downloading Tax Notes",
+        description: `${taxNotePdf.title} is opening in a new tab.`,
+      });
+      return;
+    }
+    
     const resource = RESOURCES.find(r => r.id === resourceId);
     if (resource) {
       toast({
@@ -202,6 +255,46 @@ const Resources = () => {
         </div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+          {/* Featured Tax Notes Section */}
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold mb-6 animated-text">
+              Featured: Income Tax Notes for Students
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {TAX_NOTES_PDFS.map((pdf) => (
+                <Card key={pdf.id} className="cyber-card overflow-hidden">
+                  <div className="relative aspect-video">
+                    <img 
+                      src={pdf.thumbnailUrl} 
+                      alt={pdf.title} 
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-cyber-darker to-transparent"></div>
+                    <div className="absolute top-2 right-2">
+                      <Badge className="bg-neon-blue text-black">
+                        PDF
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-lg mb-2">{pdf.title}</h3>
+                    <p className="text-white/70 text-sm mb-3">{pdf.description}</p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-white/60">{pdf.size}</span>
+                      <Button 
+                        className="bg-neon-blue text-black hover:bg-neon-blue/80"
+                        onClick={() => handleDownload(pdf.id)}
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+          
           <Tabs defaultValue="all" className="mt-4 mb-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
               <TabsList className="bg-cyber-light/20 p-1 mb-4 md:mb-0">
@@ -251,6 +344,7 @@ const Resources = () => {
                 {filteredResources.map(resource => {
                   const ResourceIcon = getIconForType(resource.type);
                   const badgeColor = getColorForType(resource.type);
+                  const isTaxNote = resource.id >= 1000;
                   
                   return (
                     <Card key={resource.id} className="cyber-card p-6">
@@ -272,6 +366,11 @@ const Resources = () => {
                             <span className="mr-4">{new Date(resource.date).toLocaleDateString()}</span>
                             <span>{resource.downloads} downloads</span>
                           </div>
+                          {isTaxNote && (
+                            <div className="mt-2">
+                              <Badge className="bg-neon-green/80 text-black">New</Badge>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="mt-4 pt-4 border-t border-white/10 flex justify-end">
@@ -297,7 +396,7 @@ const Resources = () => {
               )}
             </TabsContent>
             
-            {/* Similar content for other tabs - Adding placeholder content for demo */}
+            {/* Similar content for other tabs */}
             <TabsContent value="lectures" className="mt-0">
               <div className="cyber-card p-8 text-center">
                 <h3 className="text-xl font-bold mb-3">Lecture Notes</h3>

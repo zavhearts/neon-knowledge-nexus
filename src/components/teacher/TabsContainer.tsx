@@ -31,7 +31,7 @@ const STUDENTS = [
 ];
 
 // Define type for the tax notes PDFs
-interface TaxNotesPdf {
+export interface TaxNotesPdf {
   id: number;
   name: string;
   type: string;
