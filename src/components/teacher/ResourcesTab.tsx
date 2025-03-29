@@ -14,6 +14,17 @@ interface ResourceItem {
   date: string;
 }
 
+interface TaxNotesPdf {
+  id: number;
+  name: string;
+  type: string;
+  size: string;
+  date: string;
+  downloads: number;
+  thumbnailUrl: string;
+  downloadUrl: string;
+}
+
 interface ResourcesTabProps {
   handleUploadClick: (type: string) => void;
   handleAction: (action: string, id: number, type: string) => void;
@@ -21,6 +32,7 @@ interface ResourcesTabProps {
   uploadedFiles: {
     resource: File[];
   };
+  taxNotesPdfs?: TaxNotesPdf[];
 }
 
 const ResourcesTab: React.FC<ResourcesTabProps> = ({
@@ -28,12 +40,12 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
   handleAction,
   resources,
   uploadedFiles,
+  taxNotesPdfs = []
 }) => {
   // Simulate download by opening a new tab
   const handleDownload = (id: number) => {
     // In a real app, this would point to the actual file URL
     handleAction("Download", id, "Resource");
-    window.open(`/resources?download=${id}`, "_blank");
   };
 
   return (
@@ -45,6 +57,59 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
           Add Resource
         </Button>
       </div>
+      
+      {/* Tax Notes PDFs Section */}
+      {taxNotesPdfs.length > 0 && (
+        <div className="mb-8">
+          <h3 className="text-lg font-medium mb-4 text-neon-blue">Income Tax Notes for Students</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {taxNotesPdfs.map((pdf) => (
+              <div key={pdf.id} className="bg-cyber-light/10 rounded-lg overflow-hidden border border-neon-blue/30 hover:border-neon-blue/60 transition-all">
+                <div className="relative aspect-video">
+                  <img 
+                    src={pdf.thumbnailUrl} 
+                    alt={pdf.name} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-2 right-2">
+                    <Badge className="bg-neon-blue text-black">
+                      {pdf.type}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h4 className="font-medium mb-2 line-clamp-2">{pdf.name}</h4>
+                  <div className="flex justify-between text-sm text-white/70 mb-4">
+                    <span>{pdf.size}</span>
+                    <span>{pdf.downloads} downloads</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <Button 
+                      variant="ghost" 
+                      className="text-white/70 hover:text-white hover:bg-white/10"
+                      size="sm"
+                      onClick={() => handleAction("View", pdf.id, "Resource")}
+                    >
+                      <Eye className="h-4 w-4 mr-2" />
+                      View
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      className="text-green-500 hover:text-green-400 hover:bg-green-500/10"
+                      size="sm"
+                      onClick={() => handleDownload(pdf.id)}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Download
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="border-b border-white/10 mb-6"></div>
+        </div>
+      )}
       
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-white">

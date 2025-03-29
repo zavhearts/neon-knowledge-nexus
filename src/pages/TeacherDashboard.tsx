@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { format, parseISO } from "date-fns";
 import { toast } from "@/hooks/use-toast";
@@ -10,6 +9,39 @@ import ZoomMeetingForm from "@/components/teacher/ZoomMeetingForm";
 import ZoomMeetingsList from "@/components/teacher/ZoomMeetingsList";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ZoomMeeting } from "@/services/zoomService";
+
+const TAX_NOTES_PDFS = [
+  { 
+    id: 1001, 
+    name: "6th Semester Income Tax Notes - Version 1",
+    type: "PDF", 
+    size: "5.8 MB",
+    date: "2023-09-25", 
+    downloads: 0,
+    thumbnailUrl: "/lovable-uploads/067a49d5-8a1a-4b2e-899f-ca0ca9318f7f.png",
+    downloadUrl: "https://drive.google.com/file/d/1aif8Mvb2Xmd-zWpUIPwcpCZOkwhtrt44/view?usp=sharing"
+  },
+  { 
+    id: 1002, 
+    name: "6th Semester Income Tax Notes - Version 2",
+    type: "PDF", 
+    size: "4.7 MB",
+    date: "2023-09-22", 
+    downloads: 0,
+    thumbnailUrl: "/lovable-uploads/df63615b-38c3-4851-9a2e-cd9ca1a03df0.png",
+    downloadUrl: "https://drive.google.com/file/d/1R8AI-pMEYUGXokdKL_SaxKmrPDrH-3ua/view?usp=sharing"
+  },
+  { 
+    id: 1003, 
+    name: "6th Semester Income Tax Notes - Version 3",
+    type: "PDF", 
+    size: "6.2 MB",
+    date: "2023-09-20", 
+    downloads: 0,
+    thumbnailUrl: "/lovable-uploads/0895bf65-bed5-4685-82ff-8f07bedd103d.png",
+    downloadUrl: "https://drive.google.com/file/d/1ejrsIX9czXyu01fdfQivonlQRIN2lRN3/view?usp=sharing"
+  }
+];
 
 interface UploadedFiles {
   video: File[];
@@ -35,6 +67,8 @@ const TeacherDashboard = () => {
   const [showMeetingForm, setShowMeetingForm] = useState(false);
   const [meetingsRefreshTrigger, setMeetingsRefreshTrigger] = useState(0);
   const [selectedMeeting, setSelectedMeeting] = useState<ZoomMeeting | null>(null);
+  
+  const [taxNotesPdfs, setTaxNotesPdfs] = useState(TAX_NOTES_PDFS);
 
   const handleUploadClick = (type: string) => {
     if (type === "Video" && videoFileInputRef.current) {
@@ -48,7 +82,6 @@ const TeacherDashboard = () => {
     } else if (type === "ZoomMeeting") {
       setShowMeetingForm(true);
     } else if (type === "AddClass") {
-      // Open a new tab for add class functionality
       window.open("/resources", "_blank");
     }
   };
@@ -77,7 +110,6 @@ const TeacherDashboard = () => {
           description: `${fileArray.map(f => f.name).join(', ')} has been uploaded.`,
         });
         
-        // If it's a PDF, show a special message indicating it's available for students
         if (fileArray.some(file => file.name.toLowerCase().endsWith('.pdf'))) {
           toast({
             title: "PDF Resource Available",
@@ -116,9 +148,31 @@ const TeacherDashboard = () => {
   };
 
   const handleAction = (action: string, id: number, type: string) => {
+    const taxNote = taxNotesPdfs.find(pdf => pdf.id === id);
+    
+    if (taxNote && action === "Download") {
+      window.open(taxNote.downloadUrl, "_blank");
+      
+      setTaxNotesPdfs(prevPdfs => 
+        prevPdfs.map(pdf => 
+          pdf.id === id ? { ...pdf, downloads: pdf.downloads + 1 } : pdf
+        )
+      );
+      
+      toast({
+        title: `Downloading ${taxNote.name}`,
+        description: `Your PDF is opening in a new tab.`,
+      });
+      return;
+    }
+    
     if (action === "View" && type === "Resource") {
-      // For resources, open a new tab when viewing
-      window.open(`/resources?id=${id}`, "_blank");
+      if (taxNote) {
+        window.open(taxNote.downloadUrl, "_blank");
+      } else {
+        window.open(`/resources?id=${id}`, "_blank");
+      }
+      
       toast({
         title: `Opening ${type} #${id}`,
         description: `Opening ${type.toLowerCase()} in a new tab`,
@@ -158,7 +212,7 @@ const TeacherDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <StatsSection 
           classCount={4 + uploadedFiles.video.length} 
-          resourceCount={4 + uploadedFiles.resource.length} 
+          resourceCount={4 + uploadedFiles.resource.length + taxNotesPdfs.length} 
         />
         
         {activeTab === "classes" && (
@@ -184,6 +238,7 @@ const TeacherDashboard = () => {
           resourceThumbnailInputRef={resourceThumbnailInputRef}
           uploadedFiles={uploadedFiles}
           handleThumbnailChange={handleThumbnailChange}
+          taxNotesPdfs={taxNotesPdfs}
         />
       </div>
       

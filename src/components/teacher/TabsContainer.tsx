@@ -30,6 +30,18 @@ const STUDENTS = [
   { id: 5, name: "David Miller", email: "david.m@example.com", progress: 63, lastActive: "2023-09-11" }
 ];
 
+// Define type for the tax notes PDFs
+interface TaxNotesPdf {
+  id: number;
+  name: string;
+  type: string;
+  size: string;
+  date: string;
+  downloads: number;
+  thumbnailUrl: string;
+  downloadUrl: string;
+}
+
 export interface TabsContainerProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
@@ -49,6 +61,7 @@ export interface TabsContainerProps {
     resourceThumbnail: File[];
   };
   handleThumbnailChange: (event: React.ChangeEvent<HTMLInputElement>, type: string) => void;
+  taxNotesPdfs?: TaxNotesPdf[];
 }
 
 const TabsContainer: React.FC<TabsContainerProps> = ({
@@ -64,7 +77,8 @@ const TabsContainer: React.FC<TabsContainerProps> = ({
   videoThumbnailInputRef,
   resourceThumbnailInputRef,
   uploadedFiles,
-  handleThumbnailChange
+  handleThumbnailChange,
+  taxNotesPdfs = []
 }) => {
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
@@ -109,6 +123,7 @@ const TabsContainer: React.FC<TabsContainerProps> = ({
           handleAction={handleAction}
           resources={RESOURCES}
           uploadedFiles={uploadedFiles}
+          taxNotesPdfs={taxNotesPdfs}
         />
       </TabsContent>
       
