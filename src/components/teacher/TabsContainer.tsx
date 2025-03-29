@@ -21,6 +21,15 @@ const RESOURCES = [
   { id: 4, title: "ML Algorithms.pptx", type: "PPT", size: "8.5 MB", downloads: 15, date: "2023-09-01" }
 ];
 
+// Sample students data
+const STUDENTS = [
+  { id: 1, name: "Alex Johnson", email: "alex.j@example.com", progress: 85, lastActive: "2023-09-15" },
+  { id: 2, name: "Sarah Williams", email: "sarah.w@example.com", progress: 72, lastActive: "2023-09-14" },
+  { id: 3, name: "Michael Brown", email: "michael.b@example.com", progress: 45, lastActive: "2023-09-10" },
+  { id: 4, name: "Jessica Davis", email: "jessica.d@example.com", progress: 92, lastActive: "2023-09-13" },
+  { id: 5, name: "David Miller", email: "david.m@example.com", progress: 63, lastActive: "2023-09-11" }
+];
+
 export interface TabsContainerProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
@@ -86,7 +95,12 @@ const TabsContainer: React.FC<TabsContainerProps> = ({
       </TabsContent>
       
       <TabsContent value="students" className="mt-0">
-        <StudentsTab />
+        <StudentsTab 
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          handleAction={handleAction}
+          students={STUDENTS}
+        />
       </TabsContent>
       
       <TabsContent value="resources" className="mt-0">
