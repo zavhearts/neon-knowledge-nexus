@@ -6,7 +6,14 @@ import { Button } from "@/components/ui/button";
 import { ZoomMeeting, getZoomMeetings } from "@/services/zoomService";
 import { Badge } from "@/components/ui/badge";
 import { format, parseISO } from "date-fns";
-import { Slider } from "@/components/ui/slider";
+
+// Placeholder thumbnails for meetings without custom thumbnails
+const placeholderImages = [
+  "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=800&q=80"
+];
 
 const LiveClassesSlider = () => {
   const [meetings, setMeetings] = useState<ZoomMeeting[]>([]);
@@ -112,6 +119,11 @@ const LiveClassesSlider = () => {
     alert("Meeting link copied to clipboard!");
   };
 
+  // Get a placeholder image based on the meeting index
+  const getThumbnailForMeeting = (index: number) => {
+    return placeholderImages[index % placeholderImages.length];
+  };
+
   return (
     <section className="py-20 bg-cyber-dark relative overflow-hidden">
       {/* Background effects */}
@@ -129,7 +141,7 @@ const LiveClassesSlider = () => {
             Upcoming <span className="animated-text">Live Classes</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Join our interactive Zoom sessions with experienced instructors. 
+            Join our interactive live sessions with experienced instructors. 
             Learn new skills in real-time and participate in engaging discussions.
           </p>
         </motion.div>
@@ -166,12 +178,26 @@ const LiveClassesSlider = () => {
                 className="w-full h-full"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 h-full">
-                  <div className="relative h-48 md:h-full bg-gradient-to-r from-neon-blue/20 to-neon-purple/20">
+                  <div className="relative h-48 md:h-full">
+                    {/* Thumbnail image for the live class */}
+                    <img 
+                      src={getThumbnailForMeeting(currentIndex)} 
+                      alt={meetings[currentIndex].topic} 
+                      className="w-full h-full object-cover"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-r from-cyber-darker via-cyber-darker/70 to-transparent md:bg-gradient-to-l z-10"></div>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="text-center z-20">
                         <Badge className="bg-neon-green text-black mb-4">LIVE CLASS</Badge>
-                        <Video className="h-20 w-20 mx-auto text-neon-blue animate-pulse mb-4" />
+                        <div className="relative w-16 h-16 mx-auto mb-4">
+                          <div className="absolute inset-0 bg-neon-blue/20 rounded-full animate-ping"></div>
+                          <Button 
+                            className="w-16 h-16 rounded-full bg-neon-blue/80 hover:bg-neon-blue flex items-center justify-center"
+                            onClick={() => window.open(meetings[currentIndex].join_url, "_blank")}
+                          >
+                            <Video className="h-8 w-8 text-white" />
+                          </Button>
+                        </div>
                         <div className="glassmorphic inline-block px-4 py-2 rounded-full">
                           <Badge className="bg-neon-pink text-white">
                             <Clock className="h-3 w-3 mr-1" />
@@ -199,8 +225,8 @@ const LiveClassesSlider = () => {
                       </div>
                       
                       <div className="flex items-center text-gray-300">
-                        <Video size={18} className="text-neon-blue mr-3" />
-                        <span className="text-sm">Zoom Meeting ID: {meetings[currentIndex].id.substring(0, 3)}...{meetings[currentIndex].id.substring(meetings[currentIndex].id.length - 3)}</span>
+                        <Users size={18} className="text-neon-blue mr-3" />
+                        <span className="text-sm">Join with other students</span>
                       </div>
                       
                       {meetings[currentIndex].password && (
