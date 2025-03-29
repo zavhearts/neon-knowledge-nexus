@@ -52,7 +52,7 @@ const ClassesTab: React.FC<ClassesTabProps> = ({
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button onClick={() => handleUploadClick("Video")}>
+          <Button onClick={() => handleUploadClick("AddClass")}>
             <PlusCircle className="h-4 w-4 mr-2" />
             Add Class
           </Button>

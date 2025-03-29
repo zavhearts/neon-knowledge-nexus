@@ -3,7 +3,7 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Eye, Trash2 } from "lucide-react";
+import { PlusCircle, Eye, Trash2, Download } from "lucide-react";
 
 interface ResourceItem {
   id: number;
@@ -29,6 +29,13 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
   resources,
   uploadedFiles,
 }) => {
+  // Simulate download by opening a new tab
+  const handleDownload = (id: number) => {
+    // In a real app, this would point to the actual file URL
+    handleAction("Download", id, "Resource");
+    window.open(`/resources?download=${id}`, "_blank");
+  };
+
   return (
     <Card className="cyber-card p-6">
       <div className="flex justify-between items-center mb-6">
@@ -80,6 +87,14 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
                     </Button>
                     <Button 
                       variant="ghost" 
+                      className="text-green-500 hover:text-green-400 hover:bg-green-500/10"
+                      size="sm"
+                      onClick={() => handleDownload(resource.id)}
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
                       className="text-red-500 hover:text-red-400 hover:bg-red-500/10"
                       size="sm"
                       onClick={() => handleAction("Delete", resource.id, "Resource")}
@@ -116,6 +131,14 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
                       onClick={() => handleAction("View", 1000 + index, "Resource")}
                     >
                       <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      className="text-green-500 hover:text-green-400 hover:bg-green-500/10"
+                      size="sm"
+                      onClick={() => handleDownload(1000 + index)}
+                    >
+                      <Download className="h-4 w-4" />
                     </Button>
                     <Button 
                       variant="ghost" 

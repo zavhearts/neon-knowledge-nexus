@@ -47,6 +47,9 @@ const TeacherDashboard = () => {
       resourceThumbnailInputRef.current.click();
     } else if (type === "ZoomMeeting") {
       setShowMeetingForm(true);
+    } else if (type === "AddClass") {
+      // Open a new tab for add class functionality
+      window.open("/resources", "_blank");
     }
   };
 
@@ -73,6 +76,14 @@ const TeacherDashboard = () => {
           title: `Resource Uploaded Successfully`,
           description: `${fileArray.map(f => f.name).join(', ')} has been uploaded.`,
         });
+        
+        // If it's a PDF, show a special message indicating it's available for students
+        if (fileArray.some(file => file.name.toLowerCase().endsWith('.pdf'))) {
+          toast({
+            title: "PDF Resource Available",
+            description: "Students can now download this PDF from the Resources page",
+          });
+        }
       }
     }
   };
@@ -105,10 +116,19 @@ const TeacherDashboard = () => {
   };
 
   const handleAction = (action: string, id: number, type: string) => {
-    toast({
-      title: `${action} ${type} #${id}`,
-      description: `${action} action performed on ${type.toLowerCase()} #${id}`,
-    });
+    if (action === "View" && type === "Resource") {
+      // For resources, open a new tab when viewing
+      window.open(`/resources?id=${id}`, "_blank");
+      toast({
+        title: `Opening ${type} #${id}`,
+        description: `Opening ${type.toLowerCase()} in a new tab`,
+      });
+    } else {
+      toast({
+        title: `${action} ${type} #${id}`,
+        description: `${action} action performed on ${type.toLowerCase()} #${id}`,
+      });
+    }
   };
   
   const handleMeetingSuccess = (meetingId: string) => {

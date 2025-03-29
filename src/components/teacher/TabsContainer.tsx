@@ -2,33 +2,26 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ClassesTab from "./ClassesTab";
-import ResourcesTab from "./ResourcesTab";
 import StudentsTab from "./StudentsTab";
+import ResourcesTab from "./ResourcesTab";
 import UploadFormsTab from "./UploadFormsTab";
 
-// Sample data for dashboard
+// Sample data
 const CLASSES = [
-  { id: 1, title: "Introduction to Mathematics", type: "Recorded", students: 32, date: "2023-06-12", status: "Published" },
-  { id: 2, title: "Advanced Physics Concepts", type: "Recorded", students: 28, date: "2023-06-10", status: "Published" },
-  { id: 3, title: "Web Development Fundamentals", type: "Live", students: 45, date: "2023-06-15 10:00 AM", status: "Scheduled" },
-  { id: 4, title: "Data Science Workshop", type: "Live", students: 38, date: "2023-06-17 2:00 PM", status: "Scheduled" },
+  { id: 1, title: "Introduction to Cybersecurity", type: "Live", students: 24, date: "2023-09-15", status: "Published" },
+  { id: 2, title: "Data Science Fundamentals", type: "Recorded", students: 32, date: "2023-09-12", status: "Draft" },
+  { id: 3, title: "Advanced Web Development", type: "Live", students: 18, date: "2023-09-08", status: "Published" },
+  { id: 4, title: "Machine Learning Basics", type: "Recorded", students: 42, date: "2023-09-05", status: "Published" }
 ];
 
 const RESOURCES = [
-  { id: 1, title: "Math Formula Sheet", type: "PDF", size: "2.5 MB", downloads: 145, date: "2023-06-08" },
-  { id: 2, title: "Physics Lab Manual", type: "PDF", size: "4.7 MB", downloads: 98, date: "2023-06-06" },
-  { id: 3, title: "Web Dev Code Examples", type: "ZIP", size: "12.3 MB", downloads: 78, date: "2023-06-04" },
-  { id: 4, title: "Data Science Cheat Sheet", type: "PDF", size: "1.8 MB", downloads: 210, date: "2023-06-01" },
+  { id: 1, title: "Cybersecurity Guide.pdf", type: "PDF", size: "4.2 MB", downloads: 24, date: "2023-09-15" },
+  { id: 2, title: "Data Science Examples.zip", type: "ZIP", size: "12.8 MB", downloads: 18, date: "2023-09-10" },
+  { id: 3, title: "Web Dev Cheatsheet.pdf", type: "PDF", size: "2.1 MB", downloads: 32, date: "2023-09-05" },
+  { id: 4, title: "ML Algorithms.pptx", type: "PPT", size: "8.5 MB", downloads: 15, date: "2023-09-01" }
 ];
 
-const STUDENTS = [
-  { id: 1, name: "Alice Johnson", email: "alice@example.com", progress: 85, lastActive: "2023-06-12" },
-  { id: 2, name: "Bob Smith", email: "bob@example.com", progress: 72, lastActive: "2023-06-11" },
-  { id: 3, name: "Charlie Davis", email: "charlie@example.com", progress: 94, lastActive: "2023-06-12" },
-  { id: 4, name: "Diana Wilson", email: "diana@example.com", progress: 62, lastActive: "2023-06-10" },
-];
-
-interface TabsContainerProps {
+export interface TabsContainerProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   searchTerm: string;
@@ -38,10 +31,15 @@ interface TabsContainerProps {
   handleAction: (action: string, id: number, type: string) => void;
   videoFileInputRef: React.RefObject<HTMLInputElement>;
   resourceFileInputRef: React.RefObject<HTMLInputElement>;
+  videoThumbnailInputRef: React.RefObject<HTMLInputElement>;
+  resourceThumbnailInputRef: React.RefObject<HTMLInputElement>;
   uploadedFiles: {
     video: File[];
     resource: File[];
+    videoThumbnail: File[];
+    resourceThumbnail: File[];
   };
+  handleThumbnailChange: (event: React.ChangeEvent<HTMLInputElement>, type: string) => void;
 }
 
 const TabsContainer: React.FC<TabsContainerProps> = ({
@@ -54,26 +52,29 @@ const TabsContainer: React.FC<TabsContainerProps> = ({
   handleAction,
   videoFileInputRef,
   resourceFileInputRef,
+  videoThumbnailInputRef,
+  resourceThumbnailInputRef,
   uploadedFiles,
+  handleThumbnailChange
 }) => {
   return (
-    <Tabs defaultValue={activeTab} className="mb-8" onValueChange={setActiveTab}>
-      <TabsList className="bg-cyber-light/20 p-1 mb-6">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      <TabsList className="bg-cyber-light/20 p-1">
         <TabsTrigger value="classes" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
-          My Classes
-        </TabsTrigger>
-        <TabsTrigger value="resources" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
-          Resources
+          Classes
         </TabsTrigger>
         <TabsTrigger value="students" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
           Students
         </TabsTrigger>
+        <TabsTrigger value="resources" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
+          Resources
+        </TabsTrigger>
         <TabsTrigger value="uploads" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
-          Upload Content
+          Upload Forms
         </TabsTrigger>
       </TabsList>
       
-      <TabsContent value="classes">
+      <TabsContent value="classes" className="mt-0">
         <ClassesTab 
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -84,7 +85,11 @@ const TabsContainer: React.FC<TabsContainerProps> = ({
         />
       </TabsContent>
       
-      <TabsContent value="resources">
+      <TabsContent value="students" className="mt-0">
+        <StudentsTab />
+      </TabsContent>
+      
+      <TabsContent value="resources" className="mt-0">
         <ResourcesTab 
           handleUploadClick={handleUploadClick}
           handleAction={handleAction}
@@ -93,22 +98,16 @@ const TabsContainer: React.FC<TabsContainerProps> = ({
         />
       </TabsContent>
       
-      <TabsContent value="students">
-        <StudentsTab 
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          handleAction={handleAction}
-          students={STUDENTS}
-        />
-      </TabsContent>
-      
-      <TabsContent value="uploads">
+      <TabsContent value="uploads" className="mt-0">
         <UploadFormsTab 
           handleUploadClick={handleUploadClick}
           handleFileChange={handleFileChange}
           videoFileInputRef={videoFileInputRef}
           resourceFileInputRef={resourceFileInputRef}
+          videoThumbnailInputRef={videoThumbnailInputRef}
+          resourceThumbnailInputRef={resourceThumbnailInputRef}
           uploadedFiles={uploadedFiles}
+          handleThumbnailChange={handleThumbnailChange}
         />
       </TabsContent>
     </Tabs>

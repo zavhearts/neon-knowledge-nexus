@@ -28,7 +28,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onUploadClick, onSche
             <Button 
               variant="outline" 
               className="border-neon-blue text-neon-blue hover:bg-neon-blue/10"
-              onClick={() => onUploadClick("Video")}
+              onClick={() => onUploadClick("AddClass")} 
             >
               <Video className="h-4 w-4 mr-2" />
               Add Class
