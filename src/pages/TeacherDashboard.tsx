@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { format, parseISO } from "date-fns";
 import { toast } from "@/hooks/use-toast";
@@ -13,6 +14,8 @@ import { ZoomMeeting } from "@/services/zoomService";
 interface UploadedFiles {
   video: File[];
   resource: File[];
+  videoThumbnail: File[];
+  resourceThumbnail: File[];
 }
 
 const TeacherDashboard = () => {
@@ -20,9 +23,13 @@ const TeacherDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const videoFileInputRef = useRef<HTMLInputElement>(null);
   const resourceFileInputRef = useRef<HTMLInputElement>(null);
+  const videoThumbnailInputRef = useRef<HTMLInputElement>(null);
+  const resourceThumbnailInputRef = useRef<HTMLInputElement>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFiles>({
     video: [],
-    resource: []
+    resource: [],
+    videoThumbnail: [],
+    resourceThumbnail: []
   });
   
   const [showMeetingForm, setShowMeetingForm] = useState(false);
@@ -34,6 +41,10 @@ const TeacherDashboard = () => {
       videoFileInputRef.current.click();
     } else if (type === "Resource" && resourceFileInputRef.current) {
       resourceFileInputRef.current.click();
+    } else if (type === "VideoThumbnail" && videoThumbnailInputRef.current) {
+      videoThumbnailInputRef.current.click();
+    } else if (type === "ResourceThumbnail" && resourceThumbnailInputRef.current) {
+      resourceThumbnailInputRef.current.click();
     } else if (type === "ZoomMeeting") {
       setShowMeetingForm(true);
     }
@@ -43,17 +54,53 @@ const TeacherDashboard = () => {
     const files = event.target.files;
     if (files && files.length > 0) {
       const fileArray = Array.from(files);
-      const fileType = type.toLowerCase() as "video" | "resource";
       
-      setUploadedFiles(prev => ({
-        ...prev,
-        [fileType]: [...prev[fileType], ...fileArray]
-      }));
+      if (type === "Video") {
+        setUploadedFiles(prev => ({
+          ...prev,
+          video: [...prev.video, ...fileArray]
+        }));
+        toast({
+          title: `Video Uploaded Successfully`,
+          description: `${fileArray.map(f => f.name).join(', ')} has been uploaded.`,
+        });
+      } else if (type === "Resource") {
+        setUploadedFiles(prev => ({
+          ...prev,
+          resource: [...prev.resource, ...fileArray]
+        }));
+        toast({
+          title: `Resource Uploaded Successfully`,
+          description: `${fileArray.map(f => f.name).join(', ')} has been uploaded.`,
+        });
+      }
+    }
+  };
+  
+  const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const fileArray = Array.from(files);
       
-      toast({
-        title: `${type} Uploaded Successfully`,
-        description: `${fileArray.map(f => f.name).join(', ')} has been uploaded.`,
-      });
+      if (type === "Video") {
+        setUploadedFiles(prev => ({
+          ...prev,
+          videoThumbnail: [...prev.videoThumbnail, ...fileArray]
+        }));
+        toast({
+          title: `Thumbnail Added`,
+          description: `Thumbnail for your video has been added.`,
+        });
+      } else if (type === "Resource") {
+        setUploadedFiles(prev => ({
+          ...prev,
+          resourceThumbnail: [...prev.resourceThumbnail, ...fileArray]
+        }));
+        toast({
+          title: `Thumbnail Added`,
+          description: `Thumbnail for your resource has been added.`,
+        });
+      }
     }
   };
 
@@ -113,7 +160,10 @@ const TeacherDashboard = () => {
           handleAction={handleAction}
           videoFileInputRef={videoFileInputRef}
           resourceFileInputRef={resourceFileInputRef}
+          videoThumbnailInputRef={videoThumbnailInputRef}
+          resourceThumbnailInputRef={resourceThumbnailInputRef}
           uploadedFiles={uploadedFiles}
+          handleThumbnailChange={handleThumbnailChange}
         />
       </div>
       
