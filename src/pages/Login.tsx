@@ -45,7 +45,7 @@ const Login = () => {
       } else {
         toast({
           title: "Login Failed",
-          description: "Invalid email or password. Try the demo credentials shown below.",
+          description: "Invalid email or password.",
           variant: "destructive",
         });
       }
@@ -124,19 +124,6 @@ const Login = () => {
             </Button>
           </form>
           
-          <div className="mt-8">
-            <p className="text-gray-700 dark:text-gray-300 text-center mb-2">Demo Credentials:</p>
-            <div className="space-y-2 text-sm">
-              {DEMO_CREDENTIALS.map((cred, index) => (
-                <div key={index} className="p-2 bg-gray-100 dark:bg-dark-blue/70 rounded">
-                  <p className="font-semibold capitalize text-royal-blue">{cred.role}:</p>
-                  <p className="text-gray-700 dark:text-gray-300">Email: {cred.email}</p>
-                  <p className="text-gray-700 dark:text-gray-300">Password: {cred.password}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          
           <div className="mt-6 text-center">
             <p className="text-gray-700 dark:text-gray-300">
               Don't have an account?{" "}
@@ -144,17 +131,6 @@ const Login = () => {
                 Sign Up
               </Link>
             </p>
-          </div>
-          
-          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
-            <p className="text-gray-700 dark:text-gray-300 mb-2">Quick access for demo purposes:</p>
-            <div className="flex flex-wrap justify-center gap-2">
-              <Link to="/dashboard" className="text-royal-blue hover:underline">Student Dashboard</Link>
-              <span className="text-gray-400">|</span>
-              <Link to="/teacher" className="text-teal hover:underline">Teacher Dashboard</Link>
-              <span className="text-gray-400">|</span>
-              <Link to="/admin" className="text-gold hover:underline">Admin Dashboard</Link>
-            </div>
           </div>
         </div>
       </div>

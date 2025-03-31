@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, FileText, Download, FileImage, Film, Music, Book, FileBox, FilePlus2, FilePdf } from "lucide-react";
+import { Search, FileText, Download, FileImage, Film, Music, Book, FileBox, FilePlus2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -197,7 +197,7 @@ const Resources = () => {
 
   const getIconForType = (type: string) => {
     switch(type) {
-      case "PDF": return FilePdf;
+      case "PDF": return FileText;
       case "PPT": return FileImage;
       case "MP4": return Film;
       case "ZIP": return FileBox;
