@@ -137,6 +137,30 @@ const TAX_NOTES_PDFS = [
     downloads: 27,
     thumbnailUrl: "/lovable-uploads/be7cd394-80f3-46fa-8104-9d48420425ae.png",
     downloadUrl: "https://drive.google.com/file/d/1ejrsIX9czXyu01fdfQivonlQRIN2lRN3/view?usp=sharing"
+  },
+  { 
+    id: 1004, 
+    title: "Advanced Income Tax Calculation Methods",
+    description: "Detailed guide for advanced income tax calculation methods and exemptions.",
+    type: "PDF",
+    size: "7.3 MB",
+    course: "Income Tax",
+    date: "2023-10-05", 
+    downloads: 12,
+    thumbnailUrl: "/lovable-uploads/067a49d5-8a1a-4b2e-899f-ca0ca9318f7f.png",
+    downloadUrl: "/lovable-uploads/067a49d5-8a1a-4b2e-899f-ca0ca9318f7f.pdf"
+  },
+  { 
+    id: 1005, 
+    title: "Tax Planning and Strategies for Individuals",
+    description: "Comprehensive resource covering tax planning strategies for individual taxpayers.",
+    type: "PDF",
+    size: "8.1 MB",
+    course: "Income Tax",
+    date: "2023-10-02", 
+    downloads: 8,
+    thumbnailUrl: "/lovable-uploads/0895bf65-bed5-4685-82ff-8f07bedd103d.png",
+    downloadUrl: "/lovable-uploads/0895bf65-bed5-4685-82ff-8f07bedd103d.pdf"
   }
 ];
 
@@ -197,12 +221,26 @@ const Resources = () => {
     const taxNotePdf = TAX_NOTES_PDFS.find(pdf => pdf.id === resourceId);
     
     if (taxNotePdf) {
-      window.open(taxNotePdf.downloadUrl, "_blank");
-      
-      toast({
-        title: "Downloading Tax Notes",
-        description: `${taxNotePdf.title} is opening in a new tab.`,
-      });
+      if (taxNotePdf.downloadUrl.startsWith('/')) {
+        const link = document.createElement('a');
+        link.href = taxNotePdf.downloadUrl;
+        link.download = taxNotePdf.title;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        toast({
+          title: "Downloading Tax Notes",
+          description: `${taxNotePdf.title} is downloading...`,
+        });
+      } else {
+        window.open(taxNotePdf.downloadUrl, "_blank");
+        
+        toast({
+          title: "Downloading Tax Notes",
+          description: `${taxNotePdf.title} is opening in a new tab.`,
+        });
+      }
       return;
     }
     
@@ -239,7 +277,6 @@ const Resources = () => {
               Access study materials, presentations, and guides for all your courses
             </p>
             
-            {/* Search */}
             <div className="max-w-3xl mx-auto mb-8">
               <div className="relative">
                 <Input
@@ -255,7 +292,6 @@ const Resources = () => {
         </div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-          {/* Featured Tax Notes Section */}
           <div className="mb-12">
             <h2 className="text-2xl font-bold mb-6 animated-text">
               Featured: Income Tax Notes for Students
@@ -275,6 +311,13 @@ const Resources = () => {
                         PDF
                       </Badge>
                     </div>
+                    {pdf.id >= 1004 && (
+                      <div className="absolute top-2 left-2">
+                        <Badge className="bg-neon-green text-black">
+                          New
+                        </Badge>
+                      </div>
+                    )}
                   </div>
                   <div className="p-4">
                     <h3 className="font-semibold text-lg mb-2">{pdf.title}</h3>
@@ -396,7 +439,6 @@ const Resources = () => {
               )}
             </TabsContent>
             
-            {/* Similar content for other tabs */}
             <TabsContent value="lectures" className="mt-0">
               <div className="cyber-card p-8 text-center">
                 <h3 className="text-xl font-bold mb-3">Lecture Notes</h3>

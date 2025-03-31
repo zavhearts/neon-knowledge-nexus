@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -45,6 +46,17 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
     handleAction("Download", id, "Resource");
   };
 
+  // Function to directly download a file by URL
+  const handleDirectDownload = (url: string, filename: string) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <Card className="cyber-card p-6">
       <div className="flex justify-between items-center mb-6">
@@ -84,7 +96,7 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
                       variant="ghost" 
                       className="text-white/70 hover:text-white hover:bg-white/10"
                       size="sm"
-                      onClick={() => handleAction("View", pdf.id, "Resource")}
+                      onClick={() => window.open(pdf.downloadUrl, '_blank')}
                     >
                       <Eye className="h-4 w-4 mr-2" />
                       View
@@ -93,7 +105,7 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
                       variant="ghost" 
                       className="text-green-500 hover:text-green-400 hover:bg-green-500/10"
                       size="sm"
-                      onClick={() => handleDownload(pdf.id)}
+                      onClick={() => handleDirectDownload(pdf.downloadUrl, pdf.name)}
                     >
                       <Download className="h-4 w-4 mr-2" />
                       Download
