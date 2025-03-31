@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Rocket } from "lucide-react";
+import { ChevronRight, Rocket, Bell, BookOpen } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Custom hook for typing animation
 const useTypingAnimation = (text: string, speed: number = 100) => {
@@ -47,9 +48,39 @@ const HeroSection = () => {
     "Empowering Learning, Inspiring Future",
     80
   );
+  const [showAlert, setShowAlert] = useState(true);
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-cyber-dark">
+      {/* Notification Alert */}
+      {showAlert && (
+        <motion.div 
+          className="absolute top-4 left-0 right-0 z-20 mx-auto max-w-2xl"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Alert className="border border-neon-blue/50 bg-cyber-light/30 backdrop-blur-sm">
+            <Bell className="h-4 w-4 text-neon-blue" />
+            <AlertTitle className="text-white font-medium">New Resources Available!</AlertTitle>
+            <AlertDescription className="text-gray-300">
+              Income Tax Notes have been added to our resources section. 
+              <Link to="/resources" className="ml-2 text-neon-blue hover:text-neon-blue/80 underline">
+                View Now
+              </Link>
+            </AlertDescription>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="absolute top-1 right-1 text-white/70 hover:text-white" 
+              onClick={() => setShowAlert(false)}
+            >
+              ×
+            </Button>
+          </Alert>
+        </motion.div>
+      )}
+      
       {/* Background circuit animation */}
       <div className="absolute inset-0 bg-cyber-grid opacity-20 animate-circuit-animation"></div>
       
@@ -100,6 +131,31 @@ const HeroSection = () => {
                 </Button>
               </Link>
             </motion.div>
+
+            {/* Latest Live Class Information */}
+            <motion.div
+              className="mt-8 p-4 border border-neon-blue/30 rounded-lg bg-cyber-darker/60 backdrop-blur-sm"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 1 }}
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-3 h-3 bg-neon-green rounded-full animate-pulse"></div>
+                <h3 className="text-white font-medium">Latest Live Class</h3>
+              </div>
+              <div className="flex flex-col md:flex-row md:items-center gap-3">
+                <div className="flex-1">
+                  <p className="text-neon-blue font-medium">Income Tax Fundamentals</p>
+                  <p className="text-sm text-gray-300">Friday, June 14, 2024</p>
+                  <p className="text-sm text-gray-300">7:00 PM (120 minutes)</p>
+                </div>
+                <Link to="/live-classes">
+                  <Button size="sm" className="bg-neon-green hover:bg-neon-green/80 text-black">
+                    Join Now
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
           </div>
           
           <motion.div
@@ -126,8 +182,12 @@ const HeroSection = () => {
                   </div>
                   
                   <div className="absolute bottom-6 left-6 max-w-[80%] p-4 glassmorphic rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <BookOpen className="text-neon-purple" size={16} />
+                      <span className="text-white text-xs font-medium">New Income Tax Resources</span>
+                    </div>
                     <p className="text-white text-sm">
-                      "The future of education is immersive, interactive, and personalized."
+                      "Comprehensive notes on income tax calculations, planning, and strategies now available."
                     </p>
                   </div>
                 </div>
