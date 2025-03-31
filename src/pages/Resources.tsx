@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, FileText, Download, FileImage, Film, Music, Book, FileBox, FilePlus2 } from "lucide-react";
+import { Search, FileText, Download, FileImage, Film, Music, Book, FileBox, FilePlus2, Bell, FileCheck } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -137,30 +138,6 @@ const TAX_NOTES_PDFS = [
     downloads: 27,
     thumbnailUrl: "/lovable-uploads/be7cd394-80f3-46fa-8104-9d48420425ae.png",
     downloadUrl: "https://drive.google.com/file/d/1ejrsIX9czXyu01fdfQivonlQRIN2lRN3/view?usp=sharing"
-  },
-  { 
-    id: 1004, 
-    title: "Advanced Income Tax Calculation Methods",
-    description: "Detailed guide for advanced income tax calculation methods and exemptions.",
-    type: "PDF",
-    size: "7.3 MB",
-    course: "Income Tax",
-    date: "2023-10-05", 
-    downloads: 12,
-    thumbnailUrl: "/lovable-uploads/067a49d5-8a1a-4b2e-899f-ca0ca9318f7f.png",
-    downloadUrl: "/lovable-uploads/067a49d5-8a1a-4b2e-899f-ca0ca9318f7f.pdf"
-  },
-  { 
-    id: 1005, 
-    title: "Tax Planning and Strategies for Individuals",
-    description: "Comprehensive resource covering tax planning strategies for individual taxpayers.",
-    type: "PDF",
-    size: "8.1 MB",
-    course: "Income Tax",
-    date: "2023-10-02", 
-    downloads: 8,
-    thumbnailUrl: "/lovable-uploads/0895bf65-bed5-4685-82ff-8f07bedd103d.png",
-    downloadUrl: "/lovable-uploads/0895bf65-bed5-4685-82ff-8f07bedd103d.pdf"
   }
 ];
 
@@ -184,6 +161,7 @@ const Resources = () => {
   const [selectedType, setSelectedType] = useState("All");
   const [selectedCourse, setSelectedCourse] = useState("All Courses");
   const [allResources, setAllResources] = useState([...RESOURCES, ...TAX_NOTES_PDFS]);
+  const [showAnnouncement, setShowAnnouncement] = useState(true);
   
   const filteredResources = allResources.filter(resource => {
     const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -194,6 +172,15 @@ const Resources = () => {
     
     return matchesSearch && matchesType && matchesCourse;
   });
+
+  useEffect(() => {
+    // Auto-hide announcement after 10 seconds
+    const timer = setTimeout(() => {
+      setShowAnnouncement(false);
+    }, 10000);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const getIconForType = (type: string) => {
     switch(type) {
@@ -260,6 +247,10 @@ const Resources = () => {
     });
   };
 
+  const dismissAnnouncement = () => {
+    setShowAnnouncement(false);
+  };
+
   return (
     <MainLayout>
       <div className="min-h-screen bg-cyber-dark bg-circuit-pattern pb-20">
@@ -277,6 +268,29 @@ const Resources = () => {
               Access study materials, presentations, and guides for all your courses
             </p>
             
+            {showAnnouncement && (
+              <div className="max-w-4xl mx-auto mb-8 bg-neon-blue/20 border border-neon-blue rounded-lg p-4 flex items-start justify-between">
+                <div className="flex">
+                  <Bell className="h-6 w-6 text-neon-blue mr-3 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold text-white">New Income Tax Notes Available!</h3>
+                    <p className="text-white/80 text-sm">
+                      We've uploaded new Income Tax study materials. Check out the featured section below for these valuable resources.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={dismissAnnouncement}
+                  className="text-white/60 hover:text-white"
+                  aria-label="Dismiss announcement"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            )}
+            
             <div className="max-w-3xl mx-auto mb-8">
               <div className="relative">
                 <Input
@@ -293,7 +307,8 @@ const Resources = () => {
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6 animated-text">
+            <h2 className="text-2xl font-bold mb-6 animated-text flex items-center">
+              <FileCheck className="mr-2 text-neon-blue" />
               Featured: Income Tax Notes for Students
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -311,13 +326,11 @@ const Resources = () => {
                         PDF
                       </Badge>
                     </div>
-                    {pdf.id >= 1004 && (
-                      <div className="absolute top-2 left-2">
-                        <Badge className="bg-neon-green text-black">
-                          New
-                        </Badge>
-                      </div>
-                    )}
+                    <div className="absolute top-2 left-2">
+                      <Badge className="bg-neon-green text-black">
+                        New
+                      </Badge>
+                    </div>
                   </div>
                   <div className="p-4">
                     <h3 className="font-semibold text-lg mb-2">{pdf.title}</h3>
