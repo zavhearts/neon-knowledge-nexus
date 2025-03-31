@@ -1,9 +1,8 @@
-
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Eye, Trash2, Download, FilePdf } from "lucide-react";
+import { PlusCircle, Eye, Trash2, Download, FileText } from "lucide-react";
 
 interface ResourceItem {
   id: number;
@@ -42,9 +41,7 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
   uploadedFiles,
   taxNotesPdfs = []
 }) => {
-  // Simulate download by opening a new tab
   const handleDownload = (id: number) => {
-    // In a real app, this would point to the actual file URL
     handleAction("Download", id, "Resource");
   };
 
@@ -58,7 +55,6 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
         </Button>
       </div>
       
-      {/* Tax Notes PDFs Section */}
       {taxNotesPdfs.length > 0 && (
         <div className="mb-8">
           <h3 className="text-lg font-medium mb-4 text-neon-blue">Income Tax Notes for Students</h3>
@@ -124,7 +120,6 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
             </tr>
           </thead>
           <tbody>
-            {/* Show existing resources */}
             {resources.map((resource) => (
               <tr key={resource.id} className="border-b border-white/10 hover:bg-white/5 transition-colors">
                 <td className="py-3 px-4">{resource.title}</td>
@@ -171,7 +166,6 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
               </tr>
             ))}
             
-            {/* Show newly uploaded resources */}
             {uploadedFiles.resource.map((file, index) => (
               <tr key={`uploaded-resource-${index}`} className="border-b border-white/10 hover:bg-white/5 transition-colors">
                 <td className="py-3 px-4">{file.name}</td>
