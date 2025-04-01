@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, X, Mic, Volume2, MessageSquare, Globe, Lightbulb, BookOpen, Send, Loader2, Lock } from 'lucide-react';
@@ -16,7 +15,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-// Define header type to avoid TypeScript errors
 interface ApiHeaders {
   [key: string]: string;
 }
@@ -126,41 +124,63 @@ const VirtualAssistant = () => {
       return;
     }
     
+    const userMsg = message;
+    setMessage('');
+    
     try {
       const context = chatHistory
         .slice(-5)
         .map(msg => `${msg.sender === 'user' ? 'User' : 'Assistant'}: ${msg.text}`)
         .join('\n');
       
-      const response = await fetchAIResponse(message, context, apiKey, apiProvider);
+      const response = await fetchAIResponse(userMsg, context, apiKey, apiProvider);
       
       setChatHistory(prev => [...prev, { sender: 'bot', text: response }]);
     } catch (error) {
       console.error('Error fetching AI response:', error);
+      
+      let errorDescription = "Could not connect to AI service. Using fallback responses.";
+      
+      if (error instanceof Error) {
+        if (error.message.includes("credits") || error.message.includes("403")) {
+          if (apiProvider === 'xai') {
+            errorDescription = "Your X.ai account has no credits. Please purchase credits or try a different API provider.";
+          } else {
+            errorDescription = "API key error: Access denied. Please check your API key or try a different provider.";
+          }
+        } else if (error.message.includes("429")) {
+          errorDescription = "Rate limit exceeded. Please try again later.";
+        }
+      }
+      
       toast({
         title: "Connection Error",
-        description: "Could not connect to AI service. Using fallback responses.",
+        description: errorDescription,
         variant: "destructive"
       });
       
-      let fallbackResponse = '';
-      
-      if (message.toLowerCase().includes('course')) {
-        fallbackResponse = 'We offer many courses in various subjects. Would you like me to recommend some based on your interests?';
-      } else if (message.toLowerCase().includes('exam') || message.toLowerCase().includes('test')) {
-        fallbackResponse = 'Our platform offers AI-powered mock tests that adapt to your skill level. Would you like to try one?';
-      } else if (message.toLowerCase().includes('language')) {
-        fallbackResponse = 'We support multiple languages! You can change your preferred language from the language selector in the header.';
-      } else if (message.toLowerCase().includes('income tax')) {
-        fallbackResponse = 'We just added new income tax resources! You can find comprehensive notes on calculations, planning, and strategies in our resources section.';
-      } else {
-        fallbackResponse = 'Thank you for your message. How else can I assist you with your learning journey?';
-      }
-      
+      let fallbackResponse = generateFallbackResponse(userMsg);
       setChatHistory(prev => [...prev, { sender: 'bot', text: fallbackResponse }]);
     } finally {
       setIsLoading(false);
-      setMessage('');
+    }
+  };
+
+  const generateFallbackResponse = (userMessage: string) => {
+    const lowerCaseMsg = userMessage.toLowerCase();
+    
+    if (lowerCaseMsg.includes('course')) {
+      return 'We offer many courses in various subjects. Would you like me to recommend some based on your interests?';
+    } else if (lowerCaseMsg.includes('exam') || lowerCaseMsg.includes('test')) {
+      return 'Our platform offers AI-powered mock tests that adapt to your skill level. Would you like to try one?';
+    } else if (lowerCaseMsg.includes('language')) {
+      return 'We support multiple languages! You can change your preferred language from the language selector in the header.';
+    } else if (lowerCaseMsg.includes('income tax')) {
+      return 'We just added new income tax resources! You can find comprehensive notes on calculations, planning, and strategies in our resources section.';
+    } else if (lowerCaseMsg.includes('xai') || lowerCaseMsg.includes('x.ai') || lowerCaseMsg.includes('grok')) {
+      return 'X.ai (Grok) requires an active subscription with credits. If you\'re having trouble, you might want to try one of our other AI providers like OpenAI or Groq.';
+    } else {
+      return 'Thank you for your message. How else can I assist you with your learning journey?';
     }
   };
 
@@ -279,6 +299,8 @@ const VirtualAssistant = () => {
     }
     
     try {
+      console.log(`Attempting to call ${provider} API at ${API_URL}`);
+      
       const response = await fetch(API_URL, {
         method: "POST",
         headers,
@@ -287,10 +309,14 @@ const VirtualAssistant = () => {
       });
       
       if (!response.ok) {
-        throw new Error(`API responded with status: ${response.status}`);
+        const errorText = await response.text();
+        console.error(`API Error (${response.status}):`, errorText);
+        
+        throw new Error(`API responded with status: ${response.status} - ${errorText}`);
       }
       
       const data = await response.json();
+      console.log(`${provider} API response:`, data);
       
       if (provider === 'openai' || provider === 'groq' || provider === 'xai') {
         return data.choices[0].message.content.trim();
@@ -300,7 +326,7 @@ const VirtualAssistant = () => {
         return data.choices[0].message.content.trim();
       }
     } catch (error) {
-      console.error("Error calling AI API:", error);
+      console.error(`Error calling ${provider} API:`, error);
       throw error;
     }
   };
@@ -587,6 +613,11 @@ const VirtualAssistant = () => {
                 placeholder="Enter your API key"
                 className="col-span-3 bg-cyber-darker border border-neon-blue/30 text-white"
               />
+            </div>
+            <div className="col-span-4 text-xs text-amber-400 px-2">
+              {apiProvider === 'xai' && (
+                <p>Note: X.ai requires an active subscription with credits. Please visit the X.ai console to ensure your account has available credits.</p>
+              )}
             </div>
           </div>
           <DialogFooter>
