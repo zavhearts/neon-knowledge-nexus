@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, X, Mic, Volume2, MessageSquare, Globe, Lightbulb, BookOpen, Send, Loader2, Lock } from 'lucide-react';
@@ -14,6 +15,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
+// Define header type to avoid TypeScript errors
+interface ApiHeaders {
+  [key: string]: string;
+}
 
 const VirtualAssistant = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -161,7 +167,7 @@ const VirtualAssistant = () => {
   const fetchAIResponse = async (userMessage: string, context: string, key: string, provider: string) => {
     let API_URL = '';
     let requestBody = {};
-    let headers = {
+    let headers: ApiHeaders = {
       "Content-Type": "application/json",
     };
 
@@ -169,7 +175,7 @@ const VirtualAssistant = () => {
       case 'openai':
         API_URL = "https://api.openai.com/v1/chat/completions";
         headers = {
-          ...headers,
+          "Content-Type": "application/json",
           "Authorization": `Bearer ${key}`
         };
         requestBody = {
@@ -191,7 +197,7 @@ const VirtualAssistant = () => {
       case 'anthropic':
         API_URL = "https://api.anthropic.com/v1/messages";
         headers = {
-          ...headers,
+          "Content-Type": "application/json",
           "x-api-key": key,
           "anthropic-version": "2023-06-01"
         };
@@ -210,7 +216,7 @@ const VirtualAssistant = () => {
       case 'groq':
         API_URL = "https://api.groq.com/openai/v1/chat/completions";
         headers = {
-          ...headers,
+          "Content-Type": "application/json",
           "Authorization": `Bearer ${key}`
         };
         requestBody = {
@@ -227,6 +233,30 @@ const VirtualAssistant = () => {
           ],
           max_tokens: 150,
           temperature: 0.7
+        };
+        break;
+      
+      case 'xai':
+        API_URL = "https://api.x.ai/v1/chat/completions";
+        headers = {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${key}`
+        };
+        requestBody = {
+          model: "grok-2-latest",
+          messages: [
+            {
+              role: "system",
+              content: "You are a helpful AI learning assistant for EasyWin Learning Hub, an educational platform. You help users with their educational needs, course information, and study resources. Be informative, friendly, and concise. Promote the platform's learning resources including newly added income tax notes."
+            },
+            {
+              role: "user",
+              content: `Previous conversation:\n${context}\n\nUser's new message: ${userMessage}`
+            }
+          ],
+          max_tokens: 150,
+          temperature: 0.7,
+          stream: false
         };
         break;
       
@@ -262,7 +292,7 @@ const VirtualAssistant = () => {
       
       const data = await response.json();
       
-      if (provider === 'openai' || provider === 'groq') {
+      if (provider === 'openai' || provider === 'groq' || provider === 'xai') {
         return data.choices[0].message.content.trim();
       } else if (provider === 'anthropic') {
         return data.content[0].text;
@@ -541,6 +571,7 @@ const VirtualAssistant = () => {
                 <option value="openai">OpenAI (GPT-4o-mini)</option>
                 <option value="anthropic">Anthropic (Claude)</option>
                 <option value="groq">Groq (Llama 3)</option>
+                <option value="xai">X.ai (Grok)</option>
                 <option value="free">Free API (Limited)</option>
               </select>
             </div>
