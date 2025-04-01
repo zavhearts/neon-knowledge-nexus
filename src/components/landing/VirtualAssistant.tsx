@@ -1,10 +1,20 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Mic, Volume2, MessageSquare, Globe, Lightbulb, BookOpen, Send, Loader2 } from 'lucide-react';
+import { Bot, X, Mic, Volume2, MessageSquare, Globe, Lightbulb, BookOpen, Send, Loader2, Lock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const VirtualAssistant = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -14,6 +24,9 @@ const VirtualAssistant = () => {
   const [message, setMessage] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
+  const [apiKey, setApiKey] = useState(localStorage.getItem('ai_api_key') || "");
+  const [apiProvider, setApiProvider] = useState(localStorage.getItem('ai_provider') || "openai");
   const [chatHistory, setChatHistory] = useState([
     { sender: 'bot', text: 'Hello! I\'m your AI learning assistant. How can I help with your studies today?' }
   ]);
@@ -86,6 +99,16 @@ const VirtualAssistant = () => {
     }
   };
 
+  const saveApiKey = () => {
+    localStorage.setItem('ai_api_key', apiKey);
+    localStorage.setItem('ai_provider', apiProvider);
+    setApiKeyDialogOpen(false);
+    toast({
+      title: "API Key Saved",
+      description: "Your API key has been saved securely in your browser.",
+    });
+  };
+
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
@@ -94,6 +117,13 @@ const VirtualAssistant = () => {
     
     // Set loading state
     setIsLoading(true);
+
+    // Check if API key is set
+    if (!apiKey) {
+      setApiKeyDialogOpen(true);
+      setIsLoading(false);
+      return;
+    }
     
     try {
       // Generate context from previous messages (last 5 messages)
@@ -102,8 +132,8 @@ const VirtualAssistant = () => {
         .map(msg => `${msg.sender === 'user' ? 'User' : 'Assistant'}: ${msg.text}`)
         .join('\n');
       
-      // Call the free AI API
-      const response = await fetchAIResponse(message, context);
+      // Call the selected AI API
+      const response = await fetchAIResponse(message, context, apiKey, apiProvider);
       
       // Add AI response to chat
       setChatHistory(prev => [...prev, { sender: 'bot', text: response }]);
@@ -137,18 +167,59 @@ const VirtualAssistant = () => {
     }
   };
 
-  const fetchAIResponse = async (userMessage: string, context: string) => {
-    // Using a free accessible endpoint - replace with your preferred API
-    // This is a free service with limited capacity, so there might be rate limits
-    const API_URL = "https://api.communicateai.net/v1/chat/completions";
-    
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+  const fetchAIResponse = async (userMessage: string, context: string, key: string, provider: string) => {
+    let API_URL = '';
+    let requestBody = {};
+    let headers = {
+      "Content-Type": "application/json",
+    };
+
+    switch (provider) {
+      case 'openai':
+        API_URL = "https://api.openai.com/v1/chat/completions";
+        headers = {
+          ...headers,
+          "Authorization": `Bearer ${key}`
+        };
+        requestBody = {
+          model: "gpt-4o-mini",
+          messages: [
+            {
+              role: "system",
+              content: "You are a helpful AI learning assistant for EasyWin Learning Hub, an educational platform. You help users with their educational needs, course information, and study resources. Be informative, friendly, and concise. Promote the platform's learning resources including newly added income tax notes."
+            },
+            {
+              role: "user",
+              content: `Previous conversation:\n${context}\n\nUser's new message: ${userMessage}`
+            }
+          ],
+          max_tokens: 150
+        };
+        break;
+      
+      case 'anthropic':
+        API_URL = "https://api.anthropic.com/v1/messages";
+        headers = {
+          ...headers,
+          "x-api-key": key,
+          "anthropic-version": "2023-06-01"
+        };
+        requestBody = {
+          model: "claude-2.1",
+          messages: [
+            {
+              role: "user",
+              content: `You are a helpful AI learning assistant for EasyWin Learning Hub, an educational platform. Help with this request based on previous conversation:\n${context}\n\nUser's new message: ${userMessage}`
+            }
+          ],
+          max_tokens: 150
+        };
+        break;
+      
+      default:
+        // Free API fallback
+        API_URL = "https://api.communicateai.net/v1/chat/completions";
+        requestBody = {
           model: "gpt-3.5-turbo",
           messages: [
             {
@@ -161,7 +232,14 @@ const VirtualAssistant = () => {
             }
           ],
           max_tokens: 150
-        }),
+        };
+    }
+    
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(requestBody),
         // This ensures the request doesn't time out too quickly
         signal: AbortSignal.timeout(10000)
       });
@@ -171,7 +249,15 @@ const VirtualAssistant = () => {
       }
       
       const data = await response.json();
-      return data.choices[0].message.content.trim();
+      
+      // Handle different response formats from different providers
+      if (provider === 'openai') {
+        return data.choices[0].message.content.trim();
+      } else if (provider === 'anthropic') {
+        return data.content[0].text;
+      } else {
+        return data.choices[0].message.content.trim();
+      }
     } catch (error) {
       console.error("Error calling AI API:", error);
       throw error; // Let the calling function handle the error
@@ -263,160 +349,224 @@ const VirtualAssistant = () => {
     }, 100);
   };
 
+  const openApiSettings = () => {
+    setApiKeyDialogOpen(true);
+  };
+
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          className="fixed bottom-6 right-6 z-50 max-w-md w-full"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-        >
-          <div className="relative rounded-xl shadow-neon-glow overflow-hidden">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-blue via-neon-purple to-neon-blue rounded-xl opacity-70 animate-pulse"></div>
-            
-            <div className="relative glassmorphic rounded-xl">
-              <div className="bg-cyber-darker p-3 flex justify-between items-center border-b border-neon-blue/30">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 rounded-full bg-cyber-light flex items-center justify-center mr-3 shadow-neon-glow">
-                    <Bot className="text-neon-blue" size={18} />
-                  </div>
-                  <div>
-                    <h3 className="text-white text-sm font-medium">AI Assistant</h3>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-1.5"></span>
-                      <span className="text-green-500 text-xs">Online</span>
+    <>
+      <AnimatePresence>
+        {isVisible && (
+          <motion.div
+            className="fixed bottom-6 right-6 z-50 max-w-md w-full"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <div className="relative rounded-xl shadow-neon-glow overflow-hidden">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-blue via-neon-purple to-neon-blue rounded-xl opacity-70 animate-pulse"></div>
+              
+              <div className="relative glassmorphic rounded-xl">
+                <div className="bg-cyber-darker p-3 flex justify-between items-center border-b border-neon-blue/30">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 rounded-full bg-cyber-light flex items-center justify-center mr-3 shadow-neon-glow">
+                      <Bot className="text-neon-blue" size={18} />
+                    </div>
+                    <div>
+                      <h3 className="text-white text-sm font-medium">AI Assistant</h3>
+                      <div className="flex items-center">
+                        <span className="w-2 h-2 bg-green-500 rounded-full mr-1.5"></span>
+                        <span className="text-green-500 text-xs">Online</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    onClick={handleTextToSpeech}
-                    className={`p-1.5 hover:bg-cyber-light rounded-full transition-colors ${isSpeaking ? 'bg-royal-blue/20' : ''}`}
-                    aria-label="Text to speech"
-                  >
-                    <Volume2 className={`${isSpeaking ? 'text-royal-blue' : 'text-gray-400 hover:text-white'}`} size={16} />
-                  </Button>
-                  <Button 
-                    onClick={() => setIsVisible(false)}
-                    className="p-1.5 hover:bg-cyber-light rounded-full transition-colors"
-                    aria-label="Close assistant"
-                  >
-                    <X className="text-gray-400 hover:text-white" size={16} />
-                  </Button>
-                </div>
-              </div>
-              
-              <div className="p-4 bg-cyber-dark max-h-80 overflow-y-auto">
-                <div className="space-y-4">
-                  {chatHistory.map((msg, index) => (
-                    <div 
-                      key={index} 
-                      className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      onClick={handleTextToSpeech}
+                      className={`p-1.5 hover:bg-cyber-light rounded-full transition-colors ${isSpeaking ? 'bg-royal-blue/20' : ''}`}
+                      aria-label="Text to speech"
                     >
-                      <div 
-                        className={`max-w-[80%] rounded-lg p-3 ${
-                          msg.sender === 'user' 
-                            ? 'bg-royal-blue text-white ml-auto rounded-tr-none' 
-                            : 'bg-cyber-light text-gray-200 mr-auto rounded-tl-none'
-                        }`}
-                      >
-                        <p className="text-sm">{msg.text}</p>
-                      </div>
-                    </div>
-                  ))}
-                  {isLoading && (
-                    <div className="flex justify-start">
-                      <div className="bg-cyber-light text-gray-200 rounded-lg p-3 max-w-[80%] mr-auto rounded-tl-none">
-                        <div className="flex items-center gap-2">
-                          <Loader2 className="h-4 w-4 animate-spin text-royal-blue" />
-                          <p className="text-sm">Thinking...</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div ref={messageEndRef} />
-                </div>
-              </div>
-              
-              <div className="p-2 bg-cyber-darker border-t border-neon-blue/30">
-                <div className="flex flex-wrap gap-1 mb-2">
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="text-xs py-1 h-7 bg-royal-blue/10 border-royal-blue/30 text-royal-blue hover:bg-royal-blue/20"
-                    onClick={() => handleQuickAction('explain')}
-                  >
-                    <Lightbulb className="h-3 w-3 mr-1" />
-                    Explain More
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="text-xs py-1 h-7 bg-royal-blue/10 border-royal-blue/30 text-royal-blue hover:bg-royal-blue/20"
-                    onClick={() => handleQuickAction('example')}
-                  >
-                    <BookOpen className="h-3 w-3 mr-1" />
-                    Give Example
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="text-xs py-1 h-7 bg-royal-blue/10 border-royal-blue/30 text-royal-blue hover:bg-royal-blue/20"
-                    onClick={() => handleQuickAction('translate')}
-                  >
-                    <Globe className="h-3 w-3 mr-1" />
-                    Translate
-                  </Button>
+                      <Volume2 className={`${isSpeaking ? 'text-royal-blue' : 'text-gray-400 hover:text-white'}`} size={16} />
+                    </Button>
+                    <Button
+                      onClick={openApiSettings}
+                      className="p-1.5 hover:bg-cyber-light rounded-full transition-colors"
+                      aria-label="API Settings"
+                    >
+                      <Lock className="text-gray-400 hover:text-white" size={16} />
+                    </Button>
+                    <Button 
+                      onClick={() => setIsVisible(false)}
+                      className="p-1.5 hover:bg-cyber-light rounded-full transition-colors"
+                      aria-label="Close assistant"
+                    >
+                      <X className="text-gray-400 hover:text-white" size={16} />
+                    </Button>
+                  </div>
                 </div>
                 
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 bg-cyber-light rounded-lg px-4 py-2 text-gray-200 text-sm">
-                    <Textarea 
-                      placeholder="Type your question..." 
-                      className="bg-transparent border-0 outline-none w-full min-h-[24px] max-h-[100px] p-0 resize-none text-sm"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      onKeyDown={handleKeyPress}
-                    />
+                <div className="p-4 bg-cyber-dark max-h-80 overflow-y-auto">
+                  <div className="space-y-4">
+                    {chatHistory.map((msg, index) => (
+                      <div 
+                        key={index} 
+                        className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div 
+                          className={`max-w-[80%] rounded-lg p-3 ${
+                            msg.sender === 'user' 
+                              ? 'bg-royal-blue text-white ml-auto rounded-tr-none' 
+                              : 'bg-cyber-light text-gray-200 mr-auto rounded-tl-none'
+                          }`}
+                        >
+                          <p className="text-sm">{msg.text}</p>
+                        </div>
+                      </div>
+                    ))}
+                    {isLoading && (
+                      <div className="flex justify-start">
+                        <div className="bg-cyber-light text-gray-200 rounded-lg p-3 max-w-[80%] mr-auto rounded-tl-none">
+                          <div className="flex items-center gap-2">
+                            <Loader2 className="h-4 w-4 animate-spin text-royal-blue" />
+                            <p className="text-sm">Thinking...</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <div ref={messageEndRef} />
                   </div>
-                  <Button 
-                    onClick={handleVoiceInput}
-                    className="p-2 rounded-full bg-royal-blue/10 text-royal-blue hover:bg-royal-blue/20"
-                    aria-label="Voice input"
-                  >
-                    <Mic size={18} />
-                  </Button>
-                  <Button 
-                    onClick={handleSendMessage}
-                    className="p-2 rounded-full bg-royal-blue text-white hover:bg-royal-blue/80"
-                    aria-label="Send message"
-                    disabled={!message.trim() || isLoading}
-                  >
-                    {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send size={18} />}
-                  </Button>
+                </div>
+                
+                <div className="p-2 bg-cyber-darker border-t border-neon-blue/30">
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="text-xs py-1 h-7 bg-royal-blue/10 border-royal-blue/30 text-royal-blue hover:bg-royal-blue/20"
+                      onClick={() => handleQuickAction('explain')}
+                    >
+                      <Lightbulb className="h-3 w-3 mr-1" />
+                      Explain More
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="text-xs py-1 h-7 bg-royal-blue/10 border-royal-blue/30 text-royal-blue hover:bg-royal-blue/20"
+                      onClick={() => handleQuickAction('example')}
+                    >
+                      <BookOpen className="h-3 w-3 mr-1" />
+                      Give Example
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="text-xs py-1 h-7 bg-royal-blue/10 border-royal-blue/30 text-royal-blue hover:bg-royal-blue/20"
+                      onClick={() => handleQuickAction('translate')}
+                    >
+                      <Globe className="h-3 w-3 mr-1" />
+                      Translate
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 bg-cyber-light rounded-lg px-4 py-2 text-gray-200 text-sm">
+                      <Textarea 
+                        placeholder="Type your question..." 
+                        className="bg-transparent border-0 outline-none w-full min-h-[24px] max-h-[100px] p-0 resize-none text-sm"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        onKeyDown={handleKeyPress}
+                      />
+                    </div>
+                    <Button 
+                      onClick={handleVoiceInput}
+                      className="p-2 rounded-full bg-royal-blue/10 text-royal-blue hover:bg-royal-blue/20"
+                      aria-label="Voice input"
+                    >
+                      <Mic size={18} />
+                    </Button>
+                    <Button 
+                      onClick={handleSendMessage}
+                      className="p-2 rounded-full bg-royal-blue text-white hover:bg-royal-blue/80"
+                      aria-label="Send message"
+                      disabled={!message.trim() || isLoading}
+                    >
+                      {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send size={18} />}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
+            
+            {/* Collapsed chat bubble */}
+            {!isVisible && (
+              <motion.button
+                className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-royal-blue text-white shadow-neon-glow flex items-center justify-center"
+                onClick={() => setIsVisible(true)}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <MessageSquare size={24} />
+              </motion.button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* API Key Dialog */}
+      <Dialog open={apiKeyDialogOpen} onOpenChange={setApiKeyDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] bg-cyber-dark text-white border border-neon-blue/30">
+          <DialogHeader>
+            <DialogTitle className="text-royal-blue">Configure AI Provider</DialogTitle>
+            <DialogDescription>
+              Enter your API key to connect to your preferred AI service. Your key is stored locally in your browser.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="provider" className="text-right">
+                Provider
+              </Label>
+              <select 
+                id="provider"
+                className="col-span-3 bg-cyber-darker border border-neon-blue/30 rounded-md p-2"
+                value={apiProvider}
+                onChange={(e) => setApiProvider(e.target.value)}
+              >
+                <option value="openai">OpenAI (GPT-4o-mini)</option>
+                <option value="anthropic">Anthropic (Claude)</option>
+                <option value="free">Free API (Limited)</option>
+              </select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="api-key" className="text-right">
+                API Key
+              </Label>
+              <Input
+                id="api-key"
+                type="password"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="Enter your API key"
+                className="col-span-3 bg-cyber-darker border border-neon-blue/30 text-white"
+              />
+            </div>
           </div>
-          
-          {/* Collapsed chat bubble */}
-          {!isVisible && (
-            <motion.button
-              className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-royal-blue text-white shadow-neon-glow flex items-center justify-center"
-              onClick={() => setIsVisible(true)}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.3 }}
+          <DialogFooter>
+            <Button 
+              type="submit" 
+              onClick={saveApiKey}
+              className="bg-royal-blue hover:bg-royal-blue/80"
             >
-              <MessageSquare size={24} />
-            </motion.button>
-          )}
-        </motion.div>
-      )}
-    </AnimatePresence>
+              Save changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
