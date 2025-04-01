@@ -1,8 +1,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Mic, Volume2, MessageSquare, Globe, Lightbulb, BookOpen, Send } from 'lucide-react';
+import { Bot, X, Mic, Volume2, MessageSquare, Globe, Lightbulb, BookOpen, Send, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 
 const VirtualAssistant = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -11,10 +13,12 @@ const VirtualAssistant = () => {
   const [displayText, setDisplayText] = useState("");
   const [message, setMessage] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState([
     { sender: 'bot', text: 'Hello! I\'m your AI learning assistant. How can I help with your studies today?' }
   ]);
   const messageEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   const assistantTexts = [
     "Hello! I'm your AI learning assistant.",
@@ -82,42 +86,128 @@ const VirtualAssistant = () => {
     }
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!message.trim()) return;
 
     // Add user message to chat
     setChatHistory([...chatHistory, { sender: 'user', text: message }]);
     
-    // Simulate AI response (in a real app, this would call an AI API)
-    setTimeout(() => {
-      let response = '';
+    // Set loading state
+    setIsLoading(true);
+    
+    try {
+      // Generate context from previous messages (last 5 messages)
+      const context = chatHistory
+        .slice(-5)
+        .map(msg => `${msg.sender === 'user' ? 'User' : 'Assistant'}: ${msg.text}`)
+        .join('\n');
       
-      // Simple pattern matching for demo purposes
+      // Call the free AI API
+      const response = await fetchAIResponse(message, context);
+      
+      // Add AI response to chat
+      setChatHistory(prev => [...prev, { sender: 'bot', text: response }]);
+    } catch (error) {
+      console.error('Error fetching AI response:', error);
+      toast({
+        title: "Connection Error",
+        description: "Could not connect to AI service. Using fallback responses.",
+        variant: "destructive"
+      });
+      
+      // Fallback to simple pattern matching for demo purposes
+      let fallbackResponse = '';
+      
       if (message.toLowerCase().includes('course')) {
-        response = 'We offer many courses in various subjects. Would you like me to recommend some based on your interests?';
+        fallbackResponse = 'We offer many courses in various subjects. Would you like me to recommend some based on your interests?';
       } else if (message.toLowerCase().includes('exam') || message.toLowerCase().includes('test')) {
-        response = 'Our platform offers AI-powered mock tests that adapt to your skill level. Would you like to try one?';
+        fallbackResponse = 'Our platform offers AI-powered mock tests that adapt to your skill level. Would you like to try one?';
       } else if (message.toLowerCase().includes('language')) {
-        response = 'We support multiple languages! You can change your preferred language from the language selector in the header.';
+        fallbackResponse = 'We support multiple languages! You can change your preferred language from the language selector in the header.';
+      } else if (message.toLowerCase().includes('income tax')) {
+        fallbackResponse = 'We just added new income tax resources! You can find comprehensive notes on calculations, planning, and strategies in our resources section.';
       } else {
-        response = 'Thank you for your message. How else can I assist you with your learning journey?';
+        fallbackResponse = 'Thank you for your message. How else can I assist you with your learning journey?';
       }
       
-      setChatHistory(prev => [...prev, { sender: 'bot', text: response }]);
-    }, 1000);
+      setChatHistory(prev => [...prev, { sender: 'bot', text: fallbackResponse }]);
+    } finally {
+      setIsLoading(false);
+      setMessage('');
+    }
+  };
+
+  const fetchAIResponse = async (userMessage: string, context: string) => {
+    // Using a free accessible endpoint - replace with your preferred API
+    // This is a free service with limited capacity, so there might be rate limits
+    const API_URL = "https://api.communicateai.net/v1/chat/completions";
     
-    setMessage('');
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "system",
+              content: "You are a helpful AI learning assistant for EasyWin Learning Hub, an educational platform. You help users with their educational needs, course information, and study resources. Be informative, friendly, and concise. Promote the platform's learning resources including newly added income tax notes."
+            },
+            {
+              role: "user",
+              content: `Previous conversation:\n${context}\n\nUser's new message: ${userMessage}`
+            }
+          ],
+          max_tokens: 150
+        }),
+        // This ensures the request doesn't time out too quickly
+        signal: AbortSignal.timeout(10000)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API responded with status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data.choices[0].message.content.trim();
+    } catch (error) {
+      console.error("Error calling AI API:", error);
+      throw error; // Let the calling function handle the error
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
       handleSendMessage();
     }
   };
 
   const handleVoiceInput = () => {
     // In a real implementation, this would trigger the browser's speech recognition API
-    alert('Voice input feature coming soon!');
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      toast({
+        title: "Voice Recognition Started",
+        description: "Please speak clearly...",
+      });
+      
+      // Speech recognition implementation would go here
+      // For now, we'll just show a toast message
+      setTimeout(() => {
+        toast({
+          title: "Voice Recognition",
+          description: "Voice recognition feature is coming soon!",
+        });
+      }, 2000);
+    } else {
+      toast({
+        title: "Not Supported",
+        description: "Voice recognition is not supported in this browser.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleTextToSpeech = () => {
@@ -134,7 +224,11 @@ const VirtualAssistant = () => {
           window.speechSynthesis.speak(utterance);
         }
       } else {
-        alert('Text-to-speech is not supported in this browser.');
+        toast({
+          title: "Not Supported",
+          description: "Text-to-speech is not supported in this browser.",
+          variant: "destructive"
+        });
       }
     } else {
       if ('speechSynthesis' in window) {
@@ -161,21 +255,12 @@ const VirtualAssistant = () => {
     }
     
     setChatHistory([...chatHistory, { sender: 'user', text: actionMessage }]);
+    setMessage('');
     
-    // Simulate AI response
+    // Call send message to get AI response
     setTimeout(() => {
-      const responses = {
-        'explain': 'I\'d be happy to explain this in more detail. What specific aspects are you finding challenging?',
-        'example': 'Here\'s an example that might help illustrate this concept...',
-        'translate': 'I can help translate content. Which language would you prefer?',
-        'default': 'I\'m here to help! Please let me know what you need assistance with.'
-      };
-      
-      setChatHistory(prev => [...prev, { 
-        sender: 'bot', 
-        text: responses[action as keyof typeof responses] || responses.default 
-      }]);
-    }, 1000);
+      handleSendMessage();
+    }, 100);
   };
 
   return (
@@ -241,6 +326,16 @@ const VirtualAssistant = () => {
                       </div>
                     </div>
                   ))}
+                  {isLoading && (
+                    <div className="flex justify-start">
+                      <div className="bg-cyber-light text-gray-200 rounded-lg p-3 max-w-[80%] mr-auto rounded-tl-none">
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin text-royal-blue" />
+                          <p className="text-sm">Thinking...</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   <div ref={messageEndRef} />
                 </div>
               </div>
@@ -277,14 +372,13 @@ const VirtualAssistant = () => {
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 bg-cyber-light rounded-full px-4 py-2 text-gray-200 text-sm flex items-center">
-                    <input 
-                      type="text" 
+                  <div className="flex-1 bg-cyber-light rounded-lg px-4 py-2 text-gray-200 text-sm">
+                    <Textarea 
                       placeholder="Type your question..." 
-                      className="bg-transparent outline-none w-full"
+                      className="bg-transparent border-0 outline-none w-full min-h-[24px] max-h-[100px] p-0 resize-none text-sm"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      onKeyPress={handleKeyPress}
+                      onKeyDown={handleKeyPress}
                     />
                   </div>
                   <Button 
@@ -298,9 +392,9 @@ const VirtualAssistant = () => {
                     onClick={handleSendMessage}
                     className="p-2 rounded-full bg-royal-blue text-white hover:bg-royal-blue/80"
                     aria-label="Send message"
-                    disabled={!message.trim()}
+                    disabled={!message.trim() || isLoading}
                   >
-                    <Send size={18} />
+                    {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send size={18} />}
                   </Button>
                 </div>
               </div>
