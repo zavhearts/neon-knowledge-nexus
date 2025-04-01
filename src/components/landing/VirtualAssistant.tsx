@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, X, Mic, Volume2, MessageSquare, Globe, Lightbulb, BookOpen, Send, Loader2, Lock } from 'lucide-react';
@@ -79,7 +78,6 @@ const VirtualAssistant = () => {
   }, [currentTextIndex, isVisible]);
 
   useEffect(() => {
-    // Scroll to the bottom of the chat when new messages are added
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory]);
 
@@ -112,13 +110,10 @@ const VirtualAssistant = () => {
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
-    // Add user message to chat
     setChatHistory([...chatHistory, { sender: 'user', text: message }]);
     
-    // Set loading state
     setIsLoading(true);
 
-    // Check if API key is set
     if (!apiKey) {
       setApiKeyDialogOpen(true);
       setIsLoading(false);
@@ -126,16 +121,13 @@ const VirtualAssistant = () => {
     }
     
     try {
-      // Generate context from previous messages (last 5 messages)
       const context = chatHistory
         .slice(-5)
         .map(msg => `${msg.sender === 'user' ? 'User' : 'Assistant'}: ${msg.text}`)
         .join('\n');
       
-      // Call the selected AI API
       const response = await fetchAIResponse(message, context, apiKey, apiProvider);
       
-      // Add AI response to chat
       setChatHistory(prev => [...prev, { sender: 'bot', text: response }]);
     } catch (error) {
       console.error('Error fetching AI response:', error);
@@ -145,7 +137,6 @@ const VirtualAssistant = () => {
         variant: "destructive"
       });
       
-      // Fallback to simple pattern matching for demo purposes
       let fallbackResponse = '';
       
       if (message.toLowerCase().includes('course')) {
@@ -216,8 +207,30 @@ const VirtualAssistant = () => {
         };
         break;
       
+      case 'groq':
+        API_URL = "https://api.groq.com/openai/v1/chat/completions";
+        headers = {
+          ...headers,
+          "Authorization": `Bearer ${key}`
+        };
+        requestBody = {
+          model: "llama3-8b-8192",
+          messages: [
+            {
+              role: "system",
+              content: "You are a helpful AI learning assistant for EasyWin Learning Hub, an educational platform. You help users with their educational needs, course information, and study resources. Be informative, friendly, and concise. Promote the platform's learning resources including newly added income tax notes."
+            },
+            {
+              role: "user",
+              content: `Previous conversation:\n${context}\n\nUser's new message: ${userMessage}`
+            }
+          ],
+          max_tokens: 150,
+          temperature: 0.7
+        };
+        break;
+      
       default:
-        // Free API fallback
         API_URL = "https://api.communicateai.net/v1/chat/completions";
         requestBody = {
           model: "gpt-3.5-turbo",
@@ -240,7 +253,6 @@ const VirtualAssistant = () => {
         method: "POST",
         headers,
         body: JSON.stringify(requestBody),
-        // This ensures the request doesn't time out too quickly
         signal: AbortSignal.timeout(10000)
       });
       
@@ -250,8 +262,7 @@ const VirtualAssistant = () => {
       
       const data = await response.json();
       
-      // Handle different response formats from different providers
-      if (provider === 'openai') {
+      if (provider === 'openai' || provider === 'groq') {
         return data.choices[0].message.content.trim();
       } else if (provider === 'anthropic') {
         return data.content[0].text;
@@ -260,7 +271,7 @@ const VirtualAssistant = () => {
       }
     } catch (error) {
       console.error("Error calling AI API:", error);
-      throw error; // Let the calling function handle the error
+      throw error;
     }
   };
 
@@ -272,15 +283,12 @@ const VirtualAssistant = () => {
   };
 
   const handleVoiceInput = () => {
-    // In a real implementation, this would trigger the browser's speech recognition API
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       toast({
         title: "Voice Recognition Started",
         description: "Please speak clearly...",
       });
       
-      // Speech recognition implementation would go here
-      // For now, we'll just show a toast message
       setTimeout(() => {
         toast({
           title: "Voice Recognition",
@@ -297,12 +305,9 @@ const VirtualAssistant = () => {
   };
 
   const handleTextToSpeech = () => {
-    // Toggle speaking state for UI feedback
     setIsSpeaking(!isSpeaking);
     
-    // In a real implementation, this would use the Web Speech API
     if (!isSpeaking) {
-      // Simple demo of text-to-speech using browser's built-in speech synthesis
       if ('speechSynthesis' in window) {
         const latestBotMessage = [...chatHistory].reverse().find(msg => msg.sender === 'bot');
         if (latestBotMessage) {
@@ -343,7 +348,6 @@ const VirtualAssistant = () => {
     setChatHistory([...chatHistory, { sender: 'user', text: actionMessage }]);
     setMessage('');
     
-    // Call send message to get AI response
     setTimeout(() => {
       handleSendMessage();
     }, 100);
@@ -499,7 +503,6 @@ const VirtualAssistant = () => {
               </div>
             </div>
             
-            {/* Collapsed chat bubble */}
             {!isVisible && (
               <motion.button
                 className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-royal-blue text-white shadow-neon-glow flex items-center justify-center"
@@ -516,7 +519,6 @@ const VirtualAssistant = () => {
         )}
       </AnimatePresence>
 
-      {/* API Key Dialog */}
       <Dialog open={apiKeyDialogOpen} onOpenChange={setApiKeyDialogOpen}>
         <DialogContent className="sm:max-w-[425px] bg-cyber-dark text-white border border-neon-blue/30">
           <DialogHeader>
@@ -538,6 +540,7 @@ const VirtualAssistant = () => {
               >
                 <option value="openai">OpenAI (GPT-4o-mini)</option>
                 <option value="anthropic">Anthropic (Claude)</option>
+                <option value="groq">Groq (Llama 3)</option>
                 <option value="free">Free API (Limited)</option>
               </select>
             </div>
