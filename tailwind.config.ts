@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -68,11 +67,11 @@ export default {
 				'royal-blue': '#007BFF',
 				'teal': '#17A2B8',
 				'gold': '#FFD700',
-				// VedaGenie theme colors
-				'royal-purple': '#4B0082',
-				'rich-gold': '#FFD700',
-				'soft-white': '#FAF9F6',
-				'midnight-black': '#1B1B1B',
+				// New futuristic theme colors
+				'mystic-blue': '#1A1F71',
+				'neon-cyan': '#00E5FF',
+				'electric-purple': '#8A2BE2',
+				'charcoal-black': '#121212',
 			},
 			fontFamily: {
 				'montserrat': ['Montserrat', 'sans-serif'],
@@ -160,6 +159,22 @@ export default {
 					'100%': {
 						content: 'attr(data-count)'
 					}
+				},
+				'neon-pulse': {
+					'0%, 100%': {
+						boxShadow: '0 0 15px 5px rgba(0, 229, 255, 0.4)'
+					},
+					'50%': {
+						boxShadow: '0 0 25px 10px rgba(0, 229, 255, 0.7)'
+					}
+				},
+				'cyber-glow': {
+					'0%, 100%': {
+						textShadow: '0 0 10px rgba(0, 229, 255, 0.7), 0 0 20px rgba(0, 229, 255, 0.5)'
+					},
+					'50%': {
+						textShadow: '0 0 15px rgba(0, 229, 255, 1), 0 0 30px rgba(0, 229, 255, 0.8)'
+					}
 				}
 			},
 			animation: {
@@ -172,7 +187,9 @@ export default {
 				'fade-in': 'fade-in 0.7s ease-out forwards',
 				'slide-up': 'slide-up 0.9s ease-out forwards',
 				'glow-pulse': 'glow-pulse 2s infinite',
-				'count-up': 'count-up 2s forwards'
+				'count-up': 'count-up 2s forwards',
+				'neon-pulse': 'neon-pulse 2s infinite',
+				'cyber-glow': 'cyber-glow 2s infinite'
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(circle, var(--tw-gradient-stops))'
@@ -181,6 +198,8 @@ export default {
 				'neon-glow': '0 0 15px 5px rgba(0, 123, 255, 0.5)',
 				'teal-glow': '0 0 15px 5px rgba(23, 162, 184, 0.5)',
 				'gold-glow': '0 0 15px 5px rgba(255, 193, 7, 0.5)',
+				'cyan-glow': '0 0 15px 5px rgba(0, 229, 255, 0.5)',
+				'purple-glow': '0 0 15px 5px rgba(138, 43, 226, 0.5)',
 			}
 		}
 	},

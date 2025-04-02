@@ -30,15 +30,15 @@ const VirtualAssistant = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
   const [apiKey, setApiKey] = useState(localStorage.getItem('ai_api_key') || "6f7b765a-80f4-49d9-a187-a08b3cba21b4");
-  const [apiProvider, setApiProvider] = useState(localStorage.getItem('ai_provider') || "groq");
+  const [apiProvider, setApiProvider] = useState(localStorage.getItem('ai_provider') || "llama");
   const [chatHistory, setChatHistory] = useState([
-    { sender: 'bot', text: 'Namaste! I\'m VedaGenie, your AI learning assistant. How can I help with your studies today?' }
+    { sender: 'bot', text: 'Hai! I\'m VedaGenie, your AI learning assistant. How can I help with your studies today?' }
   ]);
   const messageEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const assistantTexts = [
-    "Namaste! I'm VedaGenie, your AI learning assistant.",
+    "Hai! I'm VedaGenie, your AI learning assistant.",
     "Welcome to the world of ancient wisdom and modern learning!",
     "Empowering Learning with the Wisdom of the Ages",
     "How can I assist on your path to knowledge today?",
@@ -144,11 +144,7 @@ const VirtualAssistant = () => {
       
       if (error instanceof Error) {
         if (error.message.includes("credits") || error.message.includes("403")) {
-          if (apiProvider === 'xai') {
-            errorDescription = "Your X.ai account has no credits. Please purchase credits or try a different API provider.";
-          } else {
-            errorDescription = "API key error: Access denied. Please check your API key or try a different provider.";
-          }
+          errorDescription = "API key error: Access denied. Please check your API key or try a different provider.";
         } else if (error.message.includes("429")) {
           errorDescription = "Rate limit exceeded. Please try again later.";
         }
@@ -178,8 +174,6 @@ const VirtualAssistant = () => {
       return 'We support multiple languages! You can change your preferred language from the language selector in the header.';
     } else if (lowerCaseMsg.includes('income tax')) {
       return 'We just added new income tax resources! You can find comprehensive notes on calculations, planning, and strategies in our resources section.';
-    } else if (lowerCaseMsg.includes('xai') || lowerCaseMsg.includes('x.ai') || lowerCaseMsg.includes('grok')) {
-      return 'X.ai (Grok) requires an active subscription with credits. If you\'re having trouble, you might want to try one of our other AI providers like OpenAI or Groq.';
     } else {
       return 'Thank you for your message. How else can I assist you with your learning journey?';
     }
@@ -234,14 +228,14 @@ const VirtualAssistant = () => {
         };
         break;
       
-      case 'groq':
-        API_URL = "https://api.groq.com/openai/v1/chat/completions";
+      case 'llama':
+        API_URL = "https://api.llmapi.com/chat/completions";
         headers = {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${key}`
         };
         requestBody = {
-          model: "llama3-8b-8192",
+          model: "undefined",
           messages: [
             {
               role: "system",
@@ -319,7 +313,7 @@ const VirtualAssistant = () => {
       const data = await response.json();
       console.log(`${provider} API response:`, data);
       
-      if (provider === 'openai' || provider === 'groq' || provider === 'xai') {
+      if (provider === 'openai' || provider === 'llama' || provider === 'xai') {
         return data.choices[0].message.content.trim();
       } else if (provider === 'anthropic') {
         return data.content[0].text;
@@ -426,16 +420,16 @@ const VirtualAssistant = () => {
             exit="exit"
           >
             <div className="relative rounded-xl shadow-lg overflow-hidden">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-royal-purple via-rich-gold to-royal-purple rounded-xl opacity-70 animate-pulse"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-mystic-blue via-neon-cyan to-electric-purple rounded-xl opacity-70 animate-pulse"></div>
               
-              <div className="relative glassmorphic rounded-xl border border-rich-gold/30">
-                <div className="bg-royal-purple p-3 flex justify-between items-center border-b border-rich-gold/30">
+              <div className="relative glassmorphic rounded-xl border border-neon-cyan/30">
+                <div className="bg-mystic-blue p-3 flex justify-between items-center border-b border-neon-cyan/30">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 rounded-full bg-rich-gold/20 flex items-center justify-center mr-3 shadow-md">
-                      <Bot className="text-rich-gold" size={18} />
+                    <div className="w-8 h-8 rounded-full bg-neon-cyan/20 flex items-center justify-center mr-3 shadow-md">
+                      <Bot className="text-neon-cyan" size={18} />
                     </div>
                     <div>
-                      <h3 className="text-soft-white text-sm font-medium">VedaGenie</h3>
+                      <h3 className="text-white text-sm font-medium">VedaGenie</h3>
                       <div className="flex items-center">
                         <span className="w-2 h-2 bg-green-500 rounded-full mr-1.5"></span>
                         <span className="text-green-500 text-xs">Online</span>
@@ -445,29 +439,29 @@ const VirtualAssistant = () => {
                   <div className="flex items-center space-x-2">
                     <Button
                       onClick={handleTextToSpeech}
-                      className={`p-1.5 hover:bg-royal-purple/50 rounded-full transition-colors ${isSpeaking ? 'bg-rich-gold/20' : ''}`}
+                      className={`p-1.5 hover:bg-mystic-blue/50 rounded-full transition-colors ${isSpeaking ? 'bg-neon-cyan/20' : ''}`}
                       aria-label="Text to speech"
                     >
-                      <Volume2 className={`${isSpeaking ? 'text-rich-gold' : 'text-gray-400 hover:text-soft-white'}`} size={16} />
+                      <Volume2 className={`${isSpeaking ? 'text-neon-cyan' : 'text-gray-400 hover:text-white'}`} size={16} />
                     </Button>
                     <Button
                       onClick={openApiSettings}
-                      className="p-1.5 hover:bg-royal-purple/50 rounded-full transition-colors"
+                      className="p-1.5 hover:bg-mystic-blue/50 rounded-full transition-colors"
                       aria-label="API Settings"
                     >
-                      <Lock className="text-gray-400 hover:text-soft-white" size={16} />
+                      <Lock className="text-gray-400 hover:text-white" size={16} />
                     </Button>
                     <Button 
                       onClick={() => setIsVisible(false)}
-                      className="p-1.5 hover:bg-royal-purple/50 rounded-full transition-colors"
+                      className="p-1.5 hover:bg-mystic-blue/50 rounded-full transition-colors"
                       aria-label="Close assistant"
                     >
-                      <X className="text-gray-400 hover:text-soft-white" size={16} />
+                      <X className="text-gray-400 hover:text-white" size={16} />
                     </Button>
                   </div>
                 </div>
                 
-                <div className="p-4 bg-midnight-black/90 max-h-80 overflow-y-auto">
+                <div className="p-4 bg-charcoal-black/90 max-h-80 overflow-y-auto">
                   <div className="space-y-4">
                     {chatHistory.map((msg, index) => (
                       <div 
@@ -477,8 +471,8 @@ const VirtualAssistant = () => {
                         <div 
                           className={`max-w-[80%] rounded-lg p-3 ${
                             msg.sender === 'user' 
-                              ? 'bg-royal-purple text-soft-white ml-auto rounded-tr-none' 
-                              : 'bg-midnight-black border border-rich-gold/30 text-soft-white mr-auto rounded-tl-none'
+                              ? 'bg-mystic-blue text-white ml-auto rounded-tr-none' 
+                              : 'bg-charcoal-black border border-neon-cyan/30 text-white mr-auto rounded-tl-none'
                           }`}
                         >
                           <p className="text-sm">{msg.text}</p>
@@ -487,9 +481,9 @@ const VirtualAssistant = () => {
                     ))}
                     {isLoading && (
                       <div className="flex justify-start">
-                        <div className="bg-midnight-black border border-rich-gold/30 text-soft-white rounded-lg p-3 max-w-[80%] mr-auto rounded-tl-none">
+                        <div className="bg-charcoal-black border border-neon-cyan/30 text-white rounded-lg p-3 max-w-[80%] mr-auto rounded-tl-none">
                           <div className="flex items-center gap-2">
-                            <Loader2 className="h-4 w-4 animate-spin text-rich-gold" />
+                            <Loader2 className="h-4 w-4 animate-spin text-neon-cyan" />
                             <p className="text-sm">Thinking...</p>
                           </div>
                         </div>
@@ -499,12 +493,12 @@ const VirtualAssistant = () => {
                   </div>
                 </div>
                 
-                <div className="p-2 bg-royal-purple border-t border-rich-gold/30">
+                <div className="p-2 bg-mystic-blue border-t border-neon-cyan/30">
                   <div className="flex flex-wrap gap-1 mb-2">
                     <Button 
                       size="sm" 
                       variant="outline" 
-                      className="text-xs py-1 h-7 bg-rich-gold/10 border-rich-gold/30 text-rich-gold hover:bg-rich-gold/20"
+                      className="text-xs py-1 h-7 bg-neon-cyan/10 border-neon-cyan/30 text-neon-cyan hover:bg-neon-cyan/20"
                       onClick={() => handleQuickAction('explain')}
                     >
                       <Lightbulb className="h-3 w-3 mr-1" />
@@ -513,7 +507,7 @@ const VirtualAssistant = () => {
                     <Button 
                       size="sm" 
                       variant="outline" 
-                      className="text-xs py-1 h-7 bg-rich-gold/10 border-rich-gold/30 text-rich-gold hover:bg-rich-gold/20"
+                      className="text-xs py-1 h-7 bg-neon-cyan/10 border-neon-cyan/30 text-neon-cyan hover:bg-neon-cyan/20"
                       onClick={() => handleQuickAction('example')}
                     >
                       <BookOpen className="h-3 w-3 mr-1" />
@@ -522,7 +516,7 @@ const VirtualAssistant = () => {
                     <Button 
                       size="sm" 
                       variant="outline" 
-                      className="text-xs py-1 h-7 bg-rich-gold/10 border-rich-gold/30 text-rich-gold hover:bg-rich-gold/20"
+                      className="text-xs py-1 h-7 bg-neon-cyan/10 border-neon-cyan/30 text-neon-cyan hover:bg-neon-cyan/20"
                       onClick={() => handleQuickAction('translate')}
                     >
                       <Globe className="h-3 w-3 mr-1" />
@@ -531,7 +525,7 @@ const VirtualAssistant = () => {
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 bg-midnight-black/80 rounded-lg px-4 py-2 text-soft-white text-sm">
+                    <div className="flex-1 bg-charcoal-black/80 rounded-lg px-4 py-2 text-white text-sm">
                       <Textarea 
                         placeholder="Ask VedaGenie a question..." 
                         className="bg-transparent border-0 outline-none w-full min-h-[24px] max-h-[100px] p-0 resize-none text-sm"
@@ -542,14 +536,14 @@ const VirtualAssistant = () => {
                     </div>
                     <Button 
                       onClick={handleVoiceInput}
-                      className="p-2 rounded-full bg-rich-gold/10 text-rich-gold hover:bg-rich-gold/20"
+                      className="p-2 rounded-full bg-neon-cyan/10 text-neon-cyan hover:bg-neon-cyan/20"
                       aria-label="Voice input"
                     >
                       <Mic size={18} />
                     </Button>
                     <Button 
                       onClick={handleSendMessage}
-                      className="p-2 rounded-full bg-rich-gold text-midnight-black hover:bg-rich-gold/80"
+                      className="p-2 rounded-full bg-neon-cyan text-charcoal-black hover:bg-neon-cyan/80"
                       aria-label="Send message"
                       disabled={!message.trim() || isLoading}
                     >
@@ -562,7 +556,7 @@ const VirtualAssistant = () => {
             
             {!isVisible && (
               <motion.button
-                className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-royal-purple text-rich-gold shadow-lg flex items-center justify-center border border-rich-gold/30"
+                className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-mystic-blue text-neon-cyan shadow-lg flex items-center justify-center border border-neon-cyan/30"
                 onClick={() => setIsVisible(true)}
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -577,10 +571,10 @@ const VirtualAssistant = () => {
       </AnimatePresence>
 
       <Dialog open={apiKeyDialogOpen} onOpenChange={setApiKeyDialogOpen}>
-        <DialogContent className="sm:max-w-[425px] bg-midnight-black text-soft-white border border-rich-gold/30">
+        <DialogContent className="sm:max-w-[425px] bg-charcoal-black text-white border border-neon-cyan/30">
           <DialogHeader>
-            <DialogTitle className="text-rich-gold">Configure AI Provider</DialogTitle>
-            <DialogDescription className="text-soft-white/80">
+            <DialogTitle className="text-neon-cyan">Configure AI Provider</DialogTitle>
+            <DialogDescription className="text-white/80">
               Enter your API key to connect to your preferred AI service. Your key is stored locally in your browser.
             </DialogDescription>
           </DialogHeader>
@@ -591,13 +585,13 @@ const VirtualAssistant = () => {
               </Label>
               <select 
                 id="provider"
-                className="col-span-3 bg-royal-purple/20 border border-rich-gold/30 rounded-md p-2 text-soft-white"
+                className="col-span-3 bg-mystic-blue/20 border border-neon-cyan/30 rounded-md p-2 text-white"
                 value={apiProvider}
                 onChange={(e) => setApiProvider(e.target.value)}
               >
                 <option value="openai">OpenAI (GPT-4o-mini)</option>
                 <option value="anthropic">Anthropic (Claude)</option>
-                <option value="groq">Groq (Llama 3)</option>
+                <option value="llama">Llama AI</option>
                 <option value="xai">X.ai (Grok)</option>
                 <option value="free">Free API (Limited)</option>
               </select>
@@ -612,12 +606,15 @@ const VirtualAssistant = () => {
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="Enter your API key"
-                className="col-span-3 bg-royal-purple/20 border border-rich-gold/30 text-soft-white"
+                className="col-span-3 bg-mystic-blue/20 border border-neon-cyan/30 text-white"
               />
             </div>
             <div className="col-span-4 text-xs text-amber-400 px-2">
               {apiProvider === 'xai' && (
                 <p>Note: X.ai requires an active subscription with credits. Please visit the X.ai console to ensure your account has available credits.</p>
+              )}
+              {apiProvider === 'llama' && (
+                <p>Note: Using Llama AI with your provided API key. The default endpoint is https://api.llmapi.com/chat/completions</p>
               )}
             </div>
           </div>
@@ -625,7 +622,7 @@ const VirtualAssistant = () => {
             <Button 
               type="submit" 
               onClick={saveApiKey}
-              className="bg-rich-gold text-midnight-black hover:bg-rich-gold/80"
+              className="bg-neon-cyan text-charcoal-black hover:bg-neon-cyan/80"
             >
               Save changes
             </Button>

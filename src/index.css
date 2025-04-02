@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
@@ -46,11 +47,11 @@
     --dark-bg: 220 18% 13%;
     --dark-card: 220 18% 20%;
     
-    /* VedaGenie colors */
-    --royal-purple: 275 100% 25%;
-    --rich-gold: 51 100% 50%;
-    --soft-white: 40 100% 99%;
-    --midnight-black: 0 0% 11%;
+    /* New futuristic theme colors */
+    --mystic-blue: 236 61% 27%;
+    --neon-cyan: 186 100% 50%;
+    --electric-purple: 275 77% 52%;
+    --charcoal-black: 0 0% 7%;
   }
 
   .dark {
@@ -142,33 +143,33 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at center, rgba(75, 0, 130, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle at center, rgba(0, 229, 255, 0.1) 0%, transparent 70%);
     z-index: 0;
     animation: holographicGlow 10s ease-in-out infinite;
   }
   
   .bg-cyber-dark {
-    @apply bg-royal-purple;
+    @apply bg-mystic-blue;
   }
   
   .bg-cyber-darker {
-    @apply bg-royal-purple/80;
+    @apply bg-mystic-blue/80;
   }
   
   .bg-cyber-light {
-    @apply bg-royal-purple/40;
+    @apply bg-mystic-blue/40;
   }
   
   .bg-circuit-pattern {
     background-image: 
-      radial-gradient(circle at 10% 20%, rgba(75, 0, 130, 0.8) 0%, transparent 40%),
-      linear-gradient(to bottom, transparent, rgba(255, 215, 0, 0.05));
+      radial-gradient(circle at 10% 20%, rgba(26, 31, 113, 0.8) 0%, transparent 40%),
+      linear-gradient(to bottom, transparent, rgba(0, 229, 255, 0.05));
     background-size: cover;
     background-attachment: fixed;
   }
 
   .cyber-card {
-    @apply bg-royal-purple/10 border border-rich-gold/30 p-6 rounded-lg transition-transform duration-300 hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(255,215,0,0.3)] relative overflow-hidden;
+    @apply bg-mystic-blue/10 border border-neon-cyan/30 p-6 rounded-lg transition-transform duration-300 hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] relative overflow-hidden;
   }
   
   .cyber-card::after {
@@ -192,11 +193,11 @@
   }
   
   .cyber-button {
-    @apply bg-rich-gold text-midnight-black font-semibold relative overflow-hidden transition-all duration-300 border border-rich-gold/80 shadow-[0_0_10px_rgba(255,215,0,0.5)];
+    @apply bg-neon-cyan text-charcoal-black font-semibold relative overflow-hidden transition-all duration-300 border border-neon-cyan/80 shadow-[0_0_10px_rgba(0,229,255,0.5)];
   }
   
   .cyber-button:hover {
-    @apply shadow-[0_0_20px_rgba(255,215,0,0.8)] translate-y-[-3px];
+    @apply shadow-[0_0_20px_rgba(0,229,255,0.8)] translate-y-[-3px];
   }
   
   .cyber-button::before {
@@ -215,7 +216,7 @@
   }
   
   .glassmorphic {
-    background: rgba(75, 0, 130, 0.8);
+    background: rgba(26, 31, 113, 0.8);
     backdrop-filter: blur(10px);
     transition: background 0.3s ease;
   }
@@ -223,80 +224,80 @@
   .bg-cyber-grid {
     background-size: 50px 50px;
     background-image:
-      linear-gradient(to right, rgba(255, 215, 0, 0.1) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 215, 0, 0.1) 1px, transparent 1px);
+      linear-gradient(to right, rgba(0, 229, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 229, 255, 0.1) 1px, transparent 1px);
   }
 
   .neon-border {
-    @apply border border-rich-gold/50 shadow-[0_0_10px_rgba(255,215,0,0.5)];
+    @apply border border-neon-cyan/50 shadow-[0_0_10px_rgba(0,229,255,0.5)];
   }
 
   .neon-text {
-    @apply text-rich-gold;
-    text-shadow: 0 0 5px theme('colors.yellow.400'), 0 0 10px rgba(255, 215, 0, 0.5);
+    @apply text-neon-cyan;
+    text-shadow: 0 0 5px theme('colors.blue.400'), 0 0 10px rgba(0, 229, 255, 0.5);
   }
   
   .animate-pulse-glow {
     animation: pulseGlow 2s infinite;
   }
 
-  .text-royal-purple {
-    color: #4B0082;
+  .text-mystic-blue {
+    color: #1A1F71;
   }
   
-  .bg-royal-purple {
-    background-color: #4B0082;
+  .bg-mystic-blue {
+    background-color: #1A1F71;
   }
   
-  .text-rich-gold {
-    color: #FFD700;
+  .text-neon-cyan {
+    color: #00E5FF;
   }
   
-  .bg-rich-gold {
-    background-color: #FFD700;
+  .bg-neon-cyan {
+    background-color: #00E5FF;
   }
   
-  .text-soft-white {
-    color: #FAF9F6;
+  .text-electric-purple {
+    color: #8A2BE2;
   }
   
-  .bg-soft-white {
-    background-color: #FAF9F6;
+  .bg-electric-purple {
+    background-color: #8A2BE2;
   }
   
-  .text-midnight-black {
-    color: #1B1B1B;
+  .text-charcoal-black {
+    color: #121212;
   }
   
-  .bg-midnight-black {
-    background-color: #1B1B1B;
+  .bg-charcoal-black {
+    background-color: #121212;
   }
 }
 
 @keyframes textPulse {
   0%, 100% {
-    text-shadow: 0 0 10px theme('colors.blue.400'), 0 0 20px rgba(0, 123, 255, 0.5);
+    text-shadow: 0 0 10px theme('colors.blue.400'), 0 0 20px rgba(0, 229, 255, 0.5);
   }
   50% {
-    text-shadow: 0 0 15px theme('colors.blue.400'), 0 0 30px rgba(0, 123, 255, 0.8);
+    text-shadow: 0 0 15px theme('colors.blue.400'), 0 0 30px rgba(0, 229, 255, 0.8);
   }
 }
 
 @keyframes pulseGlow {
   0%, 100% {
-    text-shadow: 0 0 10px theme('colors.blue.400'), 0 0 20px rgba(0, 123, 255, 0.5);
+    text-shadow: 0 0 10px theme('colors.blue.400'), 0 0 20px rgba(0, 229, 255, 0.5);
   }
   50% {
-    text-shadow: 0 0 20px theme('colors.blue.400'), 0 0 40px rgba(0, 123, 255, 0.8);
+    text-shadow: 0 0 20px theme('colors.blue.400'), 0 0 40px rgba(0, 229, 255, 0.8);
   }
 }
 
 @keyframes holographicGlow {
   0%, 100% {
-    background: radial-gradient(circle at center, rgba(0, 123, 255, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle at center, rgba(0, 229, 255, 0.1) 0%, transparent 70%);
   }
   50% {
-    background: radial-gradient(circle at center, rgba(23, 162, 184, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle at center, rgba(138, 43, 226, 0.1) 0%, transparent 70%);
   }
 }
 
@@ -327,19 +328,19 @@
     border-color: #FFC107;
   }
   
-  .border-royal-purple {
-    border-color: #4B0082;
+  .border-mystic-blue {
+    border-color: #1A1F71;
   }
   
-  .border-rich-gold {
-    border-color: #FFD700;
+  .border-neon-cyan {
+    border-color: #00E5FF;
   }
   
-  .border-soft-white {
-    border-color: #FAF9F6;
+  .border-electric-purple {
+    border-color: #8A2BE2;
   }
   
-  .border-midnight-black {
-    border-color: #1B1B1B;
+  .border-charcoal-black {
+    border-color: #121212;
   }
 }
