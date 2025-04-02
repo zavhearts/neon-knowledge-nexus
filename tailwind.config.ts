@@ -67,7 +67,12 @@ export default {
 				'dark-blue': '#2C3E50',
 				'royal-blue': '#007BFF',
 				'teal': '#17A2B8',
-				'gold': '#FFC107',
+				'gold': '#FFD700',
+				// VedaGenie theme colors
+				'royal-purple': '#4B0082',
+				'rich-gold': '#FFD700',
+				'soft-white': '#FAF9F6',
+				'midnight-black': '#1B1B1B',
 			},
 			fontFamily: {
 				'montserrat': ['Montserrat', 'sans-serif'],
