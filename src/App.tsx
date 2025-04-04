@@ -11,6 +11,7 @@ import Resources from "./pages/Resources";
 import LiveClasses from "./pages/LiveClasses";
 import Admin from "./pages/Admin";
 import TeacherDashboard from "./pages/TeacherDashboard";
+import UploadContent from "./pages/UploadContent";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/live-classes" element={<LiveClasses />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/teacher" element={<TeacherDashboard />} />
+          <Route path="/upload-content" element={<UploadContent />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/mock-test" element={<SmartMockTest />} />

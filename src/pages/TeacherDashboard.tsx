@@ -69,12 +69,16 @@ const TeacherDashboard = () => {
   const [selectedMeeting, setSelectedMeeting] = useState<ZoomMeeting | null>(null);
   
   const [taxNotesPdfs, setTaxNotesPdfs] = useState(TAX_NOTES_PDFS);
+  const [showUploadForm, setShowUploadForm] = useState(false);
+  const [uploadType, setUploadType] = useState<"Video" | "Resource" | "">("");
 
   const handleUploadClick = (type: string) => {
-    if (type === "Video" && videoFileInputRef.current) {
-      videoFileInputRef.current.click();
-    } else if (type === "Resource" && resourceFileInputRef.current) {
-      resourceFileInputRef.current.click();
+    if (type === "Video") {
+      setUploadType("Video");
+      setShowUploadForm(true);
+    } else if (type === "Resource") {
+      setUploadType("Resource");
+      setShowUploadForm(true);
     } else if (type === "VideoThumbnail" && videoThumbnailInputRef.current) {
       videoThumbnailInputRef.current.click();
     } else if (type === "ResourceThumbnail" && resourceThumbnailInputRef.current) {
@@ -82,7 +86,7 @@ const TeacherDashboard = () => {
     } else if (type === "ZoomMeeting") {
       setShowMeetingForm(true);
     } else if (type === "AddClass") {
-      window.open("/resources", "_blank");
+      window.open("/upload-content?type=video", "_blank");
     }
   };
 
@@ -96,19 +100,47 @@ const TeacherDashboard = () => {
           ...prev,
           video: [...prev.video, ...fileArray]
         }));
-        toast({
-          title: `Video Uploaded Successfully`,
-          description: `${fileArray.map(f => f.name).join(', ')} has been uploaded.`,
-        });
+        
+        if (uploadedFiles.videoThumbnail.length < uploadedFiles.video.length + fileArray.length) {
+          toast({
+            title: `Video Uploaded Successfully`,
+            description: `${fileArray.map(f => f.name).join(', ')} has been uploaded. Please add a thumbnail.`,
+          });
+          
+          setTimeout(() => {
+            if (videoThumbnailInputRef.current) {
+              videoThumbnailInputRef.current.click();
+            }
+          }, 500);
+        } else {
+          toast({
+            title: `Video Uploaded Successfully`,
+            description: `${fileArray.map(f => f.name).join(', ')} has been uploaded.`,
+          });
+        }
       } else if (type === "Resource") {
         setUploadedFiles(prev => ({
           ...prev,
           resource: [...prev.resource, ...fileArray]
         }));
-        toast({
-          title: `Resource Uploaded Successfully`,
-          description: `${fileArray.map(f => f.name).join(', ')} has been uploaded.`,
-        });
+        
+        if (uploadedFiles.resourceThumbnail.length < uploadedFiles.resource.length + fileArray.length) {
+          toast({
+            title: `Resource Uploaded Successfully`,
+            description: `${fileArray.map(f => f.name).join(', ')} has been uploaded. Please add a thumbnail.`,
+          });
+          
+          setTimeout(() => {
+            if (resourceThumbnailInputRef.current) {
+              resourceThumbnailInputRef.current.click();
+            }
+          }, 500);
+        } else {
+          toast({
+            title: `Resource Uploaded Successfully`,
+            description: `${fileArray.map(f => f.name).join(', ')} has been uploaded.`,
+          });
+        }
         
         if (fileArray.some(file => file.name.toLowerCase().endsWith('.pdf'))) {
           toast({
@@ -200,6 +232,11 @@ const TeacherDashboard = () => {
   
   const handleCloseMeetingDialog = () => {
     setSelectedMeeting(null);
+  };
+
+  const handleCloseUploadForm = () => {
+    setShowUploadForm(false);
+    setUploadType("");
   };
 
   return (
@@ -310,6 +347,77 @@ const TeacherDashboard = () => {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={showUploadForm} onOpenChange={setShowUploadForm}>
+        <DialogContent className="bg-cyber-darker border-neon-blue/50 max-w-2xl">
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold animated-text">
+              Upload {uploadType === "Video" ? "Video" : "Resource"}
+            </h2>
+            
+            <div className="space-y-6 py-4">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-white/70">
+                  Select {uploadType} File
+                </label>
+                <div 
+                  className="border-2 border-dashed border-neon-blue/50 rounded-lg p-8 text-center cursor-pointer hover:bg-neon-blue/5 transition-colors"
+                  onClick={() => uploadType === "Video" ? videoFileInputRef.current?.click() : resourceFileInputRef.current?.click()}
+                >
+                  <input 
+                    type="file" 
+                    hidden 
+                    ref={uploadType === "Video" ? videoFileInputRef : resourceFileInputRef}
+                    onChange={(e) => handleFileChange(e, uploadType)} 
+                    accept={uploadType === "Video" ? "video/*" : "*/*"}
+                  />
+                  <p className="text-white/70 mb-2">Click to select or drag and drop your file here</p>
+                  <Button size="sm">
+                    Select File
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-white/70">
+                  Add Thumbnail (Required)
+                </label>
+                <div 
+                  className="border-2 border-dashed border-neon-pink/50 rounded-lg p-8 text-center cursor-pointer hover:bg-neon-pink/5 transition-colors"
+                  onClick={() => uploadType === "Video" ? videoThumbnailInputRef.current?.click() : resourceThumbnailInputRef.current?.click()}
+                >
+                  <input 
+                    type="file" 
+                    hidden 
+                    ref={uploadType === "Video" ? videoThumbnailInputRef : resourceThumbnailInputRef}
+                    onChange={(e) => handleThumbnailChange(e, uploadType === "Video" ? "Video" : "Resource")} 
+                    accept="image/*"
+                  />
+                  <p className="text-white/70 mb-2">Add a thumbnail image for your {uploadType.toLowerCase()}</p>
+                  <Button size="sm">
+                    Select Image
+                  </Button>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-3 pt-4">
+              <Button 
+                variant="outline"
+                onClick={handleCloseUploadForm}
+              >
+                Cancel
+              </Button>
+              <Button 
+                className="cyber-button"
+                onClick={handleCloseUploadForm}
+              >
+                Finish Upload
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

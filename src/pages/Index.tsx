@@ -4,19 +4,16 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Rocket, BookOpen, Video, Users, FileText, TestTube, Star } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
-import LiveClassesSlider from "@/components/landing/LiveClassesSlider";
+import EventsSlider from "@/components/landing/EventsSlider";
 
-// Animated counter component
 const Counter = ({ end, label, icon: Icon, delay = 0 }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    // Start counting after a delay
     const timer = setTimeout(() => {
-      // Animate count from 0 to end
       let start = 0;
-      const duration = 2000; // 2 seconds
-      const step = end / (duration / 16); // 60fps
+      const duration = 2000;
+      const step = end / (duration / 16);
       
       const interval = setInterval(() => {
         start = Math.min(start + step, end);
@@ -49,7 +46,6 @@ const Counter = ({ end, label, icon: Icon, delay = 0 }) => {
 const HeroSection = () => {
   return (
     <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-r from-white to-gray-100 dark:from-dark-blue dark:to-dark-blue/90">
-      {/* Background effect */}
       <div className="absolute inset-0 bg-gradient-radial from-royal-blue/5 to-transparent opacity-50"></div>
       
       <div className="container mx-auto px-4 py-20 relative z-10">
@@ -104,7 +100,6 @@ const HeroSection = () => {
             transition={{ duration: 0.7, delay: 0.3 }}
           >
             <div className="relative mx-auto max-w-md">
-              {/* Frame effect */}
               <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-royal-blue via-teal to-gold opacity-75 blur-md"></div>
               
               <div className="bg-white dark:bg-dark-blue/50 backdrop-blur-sm rounded-2xl p-1 relative">
@@ -115,7 +110,6 @@ const HeroSection = () => {
                     className="w-full h-auto rounded-xl p-8"
                   />
                   
-                  {/* Floating elements */}
                   <div className="absolute top-6 right-6 p-3 bg-white/80 dark:bg-dark-blue/80 backdrop-blur-sm rounded-full shadow-lg animate-float">
                     <Rocket className="text-royal-blue" size={24} />
                   </div>
@@ -166,7 +160,6 @@ const FeaturesSection = () => {
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Feature 1 */}
           <div 
             className="p-6 rounded-lg bg-white dark:bg-dark-blue/50 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-800"
           >
@@ -179,7 +172,6 @@ const FeaturesSection = () => {
             </p>
           </div>
           
-          {/* Feature 2 */}
           <div 
             className="p-6 rounded-lg bg-white dark:bg-dark-blue/50 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-800"
           >
@@ -192,7 +184,6 @@ const FeaturesSection = () => {
             </p>
           </div>
           
-          {/* Feature 3 */}
           <div 
             className="p-6 rounded-lg bg-white dark:bg-dark-blue/50 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-800"
           >
@@ -205,7 +196,6 @@ const FeaturesSection = () => {
             </p>
           </div>
           
-          {/* Feature 4 */}
           <div 
             className="p-6 rounded-lg bg-white dark:bg-dark-blue/50 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-800"
           >
@@ -218,7 +208,6 @@ const FeaturesSection = () => {
             </p>
           </div>
           
-          {/* Feature 5 */}
           <div 
             className="p-6 rounded-lg bg-white dark:bg-dark-blue/50 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-800"
           >
@@ -231,7 +220,6 @@ const FeaturesSection = () => {
             </p>
           </div>
           
-          {/* Feature 6 */}
           <div 
             className="p-6 rounded-lg bg-white dark:bg-dark-blue/50 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-800"
           >
@@ -286,7 +274,7 @@ const Index = () => {
   return (
     <MainLayout hideHomeButton={true}>
       <HeroSection />
-      <LiveClassesSlider />
+      <EventsSlider />
       <StatsSection />
       <FeaturesSection />
       <CTASection />
