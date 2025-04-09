@@ -34,11 +34,13 @@ const App = () => (
           <Route path="/resources" element={<Resources />} />
           <Route path="/live-classes" element={<LiveClasses />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/about-us" element={<AboutUs />} /> {/* Add the new route */}
+          <Route path="/about-us" element={<AboutUs />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/mock-test" element={<SmartMockTest />} />
           <Route path="/income-tax-notes" element={<IncomeTaxNotes />} />
+          <Route path="/teacher" element={<TeacherDashboard />} />
+          <Route path="/upload-content" element={<UploadContent />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
