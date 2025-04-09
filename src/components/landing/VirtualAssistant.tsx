@@ -29,7 +29,8 @@ const VirtualAssistant = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
-  const [apiKey, setApiKey] = useState(localStorage.getItem('ai_api_key') || "6f7b765a-80f4-49d9-a187-a08b3cba21b4");
+  // Remove the default API key to encourage users to add their own
+  const [apiKey, setApiKey] = useState(localStorage.getItem('ai_api_key') || "");
   const [apiProvider, setApiProvider] = useState(localStorage.getItem('ai_provider') || "novita");
   const [chatHistory, setChatHistory] = useState([
     { sender: 'bot', text: 'Hai! I\'m VedaGenie, your AI learning assistant. How can I help with your studies today?' }
@@ -86,6 +87,23 @@ const VirtualAssistant = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory]);
 
+  // Check for API key on component mount and prompt if missing
+  useEffect(() => {
+    const storedApiKey = localStorage.getItem('ai_api_key');
+    if (!storedApiKey) {
+      // Wait a bit before showing the API key dialog to let the UI initialize
+      const timer = setTimeout(() => {
+        setApiKeyDialogOpen(true);
+        toast({
+          title: "API Key Required",
+          description: "Please enter your Novita AI API key to use the assistant.",
+        });
+      }, 4000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
+
   const containerVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.9 },
     visible: { 
@@ -103,6 +121,15 @@ const VirtualAssistant = () => {
   };
 
   const saveApiKey = () => {
+    if (!apiKey.trim()) {
+      toast({
+        title: "API Key Required",
+        description: "Please enter a valid API key.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     localStorage.setItem('ai_api_key', apiKey);
     localStorage.setItem('ai_provider', apiProvider);
     setApiKeyDialogOpen(false);
@@ -143,7 +170,10 @@ const VirtualAssistant = () => {
       let errorDescription = "Could not connect to AI service. Using fallback responses.";
       
       if (error instanceof Error) {
-        if (error.message.includes("credits") || error.message.includes("403")) {
+        if (error.message.includes("401") || error.message.includes("FAILED_TO_AUTH")) {
+          errorDescription = "Invalid API key. Please check your API key in settings.";
+          setApiKeyDialogOpen(true);
+        } else if (error.message.includes("credits") || error.message.includes("403")) {
           errorDescription = "API key error: Access denied. Please check your API key or try a different provider.";
         } else if (error.message.includes("429")) {
           errorDescription = "Rate limit exceeded. Please try again later.";
@@ -431,6 +461,11 @@ const VirtualAssistant = () => {
     setApiKeyDialogOpen(true);
   };
 
+  // Add help link for API key instructions
+  const openApiKeyHelp = () => {
+    window.open("https://novita.ai/settings/key-management", "_blank", "noopener,noreferrer");
+  };
+
   return (
     <>
       <AnimatePresence>
@@ -454,8 +489,10 @@ const VirtualAssistant = () => {
                     <div>
                       <h3 className="text-white text-sm font-medium">VedaGenie</h3>
                       <div className="flex items-center">
-                        <span className="w-2 h-2 bg-green-500 rounded-full mr-1.5"></span>
-                        <span className="text-green-500 text-xs">Online</span>
+                        <span className={`w-2 h-2 ${apiKey ? 'bg-green-500' : 'bg-amber-500'} rounded-full mr-1.5`}></span>
+                        <span className={`text-xs ${apiKey ? 'text-green-500' : 'text-amber-500'}`}>
+                          {apiKey ? 'Online' : 'API Key Required'}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -472,7 +509,7 @@ const VirtualAssistant = () => {
                       className="p-1.5 hover:bg-mystic-blue/50 rounded-full transition-colors"
                       aria-label="API Settings"
                     >
-                      <Lock className="text-gray-400 hover:text-white" size={16} />
+                      <Lock className={`${!apiKey ? 'text-amber-400 animate-pulse' : 'text-gray-400 hover:text-white'}`} size={16} />
                     </Button>
                     <Button 
                       onClick={() => setIsVisible(false)}
@@ -550,17 +587,19 @@ const VirtualAssistant = () => {
                   <div className="flex items-center gap-2">
                     <div className="flex-1 bg-charcoal-black/80 rounded-lg px-4 py-2 text-white text-sm">
                       <Textarea 
-                        placeholder="Ask VedaGenie a question..." 
+                        placeholder={apiKey ? "Ask VedaGenie a question..." : "Please set your API key first..."}
                         className="bg-transparent border-0 outline-none w-full min-h-[24px] max-h-[100px] p-0 resize-none text-sm"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         onKeyDown={handleKeyPress}
+                        disabled={!apiKey}
                       />
                     </div>
                     <Button 
                       onClick={handleVoiceInput}
                       className="p-2 rounded-full bg-neon-cyan/10 text-neon-cyan hover:bg-neon-cyan/20"
                       aria-label="Voice input"
+                      disabled={!apiKey}
                     >
                       <Mic size={18} />
                     </Button>
@@ -568,7 +607,7 @@ const VirtualAssistant = () => {
                       onClick={handleSendMessage}
                       className="p-2 rounded-full bg-neon-cyan text-charcoal-black hover:bg-neon-cyan/80"
                       aria-label="Send message"
-                      disabled={!message.trim() || isLoading}
+                      disabled={!message.trim() || isLoading || !apiKey}
                     >
                       {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send size={18} />}
                     </Button>
@@ -632,6 +671,15 @@ const VirtualAssistant = () => {
                 placeholder="Enter your API key"
                 className="col-span-3 bg-mystic-blue/20 border border-neon-cyan/30 text-white"
               />
+            </div>
+            <div className="col-span-4 text-center">
+              <Button
+                variant="link"
+                className="text-amber-400 hover:text-amber-300 text-xs"
+                onClick={openApiKeyHelp}
+              >
+                Click here to get your Novita API Key
+              </Button>
             </div>
             <div className="col-span-4 text-xs text-amber-400 px-2">
               {apiProvider === 'novita' && (
