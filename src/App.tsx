@@ -15,8 +15,9 @@ import UploadContent from "./pages/UploadContent";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import SmartMockTest from "./components/quiz/SmartMockTest"; // Import the SmartMockTest component
-import IncomeTaxNotes from "./pages/IncomeTaxNotes"; // Import the new IncomeTaxNotes component
+import SmartMockTest from "./components/quiz/SmartMockTest"; 
+import IncomeTaxNotes from "./pages/IncomeTaxNotes";
+import AboutUs from "./pages/AboutUs"; // Import the new AboutUs component
 
 const queryClient = new QueryClient();
 
@@ -33,8 +34,7 @@ const App = () => (
           <Route path="/resources" element={<Resources />} />
           <Route path="/live-classes" element={<LiveClasses />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/teacher" element={<TeacherDashboard />} />
-          <Route path="/upload-content" element={<UploadContent />} />
+          <Route path="/about-us" element={<AboutUs />} /> {/* Add the new route */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/mock-test" element={<SmartMockTest />} />

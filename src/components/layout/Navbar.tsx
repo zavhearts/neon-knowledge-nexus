@@ -63,7 +63,6 @@ const Navbar = () => {
           </Link>
           <Link
             to="/resources"
-            target="_blank"
             className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue transition-colors relative group"
           >
             Resources
@@ -71,10 +70,16 @@ const Navbar = () => {
           </Link>
           <Link
             to="/live-classes"
-            target="_blank"
             className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue transition-colors relative group"
           >
             Live Classes
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-royal-blue transition-all duration-300 group-hover:w-full"></span>
+          </Link>
+          <Link
+            to="/about-us"
+            className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue transition-colors relative group"
+          >
+            About Us
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-royal-blue transition-all duration-300 group-hover:w-full"></span>
           </Link>
           <div className="flex items-center gap-3">
@@ -145,7 +150,6 @@ const Navbar = () => {
             </Link>
             <Link
               to="/resources"
-              target="_blank"
               className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue py-2 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -153,11 +157,17 @@ const Navbar = () => {
             </Link>
             <Link
               to="/live-classes"
-              target="_blank"
               className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue py-2 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Live Classes
+            </Link>
+            <Link
+              to="/about-us"
+              className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue py-2 transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              About Us
             </Link>
             <div className="flex flex-col gap-3 pt-2">
               <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
