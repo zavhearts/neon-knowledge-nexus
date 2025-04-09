@@ -30,7 +30,7 @@ const VirtualAssistant = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
   const [apiKey, setApiKey] = useState(localStorage.getItem('ai_api_key') || "6f7b765a-80f4-49d9-a187-a08b3cba21b4");
-  const [apiProvider, setApiProvider] = useState(localStorage.getItem('ai_provider') || "llama");
+  const [apiProvider, setApiProvider] = useState(localStorage.getItem('ai_provider') || "novita");
   const [chatHistory, setChatHistory] = useState([
     { sender: 'bot', text: 'Hai! I\'m VedaGenie, your AI learning assistant. How can I help with your studies today?' }
   ]);
@@ -187,6 +187,29 @@ const VirtualAssistant = () => {
     };
 
     switch (provider) {
+      case 'novita':
+        API_URL = "https://api.novita.ai/v3/openai/chat/completions";
+        headers = {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${key}`
+        };
+        requestBody = {
+          model: "meta-llama/llama-3.1-8b-instruct",
+          messages: [
+            {
+              role: "system",
+              content: "You are VedaGenie, a helpful AI learning assistant that combines ancient wisdom with modern education. You help users with their educational needs, course information, and study resources. Be informative, friendly, and concise. Incorporate occasional Sanskrit terms or wisdom when appropriate. Promote the platform's learning resources including newly added income tax notes."
+            },
+            {
+              role: "user",
+              content: `Previous conversation:\n${context}\n\nUser's new message: ${userMessage}`
+            }
+          ],
+          max_tokens: 512,
+          stream: false
+        };
+        break;
+      
       case 'openai':
         API_URL = "https://api.openai.com/v1/chat/completions";
         headers = {
@@ -313,7 +336,7 @@ const VirtualAssistant = () => {
       const data = await response.json();
       console.log(`${provider} API response:`, data);
       
-      if (provider === 'openai' || provider === 'llama' || provider === 'xai') {
+      if (provider === 'openai' || provider === 'llama' || provider === 'xai' || provider === 'novita') {
         return data.choices[0].message.content.trim();
       } else if (provider === 'anthropic') {
         return data.content[0].text;
@@ -589,6 +612,7 @@ const VirtualAssistant = () => {
                 value={apiProvider}
                 onChange={(e) => setApiProvider(e.target.value)}
               >
+                <option value="novita">Novita AI (Llama 3.1)</option>
                 <option value="openai">OpenAI (GPT-4o-mini)</option>
                 <option value="anthropic">Anthropic (Claude)</option>
                 <option value="llama">Llama AI</option>
@@ -610,6 +634,9 @@ const VirtualAssistant = () => {
               />
             </div>
             <div className="col-span-4 text-xs text-amber-400 px-2">
+              {apiProvider === 'novita' && (
+                <p>Note: Get your Novita AI API Key from: https://novita.ai/settings/key-management</p>
+              )}
               {apiProvider === 'xai' && (
                 <p>Note: X.ai requires an active subscription with credits. Please visit the X.ai console to ensure your account has available credits.</p>
               )}
