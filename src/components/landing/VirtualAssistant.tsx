@@ -1,24 +1,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Mic, Volume2, MessageSquare, Globe, Lightbulb, BookOpen, Send, Loader2, Lock } from 'lucide-react';
+import { Bot, X, Mic, Volume2, MessageSquare, Globe, Lightbulb, BookOpen, Send, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle,
-  DialogDescription,
-  DialogFooter
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-interface ApiHeaders {
-  [key: string]: string;
-}
 
 const VirtualAssistant = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -28,10 +14,6 @@ const VirtualAssistant = () => {
   const [message, setMessage] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
-  // Remove the default API key to encourage users to add their own
-  const [apiKey, setApiKey] = useState(localStorage.getItem('ai_api_key') || "");
-  const [apiProvider, setApiProvider] = useState(localStorage.getItem('ai_provider') || "novita");
   const [chatHistory, setChatHistory] = useState([
     { sender: 'bot', text: 'Hai! I\'m VedaGenie, your AI learning assistant. How can I help with your studies today?' }
   ]);
@@ -87,23 +69,6 @@ const VirtualAssistant = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory]);
 
-  // Check for API key on component mount and prompt if missing
-  useEffect(() => {
-    const storedApiKey = localStorage.getItem('ai_api_key');
-    if (!storedApiKey) {
-      // Wait a bit before showing the API key dialog to let the UI initialize
-      const timer = setTimeout(() => {
-        setApiKeyDialogOpen(true);
-        toast({
-          title: "API Key Required",
-          description: "Please enter your Novita AI API key to use the assistant.",
-        });
-      }, 4000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [toast]);
-
   const containerVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.9 },
     visible: { 
@@ -120,69 +85,25 @@ const VirtualAssistant = () => {
     }
   };
 
-  const saveApiKey = () => {
-    if (!apiKey.trim()) {
-      toast({
-        title: "API Key Required",
-        description: "Please enter a valid API key.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    localStorage.setItem('ai_api_key', apiKey);
-    localStorage.setItem('ai_provider', apiProvider);
-    setApiKeyDialogOpen(false);
-    toast({
-      title: "API Key Saved",
-      description: "Your API key has been saved securely in your browser.",
-    });
-  };
-
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
     setChatHistory([...chatHistory, { sender: 'user', text: message }]);
     
     setIsLoading(true);
-
-    if (!apiKey) {
-      setApiKeyDialogOpen(true);
-      setIsLoading(false);
-      return;
-    }
     
     const userMsg = message;
     setMessage('');
     
     try {
-      const context = chatHistory
-        .slice(-5)
-        .map(msg => `${msg.sender === 'user' ? 'User' : 'VedaGenie'}: ${msg.text}`)
-        .join('\n');
-      
-      const response = await fetchAIResponse(userMsg, context, apiKey, apiProvider);
-      
+      const response = await fetchAIResponse(userMsg);
       setChatHistory(prev => [...prev, { sender: 'bot', text: response }]);
     } catch (error) {
       console.error('Error fetching AI response:', error);
       
-      let errorDescription = "Could not connect to AI service. Using fallback responses.";
-      
-      if (error instanceof Error) {
-        if (error.message.includes("401") || error.message.includes("FAILED_TO_AUTH")) {
-          errorDescription = "Invalid API key. Please check your API key in settings.";
-          setApiKeyDialogOpen(true);
-        } else if (error.message.includes("credits") || error.message.includes("403")) {
-          errorDescription = "API key error: Access denied. Please check your API key or try a different provider.";
-        } else if (error.message.includes("429")) {
-          errorDescription = "Rate limit exceeded. Please try again later.";
-        }
-      }
-      
       toast({
         title: "Connection Error",
-        description: errorDescription,
+        description: "Could not connect to AI service. Using fallback responses.",
         variant: "destructive"
       });
       
@@ -209,174 +130,17 @@ const VirtualAssistant = () => {
     }
   };
 
-  const fetchAIResponse = async (userMessage: string, context: string, key: string, provider: string) => {
-    let API_URL = '';
-    let requestBody = {};
-    let headers: ApiHeaders = {
-      "Content-Type": "application/json",
-    };
-
-    switch (provider) {
-      case 'novita':
-        API_URL = "https://api.novita.ai/v3/openai/chat/completions";
-        headers = {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${key}`
-        };
-        requestBody = {
-          model: "meta-llama/llama-3.1-8b-instruct",
-          messages: [
-            {
-              role: "system",
-              content: "You are VedaGenie, a helpful AI learning assistant that combines ancient wisdom with modern education. You help users with their educational needs, course information, and study resources. Be informative, friendly, and concise. Incorporate occasional Sanskrit terms or wisdom when appropriate. Promote the platform's learning resources including newly added income tax notes."
-            },
-            {
-              role: "user",
-              content: `Previous conversation:\n${context}\n\nUser's new message: ${userMessage}`
-            }
-          ],
-          max_tokens: 512,
-          stream: false
-        };
-        break;
-      
-      case 'openai':
-        API_URL = "https://api.openai.com/v1/chat/completions";
-        headers = {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${key}`
-        };
-        requestBody = {
-          model: "gpt-4o-mini",
-          messages: [
-            {
-              role: "system",
-              content: "You are VedaGenie, a helpful AI learning assistant that combines ancient wisdom with modern education. You help users with their educational needs, course information, and study resources. Be informative, friendly, and concise. Incorporate occasional Sanskrit terms or wisdom when appropriate. Promote the platform's learning resources including newly added income tax notes."
-            },
-            {
-              role: "user",
-              content: `Previous conversation:\n${context}\n\nUser's new message: ${userMessage}`
-            }
-          ],
-          max_tokens: 150
-        };
-        break;
-      
-      case 'anthropic':
-        API_URL = "https://api.anthropic.com/v1/messages";
-        headers = {
-          "Content-Type": "application/json",
-          "x-api-key": key,
-          "anthropic-version": "2023-06-01"
-        };
-        requestBody = {
-          model: "claude-2.1",
-          messages: [
-            {
-              role: "user",
-              content: `You are VedaGenie, a helpful AI learning assistant that combines ancient wisdom with modern education. Help with this request based on previous conversation:\n${context}\n\nUser's new message: ${userMessage}`
-            }
-          ],
-          max_tokens: 150
-        };
-        break;
-      
-      case 'llama':
-        API_URL = "https://api.llmapi.com/chat/completions";
-        headers = {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${key}`
-        };
-        requestBody = {
-          model: "undefined",
-          messages: [
-            {
-              role: "system",
-              content: "You are VedaGenie, a helpful AI learning assistant that combines ancient wisdom with modern education. You help users with their educational needs, course information, and study resources. Be informative, friendly, and concise. Incorporate occasional Sanskrit terms or wisdom when appropriate. Promote the platform's learning resources including newly added income tax notes."
-            },
-            {
-              role: "user",
-              content: `Previous conversation:\n${context}\n\nUser's new message: ${userMessage}`
-            }
-          ],
-          max_tokens: 150,
-          temperature: 0.7
-        };
-        break;
-      
-      case 'xai':
-        API_URL = "https://api.x.ai/v1/chat/completions";
-        headers = {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${key}`
-        };
-        requestBody = {
-          model: "grok-2-latest",
-          messages: [
-            {
-              role: "system",
-              content: "You are VedaGenie, a helpful AI learning assistant that combines ancient wisdom with modern education. You help users with their educational needs, course information, and study resources. Be informative, friendly, and concise. Incorporate occasional Sanskrit terms or wisdom when appropriate. Promote the platform's learning resources including newly added income tax notes."
-            },
-            {
-              role: "user",
-              content: `Previous conversation:\n${context}\n\nUser's new message: ${userMessage}`
-            }
-          ],
-          max_tokens: 150,
-          temperature: 0.7,
-          stream: false
-        };
-        break;
-      
-      default:
-        API_URL = "https://api.communicateai.net/v1/chat/completions";
-        requestBody = {
-          model: "gpt-3.5-turbo",
-          messages: [
-            {
-              role: "system",
-              content: "You are VedaGenie, a helpful AI learning assistant that combines ancient wisdom with modern education. You help users with their educational needs, course information, and study resources. Be informative, friendly, and concise. Incorporate occasional Sanskrit terms or wisdom when appropriate. Promote the platform's learning resources including newly added income tax notes."
-            },
-            {
-              role: "user",
-              content: `Previous conversation:\n${context}\n\nUser's new message: ${userMessage}`
-            }
-          ],
-          max_tokens: 150
-        };
-    }
+  const fetchAIResponse = async (userMessage: string) => {
+    // Simple fallback responses without requiring API key
+    const context = chatHistory
+      .slice(-5)
+      .map(msg => `${msg.sender === 'user' ? 'User' : 'VedaGenie'}: ${msg.text}`)
+      .join('\n');
     
-    try {
-      console.log(`Attempting to call ${provider} API at ${API_URL}`);
-      
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(requestBody),
-        signal: AbortSignal.timeout(10000)
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`API Error (${response.status}):`, errorText);
-        
-        throw new Error(`API responded with status: ${response.status} - ${errorText}`);
-      }
-      
-      const data = await response.json();
-      console.log(`${provider} API response:`, data);
-      
-      if (provider === 'openai' || provider === 'llama' || provider === 'xai' || provider === 'novita') {
-        return data.choices[0].message.content.trim();
-      } else if (provider === 'anthropic') {
-        return data.content[0].text;
-      } else {
-        return data.choices[0].message.content.trim();
-      }
-    } catch (error) {
-      console.error(`Error calling ${provider} API:`, error);
-      throw error;
-    }
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    return generateFallbackResponse(userMessage);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -457,15 +221,6 @@ const VirtualAssistant = () => {
     }, 100);
   };
 
-  const openApiSettings = () => {
-    setApiKeyDialogOpen(true);
-  };
-
-  // Add help link for API key instructions
-  const openApiKeyHelp = () => {
-    window.open("https://novita.ai/settings/key-management", "_blank", "noopener,noreferrer");
-  };
-
   return (
     <>
       <AnimatePresence>
@@ -489,10 +244,8 @@ const VirtualAssistant = () => {
                     <div>
                       <h3 className="text-white text-sm font-medium">VedaGenie</h3>
                       <div className="flex items-center">
-                        <span className={`w-2 h-2 ${apiKey ? 'bg-green-500' : 'bg-amber-500'} rounded-full mr-1.5`}></span>
-                        <span className={`text-xs ${apiKey ? 'text-green-500' : 'text-amber-500'}`}>
-                          {apiKey ? 'Online' : 'API Key Required'}
-                        </span>
+                        <span className="w-2 h-2 bg-green-500 rounded-full mr-1.5"></span>
+                        <span className="text-xs text-green-500">Online</span>
                       </div>
                     </div>
                   </div>
@@ -503,13 +256,6 @@ const VirtualAssistant = () => {
                       aria-label="Text to speech"
                     >
                       <Volume2 className={`${isSpeaking ? 'text-neon-cyan' : 'text-gray-400 hover:text-white'}`} size={16} />
-                    </Button>
-                    <Button
-                      onClick={openApiSettings}
-                      className="p-1.5 hover:bg-mystic-blue/50 rounded-full transition-colors"
-                      aria-label="API Settings"
-                    >
-                      <Lock className={`${!apiKey ? 'text-amber-400 animate-pulse' : 'text-gray-400 hover:text-white'}`} size={16} />
                     </Button>
                     <Button 
                       onClick={() => setIsVisible(false)}
@@ -587,19 +333,17 @@ const VirtualAssistant = () => {
                   <div className="flex items-center gap-2">
                     <div className="flex-1 bg-charcoal-black/80 rounded-lg px-4 py-2 text-white text-sm">
                       <Textarea 
-                        placeholder={apiKey ? "Ask VedaGenie a question..." : "Please set your API key first..."}
+                        placeholder="Ask VedaGenie a question..."
                         className="bg-transparent border-0 outline-none w-full min-h-[24px] max-h-[100px] p-0 resize-none text-sm"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         onKeyDown={handleKeyPress}
-                        disabled={!apiKey}
                       />
                     </div>
                     <Button 
                       onClick={handleVoiceInput}
                       className="p-2 rounded-full bg-neon-cyan/10 text-neon-cyan hover:bg-neon-cyan/20"
                       aria-label="Voice input"
-                      disabled={!apiKey}
                     >
                       <Mic size={18} />
                     </Button>
@@ -607,7 +351,7 @@ const VirtualAssistant = () => {
                       onClick={handleSendMessage}
                       className="p-2 rounded-full bg-neon-cyan text-charcoal-black hover:bg-neon-cyan/80"
                       aria-label="Send message"
-                      disabled={!message.trim() || isLoading || !apiKey}
+                      disabled={!message.trim() || isLoading}
                     >
                       {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send size={18} />}
                     </Button>
@@ -631,79 +375,6 @@ const VirtualAssistant = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <Dialog open={apiKeyDialogOpen} onOpenChange={setApiKeyDialogOpen}>
-        <DialogContent className="sm:max-w-[425px] bg-charcoal-black text-white border border-neon-cyan/30">
-          <DialogHeader>
-            <DialogTitle className="text-neon-cyan">Configure AI Provider</DialogTitle>
-            <DialogDescription className="text-white/80">
-              Enter your API key to connect to your preferred AI service. Your key is stored locally in your browser.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="provider" className="text-right">
-                Provider
-              </Label>
-              <select 
-                id="provider"
-                className="col-span-3 bg-mystic-blue/20 border border-neon-cyan/30 rounded-md p-2 text-white"
-                value={apiProvider}
-                onChange={(e) => setApiProvider(e.target.value)}
-              >
-                <option value="novita">Novita AI (Llama 3.1)</option>
-                <option value="openai">OpenAI (GPT-4o-mini)</option>
-                <option value="anthropic">Anthropic (Claude)</option>
-                <option value="llama">Llama AI</option>
-                <option value="xai">X.ai (Grok)</option>
-                <option value="free">Free API (Limited)</option>
-              </select>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="api-key" className="text-right">
-                API Key
-              </Label>
-              <Input
-                id="api-key"
-                type="password"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="Enter your API key"
-                className="col-span-3 bg-mystic-blue/20 border border-neon-cyan/30 text-white"
-              />
-            </div>
-            <div className="col-span-4 text-center">
-              <Button
-                variant="link"
-                className="text-amber-400 hover:text-amber-300 text-xs"
-                onClick={openApiKeyHelp}
-              >
-                Click here to get your Novita API Key
-              </Button>
-            </div>
-            <div className="col-span-4 text-xs text-amber-400 px-2">
-              {apiProvider === 'novita' && (
-                <p>Note: Get your Novita AI API Key from: https://novita.ai/settings/key-management</p>
-              )}
-              {apiProvider === 'xai' && (
-                <p>Note: X.ai requires an active subscription with credits. Please visit the X.ai console to ensure your account has available credits.</p>
-              )}
-              {apiProvider === 'llama' && (
-                <p>Note: Using Llama AI with your provided API key. The default endpoint is https://api.llmapi.com/chat/completions</p>
-              )}
-            </div>
-          </div>
-          <DialogFooter>
-            <Button 
-              type="submit" 
-              onClick={saveApiKey}
-              className="bg-neon-cyan text-charcoal-black hover:bg-neon-cyan/80"
-            >
-              Save changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   );
 };
