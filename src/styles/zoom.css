@@ -102,3 +102,35 @@
   font-weight: 500;
   letter-spacing: 0.5px;
 }
+
+/* Custom Video Player Styles */
+.shadow-glow {
+  box-shadow: 0 0 10px rgba(0, 183, 255, 0.8);
+}
+
+.shadow-glow-sm {
+  box-shadow: 0 0 5px rgba(0, 183, 255, 0.5);
+}
+
+.shadow-glow-lg {
+  box-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
+}
+
+/* Caption animation */
+@keyframes typeAnimation {
+  from { width: 0; opacity: 0.5; }
+  to { width: 100%; opacity: 1; }
+}
+
+.typing-animation {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typeAnimation 1s steps(40, end);
+}
+
+/* Video brightness filter */
+.brightness-filter {
+  filter: brightness(1);
+  transition: filter 0.3s ease;
+}
