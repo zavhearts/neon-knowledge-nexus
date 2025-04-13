@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { FileUp, ImagePlus, X } from "lucide-react";
+import { FileUp, ImagePlus, X, AlertTriangle } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface EditContentModalProps {
   isOpen: boolean;
@@ -16,6 +18,8 @@ interface EditContentModalProps {
     description?: string;
     type: string;
     thumbnailUrl?: string;
+    authorId?: number;
+    authorName?: string;
   };
   onSave: (updatedContent: any) => void;
 }
@@ -25,6 +29,9 @@ const EditContentModal: React.FC<EditContentModalProps> = ({ isOpen, onClose, co
   const [description, setDescription] = useState(content.description || "");
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(content.thumbnailUrl || null);
+  const [isPublished, setIsPublished] = useState(true);
+  const [showWarning, setShowWarning] = useState(false);
+  const [isModerated, setIsModerated] = useState(false);
   
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -53,7 +60,9 @@ const EditContentModal: React.FC<EditContentModalProps> = ({ isOpen, onClose, co
       ...content,
       title,
       description,
-      thumbnailUrl: thumbnailPreview || content.thumbnailUrl
+      thumbnailUrl: thumbnailPreview || content.thumbnailUrl,
+      isPublished,
+      isModerated
     };
     
     onSave(updatedContent);
@@ -63,13 +72,47 @@ const EditContentModal: React.FC<EditContentModalProps> = ({ isOpen, onClose, co
     });
     onClose();
   };
+
+  const handleMarkAsModerated = () => {
+    setIsModerated(true);
+    setShowWarning(false);
+    toast({
+      title: "Content Moderated",
+      description: "This content has been marked as reviewed and moderated",
+    });
+  };
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-cyber-darker border-neon-blue/50 max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Edit {content.type}</DialogTitle>
+          <DialogTitle className="flex items-center">
+            <span>Edit {content.type}</span>
+            {content.authorName && (
+              <span className="ml-2 text-sm text-white/60">
+                (by {content.authorName})
+              </span>
+            )}
+          </DialogTitle>
         </DialogHeader>
+        
+        {showWarning && (
+          <div className="bg-yellow-900/30 border border-yellow-500/50 rounded-md p-4 mb-4 flex items-start">
+            <AlertTriangle className="h-5 w-5 text-yellow-500 mr-3 flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="font-medium text-yellow-500">Content Warning</h4>
+              <p className="text-sm text-white/70">This content may contain inappropriate or unreviewed material. Please review carefully before publishing.</p>
+              <Button 
+                variant="outline"
+                size="sm"
+                className="mt-2 border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/20"
+                onClick={handleMarkAsModerated}
+              >
+                Mark as Moderated
+              </Button>
+            </div>
+          </div>
+        )}
         
         <div className="space-y-4 py-4">
           <div>
@@ -132,6 +175,27 @@ const EditContentModal: React.FC<EditContentModalProps> = ({ isOpen, onClose, co
                 onChange={handleThumbnailChange}
               />
             </div>
+          </div>
+          
+          <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center space-x-2">
+              <Switch 
+                id="published"
+                checked={isPublished}
+                onCheckedChange={setIsPublished}
+              />
+              <Label htmlFor="published">Published</Label>
+            </div>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-red-500/50 text-red-500 hover:bg-red-500/20"
+              onClick={() => setShowWarning(!showWarning)}
+            >
+              <AlertTriangle className="h-4 w-4 mr-1" />
+              Mark as Inappropriate
+            </Button>
           </div>
         </div>
         

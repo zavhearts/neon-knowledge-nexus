@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -25,9 +24,13 @@ import {
   FileText,
   Calendar,
   CreditCard,
-  DollarSign
+  DollarSign,
+  MessageCircle,
+  Edit,
+  AlertCircle
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import EditContentModal from "@/components/teacher/EditContentModal";
 
 // Sample data for admin dashboard
 const USERS = [
@@ -64,10 +67,37 @@ const USER_ACTIVITY = [
   { name: 'Sun', Students: 10, Teachers: 1 },
 ];
 
+// Sample feedback data
+const FEEDBACKS = [
+  { id: 1, userId: 1, userName: "John Doe", userType: "Student", content: "The physics lecture videos are great, but they load slowly sometimes.", rating: 4, date: "2023-06-15", status: "New" },
+  { id: 2, userId: 3, userName: "Robert Brown", userType: "Student", content: "I found the mathematics exercises too difficult.", rating: 3, date: "2023-06-14", status: "Reviewed" },
+  { id: 3, userId: 2, userName: "Jane Smith", userType: "Teacher", content: "The zoom integration was problematic during my last class.", rating: 2, date: "2023-06-13", status: "New" },
+  { id: 4, userId: 4, userName: "Emily Johnson", userType: "Student", content: "Really enjoying the interactive quizzes!", rating: 5, date: "2023-06-12", status: "Reviewed" },
+];
+
+// Sample content data
+const CONTENT_LIST = [
+  { id: 1, title: "Introduction to Physics", description: "Basic principles of physics", type: "Course", authorId: 2, authorName: "Jane Smith", thumbnailUrl: "/lovable-uploads/0895bf65-bed5-4685-82ff-8f07bedd103d.png" },
+  { id: 2, title: "Algebra Fundamentals", description: "Core concepts of algebra", type: "Course", authorId: 2, authorName: "Jane Smith", thumbnailUrl: "/lovable-uploads/052ffcf4-d984-4cf5-8e56-67e1638a8861.png" },
+  { id: 3, title: "Physics Formulas PDF", description: "Complete list of important formulas", type: "Resource", authorId: 2, authorName: "Jane Smith", thumbnailUrl: "/lovable-uploads/067a49d5-8a1a-4b2e-899f-ca0ca9318f7f.png" },
+  { id: 4, title: "Web Development Cheatsheet", description: "HTML, CSS, and JavaScript quick references", type: "Resource", authorId: 5, authorName: "Sarah Connor", thumbnailUrl: "/lovable-uploads/6d0b63c4-3fcf-4756-8c97-c249e6e91073.png" },
+];
+
+// Sample website sections data
+const WEBSITE_SECTIONS = [
+  { id: 1, name: "Homepage Hero", type: "Section", lastUpdated: "2023-06-10" },
+  { id: 2, name: "Services Cards", type: "Component", lastUpdated: "2023-06-08" },
+  { id: 3, name: "Testimonials", type: "Component", lastUpdated: "2023-06-05" },
+  { id: 4, name: "Footer Links", type: "Section", lastUpdated: "2023-06-01" },
+];
+
 const Admin = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentTab, setCurrentTab] = useState("users");
   const [darkMode, setDarkMode] = useState(true);
+  const [selectedFeedback, setSelectedFeedback] = useState<number | null>(null);
+  const [isEditContentModalOpen, setIsEditContentModalOpen] = useState(false);
+  const [contentToEdit, setContentToEdit] = useState<any>(null);
 
   const toggleTheme = () => {
     setDarkMode(!darkMode);
@@ -78,9 +108,39 @@ const Admin = () => {
   };
 
   const handleActionClick = (action: string, id: number, type: string) => {
+    if (action === "Terminate" && type === "User") {
+      toast({
+        title: `User Termination`,
+        description: `User #${id} has been terminated for policy violation.`,
+        variant: "destructive",
+      });
+    } else if (action === "Edit" && type === "Content") {
+      const content = CONTENT_LIST.find(item => item.id === id);
+      if (content) {
+        setContentToEdit(content);
+        setIsEditContentModalOpen(true);
+      }
+    } else {
+      toast({
+        title: `${action} ${type} #${id}`,
+        description: `${action} action performed on ${type.toLowerCase()} #${id}`,
+      });
+    }
+  };
+
+  const handleContentSave = (updatedContent: any) => {
     toast({
-      title: `${action} ${type} #${id}`,
-      description: `${action} action performed on ${type.toLowerCase()} #${id}`,
+      title: "Content Updated",
+      description: `${updatedContent.type} "${updatedContent.title}" has been updated successfully.`,
+    });
+    // In a real app, you would update your database here
+  };
+
+  const markFeedbackAsReviewed = (id: number) => {
+    // In a real app, you would update your database here
+    toast({
+      title: "Feedback Marked as Reviewed",
+      description: `Feedback #${id} has been marked as reviewed.`,
     });
   };
 
@@ -180,6 +240,45 @@ const Admin = () => {
                   <span className="font-orbitron tracking-wider">UPLOADS</span>
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => setCurrentTab("feedback")}
+                  className={`w-full flex items-center px-4 py-3 rounded-md group transition-all ${
+                    currentTab === "feedback"
+                      ? darkMode ? 'bg-neon-blue text-black' : 'bg-blue-600 text-white' 
+                      : darkMode ? 'text-white hover:bg-white/10' : 'text-gray-700 hover:bg-blue-50'
+                  }`}
+                >
+                  <MessageCircle className="mr-3 h-5 w-5" />
+                  <span className="font-orbitron tracking-wider">USER FEEDBACK</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setCurrentTab("website")}
+                  className={`w-full flex items-center px-4 py-3 rounded-md group transition-all ${
+                    currentTab === "website"
+                      ? darkMode ? 'bg-neon-blue text-black' : 'bg-blue-600 text-white' 
+                      : darkMode ? 'text-white hover:bg-white/10' : 'text-gray-700 hover:bg-blue-50'
+                  }`}
+                >
+                  <Edit className="mr-3 h-5 w-5" />
+                  <span className="font-orbitron tracking-wider">WEBSITE CONTROL</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setCurrentTab("content")}
+                  className={`w-full flex items-center px-4 py-3 rounded-md group transition-all ${
+                    currentTab === "content"
+                      ? darkMode ? 'bg-neon-blue text-black' : 'bg-blue-600 text-white' 
+                      : darkMode ? 'text-white hover:bg-white/10' : 'text-gray-700 hover:bg-blue-50'
+                  }`}
+                >
+                  <FileText className="mr-3 h-5 w-5" />
+                  <span className="font-orbitron tracking-wider">CONTENT MANAGEMENT</span>
+                </button>
+              </li>
             </ul>
           </nav>
 
@@ -203,6 +302,9 @@ const Admin = () => {
               {currentTab === "tests" && "Mock Tests"}
               {currentTab === "analytics" && "Analytics"}
               {currentTab === "uploads" && "Content Uploads"}
+              {currentTab === "feedback" && "User Feedback"}
+              {currentTab === "website" && "Website Control"}
+              {currentTab === "content" && "Content Management"}
             </h1>
             
             <div className="flex items-center gap-4">
@@ -339,7 +441,7 @@ const Admin = () => {
                               variant="ghost" 
                               className={darkMode ? "text-red-500 hover:text-red-400 hover:bg-red-500/10" : "text-red-500 hover:bg-red-50"}
                               size="sm"
-                              onClick={() => handleActionClick("Ban", user.id, "User")}
+                              onClick={() => handleActionClick("Terminate", user.id, "User")}
                             >
                               <UserX className="h-4 w-4" />
                             </Button>
@@ -469,300 +571,3 @@ const Admin = () => {
                     </h3>
                     <p className={`mb-4 text-sm ${darkMode ? 'text-white/70' : 'text-gray-500'}`}>
                       Drag and drop video files or click to browse
-                    </p>
-                    <Button 
-                      className={darkMode ? 'bg-neon-blue text-black hover:bg-neon-blue/90' : 'bg-blue-600 hover:bg-blue-700'}
-                      onClick={() => toast({ title: "File Browser", description: "Video file browser opened" })}
-                    >
-                      Browse Files
-                    </Button>
-                    <p className={`mt-4 text-xs ${darkMode ? 'text-white/50' : 'text-gray-400'}`}>
-                      Supported formats: MP4, MOV, AVI, up to 1.5GB
-                    </p>
-                  </div>
-                </div>
-                
-                <div className={`border-2 border-dashed rounded-lg p-8 text-center ${darkMode ? 'border-neon-purple/50 bg-neon-purple/5' : 'border-purple-300 bg-purple-50'}`}>
-                  <div className="flex flex-col items-center justify-center">
-                    <FileText className={`h-12 w-12 mb-4 ${darkMode ? 'text-neon-purple' : 'text-purple-500'}`} />
-                    <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                      Upload Resources
-                    </h3>
-                    <p className={`mb-4 text-sm ${darkMode ? 'text-white/70' : 'text-gray-500'}`}>
-                      Drag and drop documents or click to browse
-                    </p>
-                    <Button 
-                      className={darkMode ? 'bg-neon-purple text-white hover:bg-neon-purple/90' : 'bg-purple-600 hover:bg-purple-700'}
-                      onClick={() => toast({ title: "File Browser", description: "Document file browser opened" })}
-                    >
-                      Browse Files
-                    </Button>
-                    <p className={`mt-4 text-xs ${darkMode ? 'text-white/50' : 'text-gray-400'}`}>
-                      Supported formats: PDF, DOCX, PPTX, XLSX, up to 100MB
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Recent Uploads</h3>
-              <div className="overflow-x-auto">
-                <table className={`w-full border-collapse ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                  <thead>
-                    <tr className={darkMode ? 'border-b border-white/20' : 'border-b border-gray-200'}>
-                      <th className="text-left py-3 px-4">File Name</th>
-                      <th className="text-left py-3 px-4">Type</th>
-                      <th className="text-left py-3 px-4">Size</th>
-                      <th className="text-left py-3 px-4">Uploaded By</th>
-                      <th className="text-left py-3 px-4">Date</th>
-                      <th className="text-right py-3 px-4">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className={`${darkMode ? 'border-b border-white/10 hover:bg-white/5' : 'border-b border-gray-100 hover:bg-gray-50'} transition-colors`}>
-                      <td className="py-3 px-4">Physics_Lecture_1.mp4</td>
-                      <td className="py-3 px-4">
-                        <Badge className={darkMode ? 'bg-neon-purple text-white' : 'bg-purple-100 text-purple-800'}>
-                          Video
-                        </Badge>
-                      </td>
-                      <td className="py-3 px-4">245 MB</td>
-                      <td className="py-3 px-4">Jane Smith</td>
-                      <td className="py-3 px-4">2023-06-15</td>
-                      <td className="py-3 px-4 text-right">
-                        <div className="flex items-center justify-end space-x-2">
-                          <Button 
-                            variant="ghost" 
-                            className={darkMode ? "text-white/70 hover:text-white hover:bg-white/10" : "text-gray-500 hover:bg-gray-50"}
-                            size="sm"
-                            onClick={() => toast({ title: "View Video", description: "Opening video player" })}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            className={darkMode ? "text-red-500 hover:text-red-400 hover:bg-red-500/10" : "text-red-500 hover:bg-red-50"}
-                            size="sm"
-                            onClick={() => toast({ title: "Delete Video", description: "Video deleted successfully" })}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr className={`${darkMode ? 'border-b border-white/10 hover:bg-white/5' : 'border-b border-gray-100 hover:bg-gray-50'} transition-colors`}>
-                      <td className="py-3 px-4">Math_Formulas.pdf</td>
-                      <td className="py-3 px-4">
-                        <Badge className={darkMode ? 'bg-neon-blue text-black' : 'bg-blue-100 text-blue-800'}>
-                          Document
-                        </Badge>
-                      </td>
-                      <td className="py-3 px-4">2.5 MB</td>
-                      <td className="py-3 px-4">Jane Smith</td>
-                      <td className="py-3 px-4">2023-06-14</td>
-                      <td className="py-3 px-4 text-right">
-                        <div className="flex items-center justify-end space-x-2">
-                          <Button 
-                            variant="ghost" 
-                            className={darkMode ? "text-white/70 hover:text-white hover:bg-white/10" : "text-gray-500 hover:bg-gray-50"}
-                            size="sm"
-                            onClick={() => toast({ title: "View Document", description: "Opening document viewer" })}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            className={darkMode ? "text-red-500 hover:text-red-400 hover:bg-red-500/10" : "text-red-500 hover:bg-red-50"}
-                            size="sm"
-                            onClick={() => toast({ title: "Delete Document", description: "Document deleted successfully" })}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </Card>
-          )}
-
-          {currentTab === "analytics" && (
-            <div className="space-y-6">
-              <Card className={`p-6 ${darkMode ? 'cyber-card' : 'bg-white border-blue-200'}`}>
-                <h2 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Revenue Overview</h2>
-                <div className="h-80 w-full">
-                  <div className="text-center py-20">
-                    <BarChart2 className={`mx-auto h-12 w-12 mb-4 ${darkMode ? 'text-neon-blue' : 'text-blue-500'}`} />
-                    <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                      Chart Visualization
-                    </h3>
-                    <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-500'}`}>
-                      Revenue data visualization would be displayed here
-                    </p>
-                  </div>
-                </div>
-              </Card>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className={`p-6 ${darkMode ? 'cyber-card' : 'bg-white border-blue-200'}`}>
-                  <h2 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>User Activity</h2>
-                  <div className="h-60 w-full">
-                    <div className="text-center py-16">
-                      <Users className={`mx-auto h-10 w-10 mb-4 ${darkMode ? 'text-neon-purple' : 'text-purple-500'}`} />
-                      <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                        User Activity Chart
-                      </h3>
-                      <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-500'}`}>
-                        User activity data visualization would be displayed here
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-                
-                <Card className={`p-6 ${darkMode ? 'cyber-card' : 'bg-white border-blue-200'}`}>
-                  <h2 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Class Engagement</h2>
-                  <div className="h-60 w-full">
-                    <div className="text-center py-16">
-                      <Video className={`mx-auto h-10 w-10 mb-4 ${darkMode ? 'text-neon-green' : 'text-green-500'}`} />
-                      <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                        Class Engagement Chart
-                      </h3>
-                      <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-500'}`}>
-                        Class engagement data visualization would be displayed here
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            </div>
-          )}
-
-          {currentTab === "live" && (
-            <Card className={`p-6 ${darkMode ? 'cyber-card' : 'bg-white border-blue-200'}`}>
-              <h2 className={`text-xl font-semibold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Live Session Monitor</h2>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div className={`p-4 border rounded-lg ${darkMode ? 'border-neon-purple bg-neon-purple/10' : 'border-purple-200 bg-purple-50'}`}>
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                      Advanced Physics Live Class
-                    </h3>
-                    <Badge className={darkMode ? 'bg-red-500 text-white animate-pulse' : 'bg-red-100 text-red-800 animate-pulse'}>
-                      LIVE NOW
-                    </Badge>
-                  </div>
-                  <div className={`aspect-video bg-black rounded-lg flex items-center justify-center mb-3 ${darkMode ? 'border border-neon-purple' : 'border border-purple-300'}`}>
-                    <div className="text-center">
-                      <Radio className={`h-10 w-10 mb-2 ${darkMode ? 'text-neon-purple' : 'text-purple-500'}`} />
-                      <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-500'}`}>
-                        Live Video Feed
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
-                        Instructor: <span className="font-semibold">Dr. Richard Feynman</span>
-                      </p>
-                      <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
-                        Duration: <span className="font-semibold">45:12</span>
-                      </p>
-                    </div>
-                    <div>
-                      <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
-                        Students: <span className="font-semibold">28 active</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className={`p-4 border rounded-lg ${darkMode ? 'border-neon-blue bg-neon-blue/10' : 'border-blue-200 bg-blue-50'}`}>
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                      Web Development Workshop
-                    </h3>
-                    <Badge className={darkMode ? 'bg-red-500 text-white animate-pulse' : 'bg-red-100 text-red-800 animate-pulse'}>
-                      LIVE NOW
-                    </Badge>
-                  </div>
-                  <div className={`aspect-video bg-black rounded-lg flex items-center justify-center mb-3 ${darkMode ? 'border border-neon-blue' : 'border border-blue-300'}`}>
-                    <div className="text-center">
-                      <Radio className={`h-10 w-10 mb-2 ${darkMode ? 'text-neon-blue' : 'text-blue-500'}`} />
-                      <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-500'}`}>
-                        Live Video Feed
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
-                        Instructor: <span className="font-semibold">Sarah Connor</span>
-                      </p>
-                      <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
-                        Duration: <span className="font-semibold">32:45</span>
-                      </p>
-                    </div>
-                    <div>
-                      <p className={`text-sm ${darkMode ? 'text-white/70' : 'text-gray-600'}`}>
-                        Students: <span className="font-semibold">45 active</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Upcoming Live Sessions</h3>
-              <table className={`w-full border-collapse ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                <thead>
-                  <tr className={darkMode ? 'border-b border-white/20' : 'border-b border-gray-200'}>
-                    <th className="text-left py-3 px-4">Class Name</th>
-                    <th className="text-left py-3 px-4">Instructor</th>
-                    <th className="text-left py-3 px-4">Date & Time</th>
-                    <th className="text-left py-3 px-4">Duration</th>
-                    <th className="text-right py-3 px-4">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className={`${darkMode ? 'border-b border-white/10 hover:bg-white/5' : 'border-b border-gray-100 hover:bg-gray-50'} transition-colors`}>
-                    <td className="py-3 px-4">Data Science Fundamentals</td>
-                    <td className="py-3 px-4">Alan Turing</td>
-                    <td className="py-3 px-4">Tomorrow, 10:00 AM</td>
-                    <td className="py-3 px-4">1 hour</td>
-                    <td className="py-3 px-4 text-right">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className={darkMode ? 'border-neon-green text-neon-green hover:bg-neon-green/10' : 'border-green-500 text-green-500 hover:bg-green-50'}
-                        onClick={() => toast({ title: "Edit Session", description: "Session edit form opened" })}
-                      >
-                        Edit
-                      </Button>
-                    </td>
-                  </tr>
-                  <tr className={`${darkMode ? 'border-b border-white/10 hover:bg-white/5' : 'border-b border-gray-100 hover:bg-gray-50'} transition-colors`}>
-                    <td className="py-3 px-4">Mathematics Advanced Topics</td>
-                    <td className="py-3 px-4">Jane Smith</td>
-                    <td className="py-3 px-4">Friday, 2:00 PM</td>
-                    <td className="py-3 px-4">1.5 hours</td>
-                    <td className="py-3 px-4 text-right">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className={darkMode ? 'border-neon-green text-neon-green hover:bg-neon-green/10' : 'border-green-500 text-green-500 hover:bg-green-50'}
-                        onClick={() => toast({ title: "Edit Session", description: "Session edit form opened" })}
-                      >
-                        Edit
-                      </Button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Card>
-          )}
-        </main>
-      </div>
-    </div>
-  );
-};
-
-export default Admin;
