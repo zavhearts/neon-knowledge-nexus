@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { BarChart, LineChart, PieChart } from "recharts";
+import { BarChart as BarChartIcon, LineChart as LineChartIcon, PieChart as PieChartIcon } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
 import { 
   Users, 
   Video, 
@@ -27,7 +28,12 @@ import {
   DollarSign,
   MessageCircle,
   Edit,
-  AlertCircle
+  AlertCircle,
+  RefreshCcw,
+  RefreshCw,
+  Database,
+  Shield,
+  Image
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import EditContentModal from "@/components/teacher/EditContentModal";
@@ -538,36 +544,35 @@ const Admin = () => {
             </Card>
           )}
 
-          {currentTab === "uploads" && (
+          {currentTab === "feedback" && (
             <Card className={`p-6 ${darkMode ? 'cyber-card' : 'bg-white border-blue-200'}`}>
               <div className="flex justify-between items-center mb-6">
-                <h2 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Content Uploads</h2>
-                <div className="flex gap-2">
-                  <Button 
-                    variant="outline"
-                    className={darkMode ? "border-neon-purple text-neon-purple hover:bg-neon-purple/10" : "border-purple-500 text-purple-500"}
-                    onClick={() => toast({ title: "Upload Video", description: "Video upload form opened" })}
-                  >
-                    <Video className="h-4 w-4 mr-2" />
-                    Upload Video
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    className={darkMode ? "border-neon-blue text-neon-blue hover:bg-neon-blue/10" : "border-blue-500 text-blue-500"}
-                    onClick={() => toast({ title: "Upload Resource", description: "Resource upload form opened" })}
-                  >
-                    <FileText className="h-4 w-4 mr-2" />
-                    Upload Resource
-                  </Button>
+                <h2 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>User Feedback</h2>
+                <div className="flex items-center space-x-2">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      placeholder="Search feedback..."
+                      className={`pl-10 ${darkMode ? 'bg-cyber-light/30 border-neon-blue/50' : 'bg-white border-gray-300'}`}
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div className={`border-2 border-dashed rounded-lg p-8 text-center ${darkMode ? 'border-neon-blue/50 bg-neon-blue/5' : 'border-blue-300 bg-blue-50'}`}>
-                  <div className="flex flex-col items-center justify-center">
-                    <Upload className={`h-12 w-12 mb-4 ${darkMode ? 'text-neon-blue' : 'text-blue-500'}`} />
-                    <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                      Upload Recorded Classes
-                    </h3>
-                    <p className={`mb-4 text-sm ${darkMode ? 'text-white/70' : 'text-gray-500'}`}>
-                      Drag and drop video files or click to browse
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className={`font-medium ${darkMode ? 'text-white' : 'text-gray-800'}`}>Feedback List</h3>
+                  
+                  {FEEDBACKS.map((feedback) => (
+                    <div 
+                      key={feedback.id} 
+                      className={`p-4 rounded-lg cursor-pointer transition-all duration-300 feedback-comment ${
+                        selectedFeedback === feedback.id ? 
+                          (darkMode ? 'bg-neon-blue/20 border border-neon-blue/50' : 'bg-blue-50 border border-blue-200') : 
+                          (darkMode ? 'bg-cyber-dark border border-white/10' : 'bg-white border border-gray-200')
+                      }`}
+                      onClick={() => setSelectedFeedback(feedback.id)}
+                    >
+                      <div className="flex justify-
