@@ -1,10 +1,13 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ClassesTab from "./ClassesTab";
 import StudentsTab from "./StudentsTab";
 import ResourcesTab from "./ResourcesTab";
 import UploadFormsTab from "./UploadFormsTab";
+import CoursesTab from "./CoursesTab";
+import TeacherAnalytics from "./TeacherAnalytics";
+import { BookOpen, Users, FileText, Upload, Layers, BarChart2 } from "lucide-react";
 
 // Sample data
 const CLASSES = [
@@ -80,20 +83,34 @@ const TabsContainer: React.FC<TabsContainerProps> = ({
   handleThumbnailChange,
   taxNotesPdfs = []
 }) => {
+  const [analyticsTab, setAnalyticsTab] = useState("feedback");
+  
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
       <TabsList className="bg-cyber-light/20 p-1">
         <TabsTrigger value="classes" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
+          <BookOpen className="h-4 w-4 mr-2" />
           Classes
         </TabsTrigger>
+        <TabsTrigger value="courses" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
+          <Layers className="h-4 w-4 mr-2" />
+          Courses
+        </TabsTrigger>
         <TabsTrigger value="students" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
+          <Users className="h-4 w-4 mr-2" />
           Students
         </TabsTrigger>
         <TabsTrigger value="resources" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
+          <FileText className="h-4 w-4 mr-2" />
           Resources
         </TabsTrigger>
         <TabsTrigger value="uploads" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
+          <Upload className="h-4 w-4 mr-2" />
           Upload Forms
+        </TabsTrigger>
+        <TabsTrigger value="analytics" className="data-[state=active]:bg-neon-blue data-[state=active]:text-black">
+          <BarChart2 className="h-4 w-4 mr-2" />
+          Analytics
         </TabsTrigger>
       </TabsList>
       
@@ -105,6 +122,16 @@ const TabsContainer: React.FC<TabsContainerProps> = ({
           handleAction={handleAction}
           classes={CLASSES}
           uploadedFiles={uploadedFiles}
+        />
+      </TabsContent>
+      
+      <TabsContent value="courses" className="mt-0">
+        <CoursesTab
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          handleUploadClick={handleUploadClick}
+          handleAction={handleAction}
+          classes={CLASSES}
         />
       </TabsContent>
       
@@ -137,6 +164,13 @@ const TabsContainer: React.FC<TabsContainerProps> = ({
           resourceThumbnailInputRef={resourceThumbnailInputRef}
           uploadedFiles={uploadedFiles}
           handleThumbnailChange={handleThumbnailChange}
+        />
+      </TabsContent>
+      
+      <TabsContent value="analytics" className="mt-0">
+        <TeacherAnalytics 
+          selectedTab={analyticsTab}
+          onTabChange={setAnalyticsTab}
         />
       </TabsContent>
     </Tabs>

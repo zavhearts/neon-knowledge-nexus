@@ -5,8 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Search, PlusCircle, Eye, Edit, Trash2 } from "lucide-react";
+import { Search, PlusCircle, Eye, Edit, Trash2, MessageCircle, BarChart2 } from "lucide-react";
 import CustomVideoPlayer from "../video/CustomVideoPlayer";
+import EditContentModal from "./EditContentModal";
+import VideoCommentsModal from "./VideoCommentsModal";
 
 interface ClassItem {
   id: number;
@@ -48,10 +50,28 @@ const ClassesTab: React.FC<ClassesTabProps> = ({
 }) => {
   const [selectedClass, setSelectedClass] = useState<ClassItem | null>(null);
   const [viewingClass, setViewingClass] = useState(false);
+  const [editingClass, setEditingClass] = useState<ClassItem | null>(null);
+  const [viewingComments, setViewingComments] = useState(false);
+  const [commentedClass, setCommentedClass] = useState<ClassItem | null>(null);
 
   const handleViewClass = (classItem: ClassItem) => {
     setSelectedClass(classItem);
     setViewingClass(true);
+  };
+  
+  const handleEditClass = (classItem: ClassItem) => {
+    setEditingClass(classItem);
+  };
+  
+  const handleSaveEdit = (updatedClass: ClassItem) => {
+    // In a real app, you would update the backend here
+    // For now, we'll just close the modal
+    setEditingClass(null);
+  };
+  
+  const handleViewComments = (classItem: ClassItem) => {
+    setCommentedClass(classItem);
+    setViewingComments(true);
   };
 
   // Sample resources for demo purposes
@@ -83,6 +103,11 @@ const ClassesTab: React.FC<ClassesTabProps> = ({
   }));
 
   const allClasses = [...enhancedClasses, ...enhancedUploadedFiles];
+  
+  // Filter classes based on search term
+  const filteredClasses = allClasses.filter(cls => 
+    cls.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <>
@@ -119,57 +144,81 @@ const ClassesTab: React.FC<ClassesTabProps> = ({
               </tr>
             </thead>
             <tbody>
-              {/* Show all classes */}
-              {allClasses.map((cls) => (
-                <tr key={cls.id} className="border-b border-white/10 hover:bg-white/5 transition-colors">
-                  <td className="py-3 px-4">{cls.title}</td>
-                  <td className="py-3 px-4">
-                    <Badge className={cls.type === "Live" ? "bg-neon-purple text-white" : "bg-neon-green text-black"}>
-                      {cls.type}
-                    </Badge>
-                  </td>
-                  <td className="py-3 px-4">{cls.students}</td>
-                  <td className="py-3 px-4">{cls.date}</td>
-                  <td className="py-3 px-4">
-                    <Badge className={cls.status === "Published" ? "bg-neon-blue text-black" : "bg-neon-pink text-white"}>
-                      {cls.status}
-                    </Badge>
-                  </td>
-                  <td className="py-3 px-4 text-right">
-                    <div className="flex items-center justify-end space-x-2">
-                      <Button 
-                        variant="ghost" 
-                        className="text-white/70 hover:text-white hover:bg-white/10"
-                        size="sm"
-                        onClick={() => handleViewClass(cls)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        className="text-neon-blue hover:text-neon-blue/80 hover:bg-neon-blue/10"
-                        size="sm"
-                        onClick={() => handleAction("Edit", cls.id, "Class")}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        className="text-red-500 hover:text-red-400 hover:bg-red-500/10"
-                        size="sm"
-                        onClick={() => handleAction("Delete", cls.id, "Class")}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+              {filteredClasses.length > 0 ? (
+                filteredClasses.map((cls) => (
+                  <tr key={cls.id} className="border-b border-white/10 hover:bg-white/5 transition-colors">
+                    <td className="py-3 px-4">{cls.title}</td>
+                    <td className="py-3 px-4">
+                      <Badge className={cls.type === "Live" ? "bg-neon-purple text-white" : "bg-neon-green text-black"}>
+                        {cls.type}
+                      </Badge>
+                    </td>
+                    <td className="py-3 px-4">{cls.students}</td>
+                    <td className="py-3 px-4">{cls.date}</td>
+                    <td className="py-3 px-4">
+                      <Badge className={cls.status === "Published" ? "bg-neon-blue text-black" : "bg-neon-pink text-white"}>
+                        {cls.status}
+                      </Badge>
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      <div className="flex items-center justify-end space-x-2">
+                        <Button 
+                          variant="ghost" 
+                          className="text-white/70 hover:text-white hover:bg-white/10"
+                          size="sm"
+                          onClick={() => handleViewClass(cls)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          className="text-neon-blue hover:text-neon-blue/80 hover:bg-neon-blue/10"
+                          size="sm"
+                          onClick={() => handleEditClass(cls)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          className="text-neon-purple hover:text-neon-purple/80 hover:bg-neon-purple/10"
+                          size="sm"
+                          onClick={() => handleViewComments(cls)}
+                        >
+                          <MessageCircle className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          className="text-neon-green hover:text-neon-green/80 hover:bg-neon-green/10"
+                          size="sm"
+                          onClick={() => handleAction("Analytics", cls.id, "Class")}
+                        >
+                          <BarChart2 className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          className="text-red-500 hover:text-red-400 hover:bg-red-500/10"
+                          size="sm"
+                          onClick={() => handleAction("Delete", cls.id, "Class")}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="py-6 text-center text-white/50">
+                    No classes found. Add a new class to get started.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
       </Card>
 
+      {/* View Class Dialog */}
       <Dialog open={viewingClass} onOpenChange={setViewingClass}>
         <DialogContent className="bg-cyber-darker border-neon-blue/50 max-w-6xl p-0">
           {selectedClass && (
@@ -181,6 +230,30 @@ const ClassesTab: React.FC<ClassesTabProps> = ({
           )}
         </DialogContent>
       </Dialog>
+      
+      {/* Edit Class Modal */}
+      {editingClass && (
+        <EditContentModal
+          isOpen={!!editingClass}
+          onClose={() => setEditingClass(null)}
+          content={{
+            id: editingClass.id,
+            title: editingClass.title,
+            type: 'Class',
+            thumbnailUrl: editingClass.videoUrl ? 'https://sample-videos.com/img/Sample-jpg-image-500kb.jpg' : undefined
+          }}
+          onSave={handleSaveEdit}
+        />
+      )}
+      
+      {/* View Comments Modal */}
+      {commentedClass && (
+        <VideoCommentsModal
+          isOpen={viewingComments}
+          onClose={() => setViewingComments(false)}
+          videoTitle={commentedClass.title}
+        />
+      )}
     </>
   );
 };
