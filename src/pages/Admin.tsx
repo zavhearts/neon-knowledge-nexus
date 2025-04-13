@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -544,6 +545,124 @@ const Admin = () => {
             </Card>
           )}
 
+          {currentTab === "uploads" && (
+            <Card className={`p-6 ${darkMode ? 'cyber-card' : 'bg-white border-blue-200'}`}>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Content Uploads</h2>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline"
+                    className={darkMode ? "border-neon-purple text-neon-purple hover:bg-neon-purple/10" : "border-purple-500 text-purple-500"}
+                    onClick={() => toast({ title: "Upload Video", description: "Video upload form opened" })}
+                  >
+                    <Video className="h-4 w-4 mr-2" />
+                    Upload Video
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className={darkMode ? "border-neon-blue text-neon-blue hover:bg-neon-blue/10" : "border-blue-500 text-blue-500"}
+                    onClick={() => toast({ title: "Upload Resource", description: "Resource upload form opened" })}
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    Upload Resource
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className={`border-2 border-dashed rounded-lg p-8 text-center ${darkMode ? 'border-neon-blue/50 bg-neon-blue/5' : 'border-blue-300 bg-blue-50'}`}>
+                  <div className="flex flex-col items-center justify-center">
+                    <Upload className={`h-12 w-12 mb-4 ${darkMode ? 'text-neon-blue' : 'text-blue-500'}`} />
+                    <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                      Upload Recorded Classes
+                    </h3>
+                    <p className={`mb-4 text-sm ${darkMode ? 'text-white/70' : 'text-gray-500'}`}>
+                      Drag and drop video files or click to browse
+                    </p>
+                    <Button size="sm">Browse Files</Button>
+                  </div>
+                </div>
+                <div className={`border-2 border-dashed rounded-lg p-8 text-center ${darkMode ? 'border-neon-green/50 bg-neon-green/5' : 'border-green-300 bg-green-50'}`}>
+                  <div className="flex flex-col items-center justify-center">
+                    <FileText className={`h-12 w-12 mb-4 ${darkMode ? 'text-neon-green' : 'text-green-500'}`} />
+                    <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                      Upload Course Resources
+                    </h3>
+                    <p className={`mb-4 text-sm ${darkMode ? 'text-white/70' : 'text-gray-500'}`}>
+                      PDF, DOC, PPT, XLS, and other files
+                    </p>
+                    <Button size="sm">Browse Files</Button>
+                  </div>
+                </div>
+              </div>
+              
+              <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Recent Uploads</h3>
+              <div className="overflow-x-auto">
+                <table className={`w-full border-collapse ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                  <thead>
+                    <tr className={darkMode ? 'border-b border-white/20' : 'border-b border-gray-200'}>
+                      <th className="text-left py-3 px-4">Title</th>
+                      <th className="text-left py-3 px-4">Type</th>
+                      <th className="text-left py-3 px-4">Author</th>
+                      <th className="text-left py-3 px-4">Date</th>
+                      <th className="text-right py-3 px-4">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className={`${darkMode ? 'border-b border-white/10 hover:bg-white/5' : 'border-b border-gray-100 hover:bg-gray-50'} transition-colors`}>
+                      <td className="py-3 px-4">Advanced Calculus Lecture 3</td>
+                      <td className="py-3 px-4">Video</td>
+                      <td className="py-3 px-4">Jane Smith</td>
+                      <td className="py-3 px-4">2023-06-15</td>
+                      <td className="py-3 px-4 text-right">
+                        <div className="flex items-center justify-end space-x-2">
+                          <Button 
+                            variant="ghost" 
+                            className={darkMode ? "text-white/70 hover:text-white hover:bg-white/10" : "text-gray-500 hover:bg-gray-50"}
+                            size="sm"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            className={darkMode ? "text-red-500 hover:text-red-400 hover:bg-red-500/10" : "text-red-500 hover:bg-red-50"}
+                            size="sm"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className={`${darkMode ? 'border-b border-white/10 hover:bg-white/5' : 'border-b border-gray-100 hover:bg-gray-50'} transition-colors`}>
+                      <td className="py-3 px-4">Economics Formulas</td>
+                      <td className="py-3 px-4">PDF</td>
+                      <td className="py-3 px-4">Robert Brown</td>
+                      <td className="py-3 px-4">2023-06-14</td>
+                      <td className="py-3 px-4 text-right">
+                        <div className="flex items-center justify-end space-x-2">
+                          <Button 
+                            variant="ghost" 
+                            className={darkMode ? "text-white/70 hover:text-white hover:bg-white/10" : "text-gray-500 hover:bg-gray-50"}
+                            size="sm"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            className={darkMode ? "text-red-500 hover:text-red-400 hover:bg-red-500/10" : "text-red-500 hover:bg-red-50"}
+                            size="sm"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          )}
+
           {currentTab === "feedback" && (
             <Card className={`p-6 ${darkMode ? 'cyber-card' : 'bg-white border-blue-200'}`}>
               <div className="flex justify-between items-center mb-6">
@@ -575,4 +694,324 @@ const Admin = () => {
                       }`}
                       onClick={() => setSelectedFeedback(feedback.id)}
                     >
-                      <div className="flex justify-
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center space-x-3">
+                          <div className={`p-2 rounded-full ${
+                            feedback.userType === 'Student' ? 
+                              (darkMode ? 'bg-neon-green/20' : 'bg-green-100') : 
+                              (darkMode ? 'bg-neon-purple/20' : 'bg-purple-100')
+                          }`}>
+                            <User className={`h-4 w-4 ${
+                              feedback.userType === 'Student' ? 
+                                (darkMode ? 'text-neon-green' : 'text-green-600') : 
+                                (darkMode ? 'text-neon-purple' : 'text-purple-600')
+                            }`} />
+                          </div>
+                          <div>
+                            <p className="font-medium">{feedback.userName}</p>
+                            <p className={`text-xs ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                              {feedback.userType} • {feedback.date}
+                            </p>
+                          </div>
+                        </div>
+                        <Badge className={`
+                          ${feedback.status === 'New' ? 
+                            (darkMode ? 'bg-neon-blue text-black' : 'bg-blue-100 text-blue-800') : 
+                            (darkMode ? 'bg-neon-green/50 text-white' : 'bg-green-100 text-green-800')}
+                        `}>
+                          {feedback.status}
+                        </Badge>
+                      </div>
+                      <div className="mt-3">
+                        <p className={`text-sm ${darkMode ? 'text-white/80' : 'text-gray-700'}`}>
+                          {feedback.content}
+                        </p>
+                      </div>
+                      <div className="mt-2 flex items-center">
+                        <div className="flex">
+                          {[...Array(5)].map((_, i) => (
+                            <span 
+                              key={i} 
+                              className={`text-sm ${
+                                i < feedback.rating ? 
+                                  (darkMode ? 'text-yellow-400' : 'text-yellow-500') : 
+                                  (darkMode ? 'text-white/30' : 'text-gray-300')
+                              }`}
+                            >
+                              ★
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div>
+                  {selectedFeedback && (
+                    <div className={`p-6 rounded-lg ${darkMode ? 'bg-cyber-darker border border-white/10' : 'bg-gray-50 border border-gray-200'}`}>
+                      <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                        Feedback Details
+                      </h3>
+                      
+                      {(() => {
+                        const feedback = FEEDBACKS.find(f => f.id === selectedFeedback);
+                        if (!feedback) return null;
+                        
+                        return (
+                          <div>
+                            <div className="mb-4">
+                              <label className={`block text-sm ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>From</label>
+                              <p className="font-medium">{feedback.userName} ({feedback.userType})</p>
+                            </div>
+                            
+                            <div className="mb-4">
+                              <label className={`block text-sm ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>Date</label>
+                              <p>{feedback.date}</p>
+                            </div>
+                            
+                            <div className="mb-4">
+                              <label className={`block text-sm ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>Rating</label>
+                              <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                  <span 
+                                    key={i} 
+                                    className={`text-lg ${
+                                      i < feedback.rating ? 
+                                        (darkMode ? 'text-yellow-400' : 'text-yellow-500') : 
+                                        (darkMode ? 'text-white/30' : 'text-gray-300')
+                                    }`}
+                                  >
+                                    ★
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                            
+                            <div className="mb-4">
+                              <label className={`block text-sm mb-2 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>Feedback</label>
+                              <div className={`p-4 rounded ${darkMode ? 'bg-cyber-dark' : 'bg-white border border-gray-200'}`}>
+                                <p>{feedback.content}</p>
+                              </div>
+                            </div>
+                            
+                            <div className="mb-4">
+                              <label className={`block text-sm mb-2 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>Admin Response</label>
+                              <textarea 
+                                className={`w-full p-3 rounded resize-none h-24 ${
+                                  darkMode ? 'bg-cyber-dark border border-white/20 text-white' : 'bg-white border border-gray-300'
+                                }`}
+                                placeholder="Write your response here..."
+                              ></textarea>
+                            </div>
+                            
+                            <div className="flex justify-between">
+                              <Button 
+                                variant="outline"
+                                className={darkMode ? "border-white/50 text-white hover:bg-white/10" : "border-gray-300 text-gray-700"}
+                                onClick={() => setSelectedFeedback(null)}
+                              >
+                                Close
+                              </Button>
+                              
+                              <div className="space-x-2">
+                                {feedback.status === 'New' && (
+                                  <Button
+                                    variant="outline"
+                                    className={darkMode ? "border-neon-green text-neon-green hover:bg-neon-green/10" : "border-green-500 text-green-700"}
+                                    onClick={() => markFeedbackAsReviewed(feedback.id)}
+                                  >
+                                    <CheckSquare className="h-4 w-4 mr-2" />
+                                    Mark as Reviewed
+                                  </Button>
+                                )}
+                                
+                                <Button>
+                                  Send Response
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
+                  
+                  {!selectedFeedback && (
+                    <div className={`h-full flex flex-col items-center justify-center text-center p-8 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                      <AlertCircle className="h-12 w-12 mb-4 opacity-50" />
+                      <h4 className="text-lg font-medium mb-2">No Feedback Selected</h4>
+                      <p>Select a feedback item from the list to view details.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Card>
+          )}
+          
+          {/* Website Control Section */}
+          {currentTab === "website" && (
+            <Card className={`p-6 ${darkMode ? 'cyber-card' : 'bg-white border-blue-200'}`}>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Website Control</h2>
+                <Button onClick={() => toast({ title: "Changes Published", description: "Website updated successfully" })}>
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Publish Changes
+                </Button>
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className={`col-span-1 ${darkMode ? 'bg-cyber-darker/50' : 'bg-gray-50'} rounded-lg p-4`}>
+                  <h3 className={`font-medium mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Website Sections</h3>
+                  <div className="space-y-2">
+                    {WEBSITE_SECTIONS.map((section) => (
+                      <div 
+                        key={section.id}
+                        className={`p-3 rounded-lg cursor-pointer transition-all ${
+                          darkMode ? 'hover:bg-white/5 bg-cyber-dark' : 'hover:bg-gray-100 bg-white border border-gray-200'
+                        }`}
+                      >
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center space-x-3">
+                            {section.type === 'Section' ? (
+                              <Database className={darkMode ? 'text-neon-blue h-4 w-4' : 'text-blue-600 h-4 w-4'} />
+                            ) : (
+                              <Shield className={darkMode ? 'text-neon-purple h-4 w-4' : 'text-purple-600 h-4 w-4'} />
+                            )}
+                            <div>
+                              <p className="font-medium text-sm">{section.name}</p>
+                              <p className={`text-xs ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                                {section.type} • Last updated: {section.lastUpdated}
+                              </p>
+                            </div>
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className={darkMode ? "text-white/70 hover:text-white hover:bg-white/10" : "text-gray-600"}
+                            onClick={() => toast({ title: "Edit Section", description: `Editing "${section.name}"` })}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className={`col-span-2 ${darkMode ? 'bg-cyber-darker/50' : 'bg-gray-50'} rounded-lg p-4`}>
+                  <h3 className={`font-medium mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Site Preview</h3>
+                  <div className={`aspect-video rounded-lg overflow-hidden ${darkMode ? 'bg-cyber-dark border border-white/10' : 'bg-white border border-gray-200'}`}>
+                    <div className="bg-black/30 h-full w-full flex flex-col items-center justify-center p-6 text-center">
+                      <Image className={`h-16 w-16 mb-4 ${darkMode ? 'text-neon-blue' : 'text-blue-600'}`} />
+                      <h4 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Website Preview</h4>
+                      <p className={`text-sm mt-2 max-w-md ${darkMode ? 'text-white/60' : 'text-gray-600'}`}>
+                        Select a section from the sidebar to edit website content. Changes will appear here before publishing.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => toast({ title: "SEO Tools", description: "SEO optimization panel opened" })}
+                    >
+                      SEO Optimization
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => toast({ title: "Analytics", description: "Website analytics opened" })}
+                    >
+                      View Analytics
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          )}
+          
+          {/* Content Management Section */}
+          {currentTab === "content" && (
+            <Card className={`p-6 ${darkMode ? 'cyber-card' : 'bg-white border-blue-200'}`}>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Content Management</h2>
+                <Button onClick={() => toast({ title: "Add Content", description: "Content creation form opened" })}>
+                  <PlusCircle className="h-4 w-4 mr-2" />
+                  Add New Content
+                </Button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {CONTENT_LIST.map((content) => (
+                  <div 
+                    key={content.id} 
+                    className={`rounded-lg overflow-hidden ${darkMode ? 'bg-cyber-darker border border-white/10' : 'bg-white border border-gray-200'}`}
+                  >
+                    <div className="aspect-video bg-gray-200 relative">
+                      <img 
+                        src={content.thumbnailUrl} 
+                        alt={content.title} 
+                        className="w-full h-full object-cover"
+                      />
+                      <Badge className={`absolute top-2 right-2 ${
+                        content.type === 'Course' ? 
+                        (darkMode ? 'bg-neon-blue text-black' : 'bg-blue-100 text-blue-800') : 
+                        (darkMode ? 'bg-neon-purple text-white' : 'bg-purple-100 text-purple-800')
+                      }`}>
+                        {content.type}
+                      </Badge>
+                    </div>
+                    <div className="p-4">
+                      <h3 className={`font-semibold mb-1 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                        {content.title}
+                      </h3>
+                      <p className={`text-sm mb-3 ${darkMode ? 'text-white/60' : 'text-gray-500'}`}>
+                        {content.description}
+                      </p>
+                      <div className="flex justify-between items-center">
+                        <div className={`text-xs ${darkMode ? 'text-white/50' : 'text-gray-500'}`}>
+                          By {content.authorName}
+                        </div>
+                        <div className="flex space-x-1">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className={darkMode ? "text-white/70 hover:text-white hover:bg-white/10" : "text-gray-600"}
+                            onClick={() => handleActionClick("Edit", content.id, "Content")}
+                          >
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className={darkMode ? "text-red-500 hover:text-red-400 hover:bg-red-500/10" : "text-red-500"}
+                            onClick={() => handleActionClick("Delete", content.id, "Content")}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+          
+          {isEditContentModalOpen && contentToEdit && (
+            <EditContentModal
+              content={contentToEdit}
+              onSave={handleContentSave}
+              onCancel={() => setIsEditContentModalOpen(false)}
+              isOpen={isEditContentModalOpen}
+            />
+          )}
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default Admin;
