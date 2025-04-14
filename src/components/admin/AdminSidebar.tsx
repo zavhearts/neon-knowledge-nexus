@@ -14,83 +14,92 @@ import {
   Home,
   ChevronUp,
   ChevronDown,
-  Sliders
+  Sliders,
+  Sun,
+  Moon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/components/theme/theme-provider";
 
 interface NavItem {
   title: string;
   icon: React.ReactNode;
-  href: string;
+  id: string;
 }
 
-const AdminSidebar = () => {
+interface AdminSidebarProps {
+  activeView: string;
+  setActiveView: (view: string) => void;
+}
+
+const AdminSidebar = ({ activeView, setActiveView }: AdminSidebarProps) => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showScrollBottom, setShowScrollBottom] = useState(true);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const { theme, setTheme } = useTheme();
   
   const navItems: NavItem[] = [
     {
       title: "EASY WIN ADMIN",
       icon: <Settings className="h-5 w-5" />,
-      href: "/admin"
+      id: "dashboard"
     },
     {
       title: "USER MANAGEMENT",
       icon: <Users className="h-5 w-5" />,
-      href: "/admin/users"
+      id: "users"
     },
     {
       title: "CLASS MANAGEMENT",
       icon: <ListChecks className="h-5 w-5" />,
-      href: "/admin/classes"
+      id: "classes"
     },
     {
       title: "LIVE MONITOR",
       icon: <MonitorPlay className="h-5 w-5" />,
-      href: "/admin/live"
+      id: "live"
     },
     {
       title: "MOCK TESTS",
       icon: <TestTube className="h-5 w-5" />,
-      href: "/admin/tests"
+      id: "tests"
     },
     {
       title: "ANALYTICS",
       icon: <BarChart3 className="h-5 w-5" />,
-      href: "/admin/analytics"
+      id: "analytics"
     },
     {
       title: "UPLOADS",
       icon: <Upload className="h-5 w-5" />,
-      href: "/admin/uploads"
+      id: "uploads"
     },
     {
       title: "USER FEEDBACK",
       icon: <MessageSquare className="h-5 w-5" />,
-      href: "/admin/feedback"
+      id: "feedback"
     },
     {
       title: "WEBSITE CONTROL",
       icon: <Settings className="h-5 w-5" />,
-      href: "/admin/settings"
+      id: "settings"
     },
     {
       title: "CONTENT MANAGEMENT",
       icon: <FileText className="h-5 w-5" />,
-      href: "/admin/content"
+      id: "content"
     },
     {
       title: "SLIDER CONTROL",
       icon: <Sliders className="h-5 w-5" />,
-      href: "/admin/slider"
+      id: "slider"
     },
     {
       title: "Return to Home",
       icon: <Home className="h-5 w-5" />,
-      href: "/"
+      id: "home"
     }
   ];
 
@@ -114,6 +123,18 @@ const AdminSidebar = () => {
     });
   };
 
+  const handleNavItemClick = (id: string) => {
+    if (id === "home") {
+      window.open("/", "_blank");
+    } else {
+      setActiveView(id);
+    }
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
   useEffect(() => {
     const scrollElement = scrollAreaRef.current;
     if (scrollElement) {
@@ -127,13 +148,23 @@ const AdminSidebar = () => {
 
   return (
     <div className="min-h-screen w-64 bg-neutral-100 dark:bg-dark-bg border-r border-neutral-200 dark:border-neutral-700 flex flex-col relative">
-      <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
-        <h3 className="text-lg font-bold text-neutral-800 dark:text-white">
-          Administration
-        </h3>
-        <p className="text-xs text-neutral-500 dark:text-neutral-400">
-          Dashboard control panel
-        </p>
+      <div className="p-4 border-b border-neutral-200 dark:border-neutral-700 flex justify-between items-center">
+        <div>
+          <h3 className="text-lg font-bold text-neutral-800 dark:text-white">
+            Administration
+          </h3>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+            Dashboard control panel
+          </p>
+        </div>
+        <Button 
+          onClick={toggleTheme} 
+          variant="ghost" 
+          size="icon" 
+          className="rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800"
+        >
+          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </Button>
       </div>
       
       <div className="relative flex-grow">
@@ -143,23 +174,19 @@ const AdminSidebar = () => {
         >
           <div className="p-2 space-y-1">
             {navItems.map((item, index) => (
-              <Link 
+              <Button 
                 key={index} 
-                to={item.href} 
-                target={item.title === "Return to Home" ? "_blank" : undefined}
+                variant="ghost" 
+                className={cn(
+                  "w-full justify-start font-medium tracking-wide text-neutral-700 dark:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors",
+                  item.title === "Return to Home" && "mt-4",
+                  activeView === item.id && "bg-neutral-200 dark:bg-neutral-800 text-primary font-bold"
+                )}
+                onClick={() => handleNavItemClick(item.id)}
               >
-                <Button 
-                  variant="ghost" 
-                  className={cn(
-                    "w-full justify-start font-medium tracking-wide text-neutral-700 dark:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors",
-                    item.title === "Return to Home" && "mt-4",
-                    item.title === "EASY WIN ADMIN" && "bg-neutral-200 dark:bg-neutral-800 text-primary font-bold"
-                  )}
-                >
-                  <span className="mr-2">{item.icon}</span>
-                  <span className="text-sm">{item.title}</span>
-                </Button>
-              </Link>
+                <span className="mr-2">{item.icon}</span>
+                <span className="text-sm">{item.title}</span>
+              </Button>
             ))}
           </div>
         </ScrollArea>
