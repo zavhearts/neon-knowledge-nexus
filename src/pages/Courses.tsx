@@ -176,20 +176,20 @@ const Courses = () => {
                   </Badge>
                 </div>
                 
-                <h3 className="text-xl font-bold mb-2">{course.title}</h3>
-                <p className="text-white/70 mb-4 text-sm flex-grow">{course.description}</p>
+                <h3 className="text-xl font-bold mb-2 breathing-text">{course.title}</h3>
+                <p className="text-white dark:text-white mb-4 text-sm flex-grow high-contrast-text">{course.description}</p>
                 
                 <div className="flex items-center mt-auto text-sm text-white/60 mb-3">
                   <User className="h-4 w-4 mr-1" />
-                  <span className="mr-4">{course.instructor}</span>
+                  <span className="mr-4 high-contrast-text">{course.instructor}</span>
                   <Clock className="h-4 w-4 mr-1" />
-                  <span>{course.duration}</span>
+                  <span className="high-contrast-text">{course.duration}</span>
                 </div>
                 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                    <span className="text-white">{course.rating} ({course.students})</span>
+                    <span className="text-white dark:text-white high-contrast-text">{course.rating} ({course.students})</span>
                   </div>
                   <Button 
                     className="bg-neon-blue text-black hover:bg-neon-blue/80"

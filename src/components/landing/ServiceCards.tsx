@@ -57,15 +57,15 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, lin
       </div>
       <h3 className="text-xl font-semibold text-white mb-3">{title}</h3>
       <p className="text-gray-400 text-sm flex-grow mb-4">{description}</p>
-      <Link 
-        to={link} 
+      <a 
+        href={link} 
         target="_blank" 
         rel="noopener noreferrer"
         className="text-sm font-medium transition-colors"
         style={{ color }}
       >
         Explore {title} →
-      </Link>
+      </a>
     </motion.div>
   );
 };

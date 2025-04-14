@@ -333,10 +333,10 @@ const Resources = () => {
                     </div>
                   </div>
                   <div className="p-4">
-                    <h3 className="font-semibold text-lg mb-2">{pdf.title}</h3>
-                    <p className="text-white/70 text-sm mb-3">{pdf.description}</p>
+                    <h3 className="font-semibold text-lg mb-2 breathing-text">{pdf.title}</h3>
+                    <p className="text-white/80 dark:text-white/90 text-sm mb-3 high-contrast-text">{pdf.description}</p>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-white/60">{pdf.size}</span>
+                      <span className="text-sm text-white dark:text-white high-contrast-text">{pdf.size}</span>
                       <Button 
                         className="bg-neon-blue text-black hover:bg-neon-blue/80"
                         onClick={() => handleDownload(pdf.id)}
@@ -410,17 +410,17 @@ const Resources = () => {
                         </div>
                         <div className="flex-1">
                           <div className="flex justify-between items-start mb-2">
-                            <h3 className="text-lg font-semibold">{resource.title}</h3>
+                            <h3 className="text-lg font-semibold breathing-text">{resource.title}</h3>
                             <Badge className={`${badgeColor}`}>
                               {resource.type}
                             </Badge>
                           </div>
-                          <p className="text-white/70 text-sm mb-3">{resource.description}</p>
-                          <div className="flex flex-wrap items-center text-sm text-white/60">
-                            <span className="mr-4">{resource.course}</span>
-                            <span className="mr-4">{resource.size}</span>
-                            <span className="mr-4">{new Date(resource.date).toLocaleDateString()}</span>
-                            <span>{resource.downloads} downloads</span>
+                          <p className="text-white dark:text-white text-sm mb-3 high-contrast-text">{resource.description}</p>
+                          <div className="flex flex-wrap items-center text-sm text-white/80 dark:text-white/80">
+                            <span className="mr-4 high-contrast-text">{resource.course}</span>
+                            <span className="mr-4 high-contrast-text">{resource.size}</span>
+                            <span className="mr-4 high-contrast-text">{new Date(resource.date).toLocaleDateString()}</span>
+                            <span className="high-contrast-text">{resource.downloads} downloads</span>
                           </div>
                           {isTaxNote && (
                             <div className="mt-2">
@@ -491,8 +491,8 @@ const Resources = () => {
                   <FilePlus2 className="h-12 w-12 text-neon-purple" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold mb-2">Request Study Materials</h3>
-                  <p className="text-white/70 mb-4">
+                  <h3 className="text-lg font-semibold mb-2 high-contrast-text">Request Study Materials</h3>
+                  <p className="text-white/90 dark:text-white/90 mb-4 high-contrast-text">
                     Can't find what you're looking for? Submit a request for specific resources, and our instructors will try to provide them.
                   </p>
                   <Button 

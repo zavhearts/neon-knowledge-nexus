@@ -43,9 +43,9 @@
     --teal: 187 100% 41%;
     --gold: 43 100% 50%;
     
-    /* Dark mode colors */
-    --dark-bg: 220 18% 13%;
-    --dark-card: 220 18% 20%;
+    /* Dark mode colors - updated for better visibility */
+    --dark-bg: 222 30% 12%;
+    --dark-card: 222 25% 18%;
     
     /* New futuristic theme colors */
     --mystic-blue: 236 61% 27%;
@@ -55,32 +55,32 @@
   }
 
   .dark {
-    --background: 220 18% 13%;
+    --background: 222 30% 12%;
     --foreground: 210 40% 98%;
 
-    --card: 220 18% 20%;
-    --card-foreground: 210 40% 98%;
+    --card: 222 25% 18%;
+    --card-foreground: 0 0% 98%;
 
     --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 211 100% 50%;
+    --primary: 211 100% 60%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 187 100% 41%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 217.2 32.6% 25%;
+    --muted-foreground: 215 20.2% 80%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 217.2 32.6% 25%;
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 40%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --border: 217.2 32.6% 30%;
+    --input: 217.2 32.6% 25%;
     --ring: 212.7 26.8% 83.9%;
   }
 }
@@ -128,6 +128,11 @@
     animation: textPulse 3s infinite;
   }
 
+  /* Added breathing effect animation for text */
+  .breathing-text {
+    animation: textBreathing 3s infinite ease-in-out;
+  }
+
   .cyber-font {
     font-family: 'Montserrat', sans-serif;
   }
@@ -149,15 +154,15 @@
   }
   
   .bg-cyber-dark {
-    @apply bg-mystic-blue;
+    @apply bg-mystic-blue dark:bg-dark-bg;
   }
   
   .bg-cyber-darker {
-    @apply bg-mystic-blue/80;
+    @apply bg-mystic-blue/80 dark:bg-dark-bg/90;
   }
   
   .bg-cyber-light {
-    @apply bg-mystic-blue/40;
+    @apply bg-mystic-blue/40 dark:bg-dark-card/80;
   }
   
   .bg-circuit-pattern {
@@ -168,8 +173,18 @@
     background-attachment: fixed;
   }
 
+  .dark .bg-circuit-pattern {
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(30, 35, 60, 0.8) 0%, transparent 40%),
+      linear-gradient(to bottom, transparent, rgba(110, 140, 255, 0.05));
+  }
+
   .cyber-card {
-    @apply bg-mystic-blue/10 border border-neon-cyan/30 p-6 rounded-lg transition-transform duration-300 hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] relative overflow-hidden;
+    @apply bg-mystic-blue/10 border border-neon-cyan/30 p-6 rounded-lg transition-transform duration-300 hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] relative overflow-hidden text-white dark:text-white;
+  }
+  
+  .dark .cyber-card {
+    @apply bg-dark-card border-neon-cyan/50 shadow-[0_0_10px_rgba(0,105,255,0.2)];
   }
   
   .cyber-card::after {
@@ -192,6 +207,22 @@
     left: 100%;
   }
   
+  /* Enhanced card text visibility */
+  .cyber-card h3, 
+  .cyber-card h4 {
+    @apply text-white dark:text-white font-semibold;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+  }
+  
+  .cyber-card p {
+    @apply text-white/90 dark:text-white/90;
+  }
+
+  /* High contrast version for cards */
+  .high-contrast-card {
+    @apply bg-white/90 dark:bg-slate-800 text-black dark:text-white border border-gray-200 dark:border-gray-600;
+  }
+
   .cyber-button {
     @apply bg-neon-cyan text-charcoal-black font-semibold relative overflow-hidden transition-all duration-300 border border-neon-cyan/80 shadow-[0_0_10px_rgba(0,229,255,0.5)];
   }
@@ -221,11 +252,21 @@
     transition: background 0.3s ease;
   }
   
+  .dark .glassmorphic {
+    background: rgba(30, 35, 60, 0.8);
+  }
+  
   .bg-cyber-grid {
     background-size: 50px 50px;
     background-image:
       linear-gradient(to right, rgba(0, 229, 255, 0.1) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(0, 229, 255, 0.1) 1px, transparent 1px);
+  }
+
+  .dark .bg-cyber-grid {
+    background-image:
+      linear-gradient(to right, rgba(110, 140, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(110, 140, 255, 0.1) 1px, transparent 1px);
   }
 
   .neon-border {
@@ -235,6 +276,7 @@
   .neon-text {
     @apply text-neon-cyan;
     text-shadow: 0 0 5px theme('colors.blue.400'), 0 0 10px rgba(0, 229, 255, 0.5);
+    animation: textGlow 2s infinite alternate;
   }
   
   .animate-pulse-glow {
@@ -247,6 +289,16 @@
   
   .bg-mystic-blue {
     background-color: #1A1F71;
+  }
+  
+  .text-neon-blue {
+    color: #00E5FF;
+    text-shadow: 0 0 5px rgba(0, 229, 255, 0.5);
+  }
+  
+  .dark .text-neon-blue {
+    color: #38bdf8;
+    text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
   }
   
   .text-neon-cyan {
@@ -272,6 +324,16 @@
   .bg-charcoal-black {
     background-color: #121212;
   }
+
+  /* High contrast text for improved readability */
+  .high-contrast-text {
+    @apply text-black dark:text-white;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .high-contrast-text {
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
+  }
 }
 
 @keyframes textPulse {
@@ -280,6 +342,27 @@
   }
   50% {
     text-shadow: 0 0 15px theme('colors.blue.400'), 0 0 30px rgba(0, 229, 255, 0.8);
+  }
+}
+
+@keyframes textGlow {
+  0% {
+    text-shadow: 0 0 5px rgba(0, 229, 255, 0.5), 0 0 10px rgba(0, 229, 255, 0.3);
+  }
+  100% {
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.8), 0 0 20px rgba(0, 229, 255, 0.5), 0 0 30px rgba(0, 229, 255, 0.3);
+  }
+}
+
+/* New breathing text effect animation */
+@keyframes textBreathing {
+  0%, 100% {
+    opacity: 0.8;
+    text-shadow: 0 0 5px currentColor, 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 10px currentColor, 0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3);
   }
 }
 

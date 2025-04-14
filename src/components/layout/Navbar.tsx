@@ -28,6 +28,18 @@ const Navbar = () => {
     document.documentElement.classList.toggle('dark');
   };
 
+  // Function to create external links that open in new tabs
+  const ExternalLink = ({ to, children, className }) => (
+    <a
+      href={to}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className}
+    >
+      {children}
+    </a>
+  );
+
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
@@ -54,34 +66,34 @@ const Navbar = () => {
             Home
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-royal-blue transition-all duration-300 group-hover:w-full"></span>
           </Link>
-          <Link
+          <ExternalLink
             to="/courses"
             className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue transition-colors relative group"
           >
             Courses
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-royal-blue transition-all duration-300 group-hover:w-full"></span>
-          </Link>
-          <Link
+          </ExternalLink>
+          <ExternalLink
             to="/resources"
             className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue transition-colors relative group"
           >
             Resources
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-royal-blue transition-all duration-300 group-hover:w-full"></span>
-          </Link>
-          <Link
+          </ExternalLink>
+          <ExternalLink
             to="/live-classes"
             className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue transition-colors relative group"
           >
             Live Classes
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-royal-blue transition-all duration-300 group-hover:w-full"></span>
-          </Link>
-          <Link
+          </ExternalLink>
+          <ExternalLink
             to="/about-us"
             className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue transition-colors relative group"
           >
             About Us
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-royal-blue transition-all duration-300 group-hover:w-full"></span>
-          </Link>
+          </ExternalLink>
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
             <Button 
@@ -141,34 +153,42 @@ const Navbar = () => {
             >
               Home
             </Link>
-            <Link
-              to="/courses"
+            <a
+              href="/courses"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue py-2 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Courses
-            </Link>
-            <Link
-              to="/resources"
+            </a>
+            <a
+              href="/resources"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue py-2 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Resources
-            </Link>
-            <Link
-              to="/live-classes"
+            </a>
+            <a
+              href="/live-classes"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue py-2 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Live Classes
-            </Link>
-            <Link
-              to="/about-us"
+            </a>
+            <a
+              href="/about-us"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-dark-blue dark:text-gray-300 hover:text-royal-blue dark:hover:text-royal-blue py-2 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               About Us
-            </Link>
+            </a>
             <div className="flex flex-col gap-3 pt-2">
               <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
                 <Button

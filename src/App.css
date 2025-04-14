@@ -1,5 +1,4 @@
 
-
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -55,6 +54,20 @@
   color: #888;
 }
 
+/* Text glow animation for better visibility */
+.text-glow {
+  animation: textGlow 2s infinite alternate;
+}
+
+@keyframes textGlow {
+  from {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  }
+  to {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 20px rgba(0, 229, 255, 0.6);
+  }
+}
+
 /* Mobile specific optimizations */
 @media (max-width: 768px) {
   .mobile-p-reduced {
@@ -72,5 +85,26 @@
   .mobile-gap-1 {
     gap: 0.25rem !important;
   }
+  
+  /* High contrast text for mobile specifically */
+  .mobile-high-contrast {
+    color: #ffffff !important;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5) !important;
+  }
+  
+  .dark .mobile-high-contrast {
+    color: #ffffff !important;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8) !important;
+  }
 }
 
+/* Ensure links and text inside cards are visible */
+.cyber-card a:not(.neon-text):not(.text-neon-blue),
+.cyber-card span:not(.neon-text):not(.text-neon-blue) {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dark .cyber-card a:not(.neon-text):not(.text-neon-blue),
+.dark .cyber-card span:not(.neon-text):not(.text-neon-blue) {
+  color: rgba(255, 255, 255, 0.9);
+}
