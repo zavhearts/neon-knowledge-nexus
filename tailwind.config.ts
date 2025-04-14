@@ -74,12 +74,23 @@ export default {
 				'electric-purple': '#8A2BE2',
 				'charcoal-black': '#121212',
 				// Dark mode specific backgrounds - improved with deeper colors
-				'dark-bg': '#1A1F2C', // Darker purple that's more sophisticated
-				'dark-card': '#221F26', // Near-black with subtle contrast
-				'dark-accent': '#403E43', // Slightly lighter gray for depth
-				'dark-highlight': '#9b87f5', // Vibrant purple for highlights
-				'neon-green': '#39FF14', // Bright neon green
-				'neon-blue': '#38bdf8', // Sky blue for accents
+				'dark-bg': '#1A1F2C',
+				'dark-card': '#221F26',
+				'dark-accent': '#403E43',
+				'dark-highlight': '#9b87f5',
+				'neon-green': '#39FF14',
+				'neon-blue': '#38bdf8',
+				// Professional admin colors
+				'neutral-50': '#F9FAFB',
+				'neutral-100': '#F3F4F6',
+				'neutral-200': '#E5E7EB',
+				'neutral-300': '#D1D5DB',
+				'neutral-400': '#9CA3AF',
+				'neutral-500': '#6B7280',
+				'neutral-600': '#4B5563',
+				'neutral-700': '#374151',
+				'neutral-800': '#1F2937',
+				'neutral-900': '#111827',
 			},
 			fontFamily: {
 				'montserrat': ['Montserrat', 'sans-serif'],

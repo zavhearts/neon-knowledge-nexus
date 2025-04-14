@@ -29,6 +29,34 @@ export const ExternalLink = ({ to, children, className = "" }: { to: string, chi
   );
 };
 
+// Create a custom NavLink component that opens in a new tab
+export const NavLink = ({ to, children, className = "" }: { to: string, children: React.ReactNode, className?: string }) => {
+  // Check if this is a resources, courses, live classes or about us page
+  const shouldOpenInNewTab = /\/(resources|courses|live-classes|about-us)/.test(to);
+  
+  if (shouldOpenInNewTab) {
+    return (
+      <Link 
+        to={to} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className={className}
+      >
+        {children}
+      </Link>
+    );
+  }
+  
+  return (
+    <Link 
+      to={to} 
+      className={className}
+    >
+      {children}
+    </Link>
+  );
+};
+
 const MainLayout: React.FC<LayoutProps> = ({ children, hideHomeButton }) => {
   const isMobile = useIsMobile();
 
