@@ -5,6 +5,7 @@ import { Bot, X, Mic, Volume2, MessageSquare, Globe, Lightbulb, BookOpen, Send, 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const VirtualAssistant = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -19,6 +20,7 @@ const VirtualAssistant = () => {
   ]);
   const messageEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const assistantTexts = [
     "Hai! I'm VedaGenie, your AI learning assistant.",
@@ -226,7 +228,7 @@ const VirtualAssistant = () => {
       <AnimatePresence>
         {isVisible && (
           <motion.div
-            className="fixed bottom-6 right-6 z-50 max-w-md w-full"
+            className={`fixed z-50 ${isMobile ? 'bottom-2 right-2 left-2' : 'bottom-6 right-6'} ${isMobile ? 'max-w-full' : 'max-w-md w-full'}`}
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -267,7 +269,7 @@ const VirtualAssistant = () => {
                   </div>
                 </div>
                 
-                <div className="p-4 bg-charcoal-black/90 max-h-80 overflow-y-auto">
+                <div className={`p-4 bg-charcoal-black/90 ${isMobile ? 'max-h-60' : 'max-h-80'} overflow-y-auto`}>
                   <div className="space-y-4">
                     {chatHistory.map((msg, index) => (
                       <div 
@@ -281,7 +283,7 @@ const VirtualAssistant = () => {
                               : 'bg-charcoal-black border border-neon-cyan/30 text-white mr-auto rounded-tl-none'
                           }`}
                         >
-                          <p className="text-sm">{msg.text}</p>
+                          <p className="text-sm break-words">{msg.text}</p>
                         </div>
                       </div>
                     ))}
@@ -300,7 +302,7 @@ const VirtualAssistant = () => {
                 </div>
                 
                 <div className="p-2 bg-mystic-blue border-t border-neon-cyan/30">
-                  <div className="flex flex-wrap gap-1 mb-2">
+                  <div className={`flex flex-wrap gap-1 mb-2 ${isMobile ? 'justify-center' : ''}`}>
                     <Button 
                       size="sm" 
                       variant="outline" 
@@ -340,39 +342,41 @@ const VirtualAssistant = () => {
                         onKeyDown={handleKeyPress}
                       />
                     </div>
-                    <Button 
-                      onClick={handleVoiceInput}
-                      className="p-2 rounded-full bg-neon-cyan/10 text-neon-cyan hover:bg-neon-cyan/20"
-                      aria-label="Voice input"
-                    >
-                      <Mic size={18} />
-                    </Button>
-                    <Button 
-                      onClick={handleSendMessage}
-                      className="p-2 rounded-full bg-neon-cyan text-charcoal-black hover:bg-neon-cyan/80"
-                      aria-label="Send message"
-                      disabled={!message.trim() || isLoading}
-                    >
-                      {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send size={18} />}
-                    </Button>
+                    <div className="flex-shrink-0 flex gap-2">
+                      <Button 
+                        onClick={handleVoiceInput}
+                        className={`p-2 rounded-full bg-neon-cyan/10 text-neon-cyan hover:bg-neon-cyan/20 ${isMobile ? 'hidden' : ''}`}
+                        aria-label="Voice input"
+                      >
+                        <Mic size={18} />
+                      </Button>
+                      <Button 
+                        onClick={handleSendMessage}
+                        className="p-2 rounded-full bg-neon-cyan text-charcoal-black hover:bg-neon-cyan/80"
+                        aria-label="Send message"
+                        disabled={!message.trim() || isLoading}
+                      >
+                        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send size={18} />}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            
-            {!isVisible && (
-              <motion.button
-                className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-mystic-blue text-neon-cyan shadow-lg flex items-center justify-center border border-neon-cyan/30"
-                onClick={() => setIsVisible(true)}
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <MessageSquare size={24} />
-              </motion.button>
-            )}
           </motion.div>
+        )}
+
+        {!isVisible && (
+          <motion.button
+            className={`fixed ${isMobile ? 'bottom-4 right-4 w-12 h-12' : 'bottom-6 right-6 w-14 h-14'} rounded-full bg-mystic-blue text-neon-cyan shadow-lg flex items-center justify-center border border-neon-cyan/30 z-50`}
+            onClick={() => setIsVisible(true)}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <MessageSquare size={isMobile ? 20 : 24} />
+          </motion.button>
         )}
       </AnimatePresence>
     </>
