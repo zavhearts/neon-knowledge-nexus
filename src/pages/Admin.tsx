@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -1004,7 +1003,7 @@ const Admin = () => {
             <EditContentModal
               content={contentToEdit}
               onSave={handleContentSave}
-              onCancel={() => setIsEditContentModalOpen(false)}
+              onClose={() => setIsEditContentModalOpen(false)}
               isOpen={isEditContentModalOpen}
             />
           )}
