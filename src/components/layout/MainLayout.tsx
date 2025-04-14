@@ -15,6 +15,20 @@ interface LayoutProps {
   hideHomeButton?: boolean;
 }
 
+// This wrapper ensures links are opened in new tabs
+export const ExternalLink = ({ to, children, className = "" }: { to: string, children: React.ReactNode, className?: string }) => {
+  return (
+    <a 
+      href={to} 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className={className}
+    >
+      {children}
+    </a>
+  );
+};
+
 const MainLayout: React.FC<LayoutProps> = ({ children, hideHomeButton }) => {
   const isMobile = useIsMobile();
 

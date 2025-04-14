@@ -73,9 +73,13 @@ export default {
 				'neon-cyan': '#00E5FF',
 				'electric-purple': '#8A2BE2',
 				'charcoal-black': '#121212',
-				// Dark mode specific backgrounds
-				'dark-bg': 'hsl(222, 30%, 12%)',
-				'dark-card': 'hsl(222, 25%, 18%)'
+				// Dark mode specific backgrounds - improved with deeper colors
+				'dark-bg': '#1A1F2C', // Darker purple that's more sophisticated
+				'dark-card': '#221F26', // Near-black with subtle contrast
+				'dark-accent': '#403E43', // Slightly lighter gray for depth
+				'dark-highlight': '#9b87f5', // Vibrant purple for highlights
+				'neon-green': '#39FF14', // Bright neon green
+				'neon-blue': '#38bdf8', // Sky blue for accents
 			},
 			fontFamily: {
 				'montserrat': ['Montserrat', 'sans-serif'],

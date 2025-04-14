@@ -105,8 +105,11 @@ const Courses = () => {
     if (course) {
       toast({
         title: "Course Selected",
-        description: `You selected ${course.title}. Full course details coming soon!`,
+        description: `You selected ${course.title}. This would open in a new tab.`,
       });
+      
+      // Open in new tab (if it were a real link, we'd use window.open(url, '_blank'))
+      window.open(`/course/${courseId}`, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -176,23 +179,23 @@ const Courses = () => {
                   </Badge>
                 </div>
                 
-                <h3 className="text-xl font-bold mb-2 breathing-text">{course.title}</h3>
-                <p className="text-white dark:text-white mb-4 text-sm flex-grow high-contrast-text">{course.description}</p>
+                <h3 className="text-xl font-bold mb-2 text-neon-cyan breathing-text">{course.title}</h3>
+                <p className="text-black dark:text-white mb-4 text-sm flex-grow bg-white/60 dark:bg-black/40 p-2 rounded">{course.description}</p>
                 
-                <div className="flex items-center mt-auto text-sm text-white/60 mb-3">
-                  <User className="h-4 w-4 mr-1" />
-                  <span className="mr-4 high-contrast-text">{course.instructor}</span>
-                  <Clock className="h-4 w-4 mr-1" />
-                  <span className="high-contrast-text">{course.duration}</span>
+                <div className="flex items-center mt-auto text-sm mb-3 bg-white/60 dark:bg-black/40 p-2 rounded">
+                  <User className="h-4 w-4 mr-1 text-black dark:text-white" />
+                  <span className="mr-4 text-black dark:text-white">{course.instructor}</span>
+                  <Clock className="h-4 w-4 mr-1 text-black dark:text-white" />
+                  <span className="text-black dark:text-white">{course.duration}</span>
                 </div>
                 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between bg-white/60 dark:bg-black/40 p-2 rounded">
                   <div className="flex items-center">
                     <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                    <span className="text-white dark:text-white high-contrast-text">{course.rating} ({course.students})</span>
+                    <span className="text-black dark:text-white">{course.rating} ({course.students})</span>
                   </div>
                   <Button 
-                    className="bg-neon-blue text-black hover:bg-neon-blue/80"
+                    className="bg-neon-cyan text-black hover:bg-neon-cyan/80 animate-pulse-glow"
                     onClick={() => handleViewCourse(course.id)}
                   >
                     View Course

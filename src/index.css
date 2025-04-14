@@ -43,8 +43,8 @@
     --gold: 43 100% 50%;
     
     /* Dark mode colors - updated for better visibility */
-    --dark-bg: 222 30% 12%;
-    --dark-card: 222 25% 18%;
+    --dark-bg: 230 25% 14%;
+    --dark-card: 230 22% 18%;
     
     /* New futuristic theme colors */
     --mystic-blue: 236 61% 27%;
@@ -54,33 +54,33 @@
   }
 
   .dark {
-    --background: 222 30% 12%;
-    --foreground: 210 40% 98%;
+    --background: 230 25% 14%;
+    --foreground: 0 0% 98%;
 
-    --card: 222 25% 18%;
+    --card: 230 22% 18%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 230 25% 14%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 211 100% 60%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 262 80% 75%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 187 100% 41%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 186 100% 50%;
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 217.2 32.6% 25%;
-    --muted-foreground: 215 20.2% 80%;
+    --muted: 230 22% 20%;
+    --muted-foreground: 0 0% 80%;
 
-    --accent: 217.2 32.6% 25%;
+    --accent: 262 80% 75%;
     --accent-foreground: 0 0% 98%;
 
     --destructive: 0 62.8% 40%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 217.2 32.6% 30%;
-    --input: 217.2 32.6% 25%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 230 22% 30%;
+    --input: 230 22% 25%;
+    --ring: 262 80% 75%;
   }
 }
 
@@ -127,9 +127,16 @@
     animation: textPulse 3s infinite;
   }
 
-  /* Added breathing effect animation for text */
+  /* Improved breathing text effect animation for better visibility */
   .breathing-text {
     animation: textBreathing 3s infinite ease-in-out;
+    color: #FFFFFF;
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.7), 0 0 15px rgba(0, 229, 255, 0.5);
+  }
+  
+  .dark .breathing-text {
+    color: #38bdf8;
+    text-shadow: 0 0 12px rgba(56, 189, 248, 0.9), 0 0 20px rgba(56, 189, 248, 0.7);
   }
 
   .cyber-font {
@@ -157,7 +164,7 @@
   }
   
   .dark .bg-cyber-dark {
-    @apply bg-dark-bg;
+    @apply bg-[#1A1F2C];
   }
   
   .bg-cyber-darker {
@@ -165,7 +172,7 @@
   }
   
   .dark .bg-cyber-darker {
-    @apply bg-dark-bg/90;
+    @apply bg-[#121620]/90;
   }
   
   .bg-cyber-light {
@@ -173,7 +180,7 @@
   }
   
   .dark .bg-cyber-light {
-    @apply bg-dark-card/80;
+    @apply bg-[#252A3A]/80;
   }
   
   .bg-circuit-pattern {
@@ -195,7 +202,7 @@
   }
   
   .dark .cyber-card {
-    @apply bg-dark-card border-neon-cyan/50 shadow-[0_0_10px_rgba(0,105,255,0.2)] text-white;
+    @apply bg-[#221F26] border-[#38bdf8]/50 shadow-[0_0_15px_rgba(56,189,248,0.3)] text-white;
   }
   
   .cyber-card::after {
@@ -218,15 +225,21 @@
     left: 100%;
   }
   
-  /* Enhanced card text visibility */
+  /* Enhanced card text visibility with stronger contrast */
   .cyber-card h3, 
   .cyber-card h4 {
-    @apply text-white dark:text-white font-semibold;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+    @apply text-white font-semibold;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  
+  .dark .cyber-card h3,
+  .dark .cyber-card h4 {
+    @apply text-[#38bdf8];
+    text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
   }
   
   .cyber-card p {
-    @apply text-white/90 dark:text-white/90;
+    @apply text-black dark:text-white bg-white/70 dark:bg-black/50 p-2 rounded;
   }
 
   /* High contrast version for cards */
@@ -235,7 +248,7 @@
   }
   
   .dark .high-contrast-card {
-    @apply bg-slate-800 text-white border-gray-600;
+    @apply bg-[#1A1A1A] text-white border-[#38bdf8]/30;
   }
 
   .cyber-button {
@@ -347,13 +360,14 @@
   }
 
   .dark .high-contrast-text {
-    text-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
+    @apply text-white;
+    text-shadow: 0 0 4px rgba(56, 189, 248, 0.4);
   }
 }
 
 @keyframes textPulse {
   0%, 100% {
-    text-shadow: 0 0 10px theme('colors.blue.400'), 0 0 20px rgba(0, 229, 255, 0.5);
+    text-shadow: 0 0 10px theme('colors.blue.400'), 0 0 20px rgba(0, 200, 255, 0.5);
   }
   50% {
     text-shadow: 0 0 15px theme('colors.blue.400'), 0 0 30px rgba(0, 229, 255, 0.8);
@@ -369,15 +383,15 @@
   }
 }
 
-/* New breathing text effect animation */
+/* New breathing text effect animation with enhanced visibility */
 @keyframes textBreathing {
   0%, 100% {
-    opacity: 0.8;
-    text-shadow: 0 0 5px currentColor, 0 0 10px rgba(255, 255, 255, 0.3);
+    opacity: 0.85;
+    text-shadow: 0 0 8px currentColor, 0 0 15px rgba(56, 189, 248, 0.5);
   }
   50% {
     opacity: 1;
-    text-shadow: 0 0 10px currentColor, 0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3);
+    text-shadow: 0 0 15px currentColor, 0 0 30px rgba(56, 189, 248, 0.8), 0 0 40px rgba(56, 189, 248, 0.4);
   }
 }
 

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -46,7 +45,6 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
     handleAction("Download", id, "Resource");
   };
 
-  // Function to directly download a file by URL
   const handleDirectDownload = (url: string, filename: string) => {
     const link = document.createElement('a');
     link.href = url;
@@ -69,7 +67,7 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
       
       {taxNotesPdfs.length > 0 && (
         <div className="mb-8">
-          <h3 className="text-lg font-medium mb-4 text-neon-blue">Income Tax Notes for Students</h3>
+          <h3 className="text-lg font-medium mb-4 text-neon-blue breathing-text">Income Tax Notes for Students</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             {taxNotesPdfs.map((pdf) => (
               <div key={pdf.id} className="bg-cyber-light/10 rounded-lg overflow-hidden border border-neon-blue/30 hover:border-neon-blue/60 transition-all">
@@ -85,18 +83,18 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
                     </Badge>
                   </div>
                 </div>
-                <div className="p-4">
-                  <h4 className="font-medium mb-2 line-clamp-2">{pdf.name}</h4>
-                  <div className="flex justify-between text-sm text-white/70 mb-4">
+                <div className="p-4 bg-white/60 dark:bg-black/40">
+                  <h4 className="font-medium mb-2 line-clamp-2 text-black dark:text-white">{pdf.name}</h4>
+                  <div className="flex justify-between text-sm text-black dark:text-white mb-4">
                     <span>{pdf.size}</span>
                     <span>{pdf.downloads} downloads</span>
                   </div>
                   <div className="flex justify-between">
                     <Button 
                       variant="ghost" 
-                      className="text-white/70 hover:text-white hover:bg-white/10"
+                      className="text-black dark:text-white hover:text-black hover:bg-white/10"
                       size="sm"
-                      onClick={() => window.open(pdf.downloadUrl, '_blank')}
+                      onClick={() => window.open(pdf.downloadUrl, '_blank', 'noopener,noreferrer')}
                     >
                       <Eye className="h-4 w-4 mr-2" />
                       View
@@ -119,10 +117,10 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
         </div>
       )}
       
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-white">
+      <div className="overflow-x-auto bg-white/70 dark:bg-black/40 p-3 rounded">
+        <table className="w-full border-collapse text-black dark:text-white">
           <thead>
-            <tr className="border-b border-white/20">
+            <tr className="border-b border-black/20 dark:border-white/20">
               <th className="text-left py-3 px-4">Title</th>
               <th className="text-left py-3 px-4">Type</th>
               <th className="text-left py-3 px-4">Size</th>
@@ -133,7 +131,7 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
           </thead>
           <tbody>
             {resources.map((resource) => (
-              <tr key={resource.id} className="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <tr key={resource.id} className="border-b border-black/10 dark:border-white/10 hover:bg-white/20 dark:hover:bg-white/5 transition-colors">
                 <td className="py-3 px-4">{resource.title}</td>
                 <td className="py-3 px-4">
                   <Badge className={
@@ -151,9 +149,12 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
                   <div className="flex items-center justify-end space-x-2">
                     <Button 
                       variant="ghost" 
-                      className="text-white/70 hover:text-white hover:bg-white/10"
+                      className="text-black dark:text-white hover:text-black hover:bg-white/10"
                       size="sm"
-                      onClick={() => handleAction("View", resource.id, "Resource")}
+                      onClick={() => {
+                        window.open(`/resources/view/${resource.id}`, '_blank', 'noopener,noreferrer');
+                        handleAction("View", resource.id, "Resource");
+                      }}
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
@@ -179,7 +180,7 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
             ))}
             
             {uploadedFiles.resource.map((file, index) => (
-              <tr key={`uploaded-resource-${index}`} className="border-b border-white/10 hover:bg-white/5 transition-colors">
+              <tr key={`uploaded-resource-${index}`} className="border-b border-black/10 dark:border-white/10 hover:bg-white/20 dark:hover:bg-white/5 transition-colors">
                 <td className="py-3 px-4">{file.name}</td>
                 <td className="py-3 px-4">
                   <Badge className={
@@ -197,7 +198,7 @@ const ResourcesTab: React.FC<ResourcesTabProps> = ({
                   <div className="flex items-center justify-end space-x-2">
                     <Button 
                       variant="ghost" 
-                      className="text-white/70 hover:text-white hover:bg-white/10"
+                      className="text-black dark:text-white hover:text-black hover:bg-white/10"
                       size="sm"
                       onClick={() => handleAction("View", 1000 + index, "Resource")}
                     >
