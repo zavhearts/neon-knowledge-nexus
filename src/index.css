@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
@@ -154,15 +153,27 @@
   }
   
   .bg-cyber-dark {
-    @apply bg-mystic-blue dark:bg-dark-bg;
+    @apply bg-mystic-blue;
+  }
+  
+  .dark .bg-cyber-dark {
+    @apply bg-dark-bg;
   }
   
   .bg-cyber-darker {
-    @apply bg-mystic-blue/80 dark:bg-dark-bg/90;
+    @apply bg-mystic-blue/80;
+  }
+  
+  .dark .bg-cyber-darker {
+    @apply bg-dark-bg/90;
   }
   
   .bg-cyber-light {
-    @apply bg-mystic-blue/40 dark:bg-dark-card/80;
+    @apply bg-mystic-blue/40;
+  }
+  
+  .dark .bg-cyber-light {
+    @apply bg-dark-card/80;
   }
   
   .bg-circuit-pattern {
@@ -180,11 +191,11 @@
   }
 
   .cyber-card {
-    @apply bg-mystic-blue/10 border border-neon-cyan/30 p-6 rounded-lg transition-transform duration-300 hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] relative overflow-hidden text-white dark:text-white;
+    @apply bg-mystic-blue/10 border border-neon-cyan/30 p-6 rounded-lg transition-transform duration-300 hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] relative overflow-hidden text-white;
   }
   
   .dark .cyber-card {
-    @apply bg-dark-card border-neon-cyan/50 shadow-[0_0_10px_rgba(0,105,255,0.2)];
+    @apply bg-dark-card border-neon-cyan/50 shadow-[0_0_10px_rgba(0,105,255,0.2)] text-white;
   }
   
   .cyber-card::after {
@@ -220,7 +231,11 @@
 
   /* High contrast version for cards */
   .high-contrast-card {
-    @apply bg-white/90 dark:bg-slate-800 text-black dark:text-white border border-gray-200 dark:border-gray-600;
+    @apply bg-white/90 text-black border border-gray-200;
+  }
+  
+  .dark .high-contrast-card {
+    @apply bg-slate-800 text-white border-gray-600;
   }
 
   .cyber-button {

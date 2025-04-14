@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -72,6 +73,9 @@ export default {
 				'neon-cyan': '#00E5FF',
 				'electric-purple': '#8A2BE2',
 				'charcoal-black': '#121212',
+				// Dark mode specific backgrounds
+				'dark-bg': 'hsl(222, 30%, 12%)',
+				'dark-card': 'hsl(222, 25%, 18%)'
 			},
 			fontFamily: {
 				'montserrat': ['Montserrat', 'sans-serif'],
