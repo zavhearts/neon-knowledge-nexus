@@ -229,7 +229,7 @@ const Admin = () => {
       <Helmet>
         <title>Admin Dashboard | Easy Win</title>
       </Helmet>
-      <div className="flex h-screen overflow-hidden bg-white dark:bg-dark-card">
+      <div className="flex h-screen overflow-hidden bg-white dark:bg-dark-bg">
         {/* Admin Sidebar */}
         <AdminSidebar />
         
