@@ -105,7 +105,7 @@ const HeroSection = () => {
               <div className="bg-white dark:bg-dark-blue/50 backdrop-blur-sm rounded-2xl p-1 relative">
                 <div className="bg-white dark:bg-dark-blue/80 rounded-xl overflow-hidden">
                   <img 
-                    src="/lovable-uploads/6d0b63c4-3fcf-4756-8c97-c249e6e91073.png" 
+                    src="/lovable-uploads/6db8a32c-58a8-4d1e-9c82-e1c9efa2a040.png" 
                     alt="Easy Win Learning Hub" 
                     className="w-full h-auto rounded-xl p-8"
                   />

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -28,7 +27,6 @@ const Navbar = () => {
     document.documentElement.classList.toggle('dark');
   };
 
-  // Function to create external links that open in new tabs
   const ExternalLink = ({ to, children, className }) => (
     <a
       href={to}
@@ -51,13 +49,12 @@ const Navbar = () => {
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link to="/" className="flex items-center gap-2">
           <img 
-            src="/lovable-uploads/6d0b63c4-3fcf-4756-8c97-c249e6e91073.png" 
+            src="/lovable-uploads/6db8a32c-58a8-4d1e-9c82-e1c9efa2a040.png" 
             alt="Easy Win Learning Hub" 
             className="h-12"
           />
         </Link>
 
-        {/* Desktop Menu */}
         <nav className="hidden md:flex items-center gap-8">
           <Link
             to="/"
@@ -122,7 +119,6 @@ const Navbar = () => {
           </div>
         </nav>
 
-        {/* Mobile Menu Button */}
         <div className="flex items-center gap-2 md:hidden">
           <LanguageSwitcher />
           <Button 
@@ -142,7 +138,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-white dark:bg-dark-blue/95 backdrop-blur-md shadow-lg animate-fade-in">
           <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
