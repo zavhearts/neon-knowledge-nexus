@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { chatService, ChatMessage } from '@/services/chatService';
+import { auth } from '@/config/firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const VirtualAssistant = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -15,12 +18,13 @@ const VirtualAssistant = () => {
   const [message, setMessage] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [chatHistory, setChatHistory] = useState([
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
     { sender: 'bot', text: 'Hai! I\'m VedaGenie, your AI learning assistant. How can I help with your studies today?' }
   ]);
   const messageEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const [user] = useAuthState(auth);
 
   const assistantTexts = [
     "Hai! I'm VedaGenie, your AI learning assistant.",
@@ -71,6 +75,27 @@ const VirtualAssistant = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory]);
 
+  // Load user chat history when user is logged in
+  useEffect(() => {
+    const loadUserChatHistory = async () => {
+      if (user) {
+        try {
+          const history = await chatService.getUserChatHistory(user.uid);
+          if (history.length > 0) {
+            setChatHistory([
+              { sender: 'bot', text: 'Welcome back! Here\'s your previous conversation.' },
+              ...history
+            ]);
+          }
+        } catch (error) {
+          console.error("Failed to load chat history:", error);
+        }
+      }
+    };
+    
+    loadUserChatHistory();
+  }, [user]);
+
   const containerVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.9 },
     visible: { 
@@ -90,16 +115,32 @@ const VirtualAssistant = () => {
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
-    setChatHistory([...chatHistory, { sender: 'user', text: message }]);
+    const userMessage = { sender: 'user', text: message };
+    setChatHistory([...chatHistory, userMessage]);
+    
+    // Save user message if user is logged in
+    if (user) {
+      await chatService.saveMessage(user.uid, userMessage);
+    }
     
     setIsLoading(true);
-    
     const userMsg = message;
     setMessage('');
     
     try {
-      const response = await fetchAIResponse(userMsg);
-      setChatHistory(prev => [...prev, { sender: 'bot', text: response }]);
+      // Send to AI service
+      const response = await chatService.sendMessageToAI(
+        userMsg, 
+        chatHistory
+      );
+      
+      const botMessage = { sender: 'bot', text: response };
+      setChatHistory(prev => [...prev, botMessage]);
+      
+      // Save bot response if user is logged in
+      if (user) {
+        await chatService.saveMessage(user.uid, botMessage);
+      }
     } catch (error) {
       console.error('Error fetching AI response:', error);
       
@@ -109,40 +150,12 @@ const VirtualAssistant = () => {
         variant: "destructive"
       });
       
-      let fallbackResponse = generateFallbackResponse(userMsg);
-      setChatHistory(prev => [...prev, { sender: 'bot', text: fallbackResponse }]);
+      let fallbackResponse = chatService.generateFallbackResponse(userMsg);
+      const fallbackMessage = { sender: 'bot', text: fallbackResponse };
+      setChatHistory(prev => [...prev, fallbackMessage]);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const generateFallbackResponse = (userMessage: string) => {
-    const lowerCaseMsg = userMessage.toLowerCase();
-    
-    if (lowerCaseMsg.includes('course')) {
-      return 'We offer many courses in various subjects. Would you like me to recommend some based on your interests?';
-    } else if (lowerCaseMsg.includes('exam') || lowerCaseMsg.includes('test')) {
-      return 'Our platform offers AI-powered mock tests that adapt to your skill level. Would you like to try one?';
-    } else if (lowerCaseMsg.includes('language')) {
-      return 'We support multiple languages! You can change your preferred language from the language selector in the header.';
-    } else if (lowerCaseMsg.includes('income tax')) {
-      return 'We just added new income tax resources! You can find comprehensive notes on calculations, planning, and strategies in our resources section.';
-    } else {
-      return 'Thank you for your message. How else can I assist you with your learning journey?';
-    }
-  };
-
-  const fetchAIResponse = async (userMessage: string) => {
-    // Simple fallback responses without requiring API key
-    const context = chatHistory
-      .slice(-5)
-      .map(msg => `${msg.sender === 'user' ? 'User' : 'VedaGenie'}: ${msg.text}`)
-      .join('\n');
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    return generateFallbackResponse(userMessage);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
