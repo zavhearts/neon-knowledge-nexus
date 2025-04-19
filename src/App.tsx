@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,7 +16,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import SmartMockTest from "./components/quiz/SmartMockTest"; 
 import IncomeTaxNotes from "./pages/IncomeTaxNotes";
-import AboutUs from "./pages/AboutUs"; // Import the new AboutUs component
+import AboutUs from "./pages/AboutUs";
+import Quiz from "./pages/Quiz";
 
 const queryClient = new QueryClient();
 
@@ -41,7 +41,7 @@ const App = () => (
           <Route path="/income-tax-notes" element={<IncomeTaxNotes />} />
           <Route path="/teacher" element={<TeacherDashboard />} />
           <Route path="/upload-content" element={<UploadContent />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/quiz" element={<Quiz />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

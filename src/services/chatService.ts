@@ -1,8 +1,7 @@
-
 import { db, functions, httpsCallable } from '../config/firebase';
 import { collection, addDoc, query, where, orderBy, getDocs } from 'firebase/firestore';
 
-// Type definitions
+// Update the type definition to be more strict
 export interface ChatMessage {
   sender: 'user' | 'bot';
   text: string;
