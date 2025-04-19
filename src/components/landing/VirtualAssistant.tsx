@@ -115,7 +115,7 @@ const VirtualAssistant = () => {
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
-    const userMessage = { sender: 'user', text: message };
+    const userMessage: ChatMessage = { sender: 'user', text: message };
     setChatHistory([...chatHistory, userMessage]);
     
     // Save user message if user is logged in
@@ -134,7 +134,7 @@ const VirtualAssistant = () => {
         chatHistory
       );
       
-      const botMessage = { sender: 'bot', text: response };
+      const botMessage: ChatMessage = { sender: 'bot', text: response };
       setChatHistory(prev => [...prev, botMessage]);
       
       // Save bot response if user is logged in
@@ -151,7 +151,7 @@ const VirtualAssistant = () => {
       });
       
       let fallbackResponse = chatService.generateFallbackResponse(userMsg);
-      const fallbackMessage = { sender: 'bot', text: fallbackResponse };
+      const fallbackMessage: ChatMessage = { sender: 'bot', text: fallbackResponse };
       setChatHistory(prev => [...prev, fallbackMessage]);
     } finally {
       setIsLoading(false);
@@ -228,7 +228,8 @@ const VirtualAssistant = () => {
         actionMessage = 'I need help with this topic.';
     }
     
-    setChatHistory([...chatHistory, { sender: 'user', text: actionMessage }]);
+    const userActionMessage: ChatMessage = { sender: 'user', text: actionMessage };
+    setChatHistory([...chatHistory, userActionMessage]);
     setMessage('');
     
     setTimeout(() => {
