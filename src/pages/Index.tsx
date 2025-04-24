@@ -15,7 +15,7 @@ const Index = () => {
       <Helmet>
         <title>Easy Win | Learning Made Easy</title>
       </Helmet>
-      
+      <hero>
       {/* Quiz Button - Adding a prominent button at the top */}
       <div className="container mx-auto px-4 py-4">
         <Link to="/quiz" className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all">
