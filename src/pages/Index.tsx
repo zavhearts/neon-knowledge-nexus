@@ -33,6 +33,6 @@ const Index = () => {
     </MainLayout>
       <Hero />
   );
-};
+
 
 export default Index;
