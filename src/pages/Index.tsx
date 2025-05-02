@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from "react-helmet";
+import { Helmet } from 'react-helmet';
 import MainLayout from '@/components/layout/MainLayout';
 import Hero from '@/components/landing/Hero';
 import Features from '@/components/landing/Features';
@@ -15,20 +15,26 @@ const Index = () => {
       <Helmet>
         <title>Easy Win | Learning Made Easy</title>
       </Helmet>
-      
-      {/* Quiz Button - Adding a prominent button at the top */}
+
+      {/* Hero Section */}
+      <Hero />
+
+      {/* Quiz Button */}
       <div className="container mx-auto px-4 py-4">
-        <Link to="/quiz" className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all">
+        <Link
+          to="/quiz"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all"
+        >
           <BrainCircuit className="h-5 w-5" />
           <span className="font-bold">Take Interactive Quiz</span>
         </Link>
       </div>
-      
+
+      {/* Other Sections */}
       <Features />
       <Pricing />
       <Testimonials />
       <FAQ />
-      <Hero />
     </MainLayout>
   );
 };
