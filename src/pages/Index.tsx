@@ -2,7 +2,7 @@
 import React from 'react';
 import { Helmet } from "react-helmet";
 import MainLayout from '@/components/layout/MainLayout';
-import HeroComponent from '@/components/landing/HeroComponent';
+import HeroSection from '@/components/landing/HeroSection';
 
 const Index = () => {
   return (
@@ -41,7 +41,7 @@ const Index = () => {
         </div>
       </div>
       
-      <HeroComponent />
+      <HeroSection />
     </MainLayout>
   );
 };
