@@ -18,6 +18,13 @@ export const chatService = {
   // Send message to AI and get response
   sendMessageToAI: async (message: string, chatHistory: ChatMessage[]): Promise<string> => {
     try {
+      // Get API key from localStorage
+      const apiKey = localStorage.getItem('vedagenie-api-key');
+      
+      if (!apiKey) {
+        return "Please provide an API key in the configuration section on the home page to enable AI responses.";
+      }
+      
       // Format chat history for the AI API
       const formattedHistory = chatHistory.map(msg => ({
         role: msg.sender === 'user' ? 'user' : 'assistant',
@@ -26,14 +33,15 @@ export const chatService = {
       
       // Call the Cloud Function
       const generateAIResponse = httpsCallable<
-        { message: string; chatHistory: any[] },
+        { message: string; chatHistory: any[]; apiKey: string },
         AIResponse
       >(functions, 'generateAIResponse');
       
       // Get response from AI
       const result = await generateAIResponse({
         message,
-        chatHistory: formattedHistory
+        chatHistory: formattedHistory,
+        apiKey
       });
       
       return result.data.text;
@@ -86,6 +94,12 @@ export const chatService = {
   
   // Generate fallback response when AI is unavailable
   generateFallbackResponse: (userMessage: string): string => {
+    const apiKey = localStorage.getItem('vedagenie-api-key');
+    
+    if (!apiKey) {
+      return "Please provide an API key in the configuration section on the home page to enable AI responses.";
+    }
+    
     const lowerCaseMsg = userMessage.toLowerCase();
     
     if (lowerCaseMsg.includes('course')) {
