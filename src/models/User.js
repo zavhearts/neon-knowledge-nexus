@@ -49,6 +49,11 @@ const UserSchema = new mongoose.Schema({
       expires: Date
     }
   },
+  // Add reset password fields
+  reset_password: {
+    token: String,
+    expires: Date
+  },
   created_at: {
     type: Date,
     default: Date.now

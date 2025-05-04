@@ -3,7 +3,15 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { LogIn, Home, Lock, Mail, User } from "lucide-react";
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
+import { LogIn, Home, Lock, Mail, User, ArrowRight } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 const DEMO_CREDENTIALS = [
@@ -16,6 +24,10 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetSent, setResetSent] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = (e: React.FormEvent) => {
@@ -52,6 +64,39 @@ const Login = () => {
       
       setLoading(false);
     }, 1000);
+  };
+
+  const handleForgotPassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    setResetLoading(true);
+
+    // Simulate API call to send password reset email
+    setTimeout(() => {
+      // Check if email exists in demo credentials
+      const userExists = DEMO_CREDENTIALS.some(user => user.email === resetEmail);
+      
+      if (userExists || resetEmail.includes('@')) {
+        setResetSent(true);
+        toast({
+          title: "Reset Link Sent",
+          description: "If an account exists with this email, you will receive reset instructions.",
+        });
+      } else {
+        toast({
+          title: "Invalid Email",
+          description: "Please enter a valid email address.",
+          variant: "destructive",
+        });
+      }
+      
+      setResetLoading(false);
+    }, 1500);
+  };
+
+  const closeForgotPasswordDialog = () => {
+    setForgotPasswordOpen(false);
+    setResetEmail("");
+    setResetSent(false);
   };
 
   return (
@@ -93,7 +138,16 @@ const Login = () => {
             </div>
             
             <div className="space-y-2">
-              <label htmlFor="password" className="block text-gray-700 dark:text-gray-300">Password</label>
+              <div className="flex justify-between items-center">
+                <label htmlFor="password" className="block text-gray-700 dark:text-gray-300">Password</label>
+                <button 
+                  type="button" 
+                  onClick={() => setForgotPasswordOpen(true)}
+                  className="text-sm text-royal-blue hover:text-royal-blue/80 transition-colors"
+                >
+                  Forgot Password?
+                </button>
+              </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 h-5 w-5" />
                 <Input
@@ -134,6 +188,72 @@ const Login = () => {
           </div>
         </div>
       </div>
+
+      {/* Forgot Password Dialog */}
+      <Dialog open={forgotPasswordOpen} onOpenChange={closeForgotPasswordDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Reset your password</DialogTitle>
+            <DialogDescription>
+              {!resetSent ? 
+                "Enter your email address and we'll send you a link to reset your password." :
+                "Check your email for a link to reset your password. If it doesn't appear within a few minutes, check your spam folder."
+              }
+            </DialogDescription>
+          </DialogHeader>
+          
+          {!resetSent ? (
+            <form onSubmit={handleForgotPassword} className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="reset-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Email address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 h-5 w-5" />
+                  <Input
+                    id="reset-email"
+                    type="email"
+                    placeholder="Enter your email address"
+                    className="pl-10"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <DialogFooter className="sm:justify-between">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={closeForgotPasswordDialog}
+                  disabled={resetLoading}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit"
+                  disabled={resetLoading || !resetEmail.trim()}
+                >
+                  {resetLoading ? (
+                    <span className="animate-pulse">Sending...</span>
+                  ) : (
+                    <>
+                      Send Reset Link <ArrowRight className="ml-2 h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          ) : (
+            <DialogFooter>
+              <Button onClick={closeForgotPasswordDialog} className="w-full">
+                Back to Login
+              </Button>
+            </DialogFooter>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
