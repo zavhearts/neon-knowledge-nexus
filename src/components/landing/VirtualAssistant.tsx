@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Mic, Volume2, MessageSquare, Globe, Lightbulb, BookOpen, Send, Loader2 } from 'lucide-react';
+import { X, Mic, Volume2, MessageSquare, Globe, Lightbulb, BookOpen, Send, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -28,14 +28,6 @@ const VirtualAssistant = () => {
     "Empowering Learning with the Wisdom of the Ages",
     "How can I assist on your path to knowledge today?",
   ];
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     if (!isVisible) return;
@@ -240,8 +232,12 @@ const VirtualAssistant = () => {
               <div className="relative glassmorphic rounded-xl border border-neon-cyan/30">
                 <div className="bg-mystic-blue p-3 flex justify-between items-center border-b border-neon-cyan/30">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 rounded-full bg-neon-cyan/20 flex items-center justify-center mr-3 shadow-md">
-                      <Bot className="text-neon-cyan" size={18} />
+                    <div className="w-8 h-8 rounded-full bg-neon-cyan/20 flex items-center justify-center mr-3 shadow-md overflow-hidden">
+                      <img 
+                        src="/lovable-uploads/2f6d0c3b-6e21-417f-b6ff-eff5ac10d9f6.png" 
+                        alt="VedaGenie" 
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div>
                       <h3 className="text-white text-sm font-medium">VedaGenie</h3>
@@ -368,14 +364,18 @@ const VirtualAssistant = () => {
 
         {!isVisible && (
           <motion.button
-            className={`fixed ${isMobile ? 'bottom-4 right-4 w-12 h-12' : 'bottom-6 right-6 w-14 h-14'} rounded-full bg-mystic-blue text-neon-cyan shadow-lg flex items-center justify-center border border-neon-cyan/30 z-50`}
+            className={`fixed ${isMobile ? 'bottom-4 right-4 w-12 h-12' : 'bottom-6 right-6 w-14 h-14'} rounded-full bg-mystic-blue text-neon-cyan shadow-lg flex items-center justify-center border border-neon-cyan/30 z-50 overflow-hidden`}
             onClick={() => setIsVisible(true)}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <MessageSquare size={isMobile ? 20 : 24} />
+            <img 
+              src="/lovable-uploads/2f6d0c3b-6e21-417f-b6ff-eff5ac10d9f6.png" 
+              alt="VedaGenie" 
+              className="w-full h-full object-cover p-1"
+            />
           </motion.button>
         )}
       </AnimatePresence>
