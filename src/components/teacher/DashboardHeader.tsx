@@ -7,9 +7,10 @@ import { Link } from "react-router-dom";
 interface DashboardHeaderProps {
   onUploadClick: (type: string) => void;
   onScheduleZoom?: () => void;
+  onGoLive?: () => void;
 }
 
-const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onUploadClick, onScheduleZoom }) => {
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onUploadClick, onScheduleZoom, onGoLive }) => {
   return (
     <div className="relative holographic-bg py-8 px-4 sm:px-6 lg:px-8">
       <div className="absolute inset-0 z-0">
@@ -25,10 +26,20 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onUploadClick, onSche
           </div>
           
           <div className="mt-4 md:mt-0 space-x-2">
+            {onGoLive && (
+              <Button 
+                className="bg-red-600 hover:bg-red-700 text-white"
+                onClick={onGoLive}
+              >
+                <Video className="h-4 w-4 mr-2" />
+                Go Live Now
+              </Button>
+            )}
+            
             <Button 
               variant="outline" 
               className="border-neon-blue text-neon-blue hover:bg-neon-blue/10"
-              onClick={() => window.open("/upload-content?type=video", "_blank")}
+              onClick={() => onUploadClick("AddClass")}
             >
               <Video className="h-4 w-4 mr-2" />
               Add Class
@@ -45,7 +56,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onUploadClick, onSche
               </Button>
             )}
             
-            <Link to="/">
+            <Link to="/live-classes">
               <Button
                 variant="outline"
                 className="border-neon-green text-neon-green hover:bg-neon-green/10"
@@ -54,13 +65,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onUploadClick, onSche
                 View Live Classes
               </Button>
             </Link>
-            
-            <Button
-              className="cyber-button"
-              onClick={() => window.location.href = "/"}
-            >
-              Return to Home
-            </Button>
           </div>
         </div>
       </div>

@@ -1,7 +1,9 @@
+
 import { useState, useRef, useEffect } from "react";
 import { format, parseISO } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import DashboardHeader from "@/components/teacher/DashboardHeader";
 import StatsSection from "@/components/teacher/StatsSection";
 import TabsContainer from "@/components/teacher/TabsContainer";
@@ -9,6 +11,7 @@ import ZoomMeetingForm from "@/components/teacher/ZoomMeetingForm";
 import ZoomMeetingsList from "@/components/teacher/ZoomMeetingsList";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ZoomMeeting } from "@/services/zoomService";
+import { Video, Users, Calendar } from "lucide-react";
 
 const TAX_NOTES_PDFS = [
   { 
@@ -51,6 +54,7 @@ interface UploadedFiles {
 }
 
 const TeacherDashboard = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("classes");
   const [searchTerm, setSearchTerm] = useState("");
   const videoFileInputRef = useRef<HTMLInputElement>(null);
@@ -71,6 +75,15 @@ const TeacherDashboard = () => {
   const [taxNotesPdfs, setTaxNotesPdfs] = useState(TAX_NOTES_PDFS);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [uploadType, setUploadType] = useState<"Video" | "Resource" | "">("");
+
+  // Function to handle starting a live class
+  const handleGoLive = () => {
+    navigate('/live-classes', { state: { isTeacher: true, startBroadcast: true } });
+    toast({
+      title: "Starting Live Class",
+      description: "You're being redirected to the live class interface.",
+    });
+  };
 
   const handleUploadClick = (type: string) => {
     if (type === "Video") {
@@ -244,13 +257,49 @@ const TeacherDashboard = () => {
       <DashboardHeader 
         onUploadClick={handleUploadClick} 
         onScheduleZoom={() => setShowMeetingForm(true)}
+        onGoLive={handleGoLive}
       />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <StatsSection 
-          classCount={4 + uploadedFiles.video.length} 
-          resourceCount={4 + uploadedFiles.resource.length + taxNotesPdfs.length} 
-        />
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="col-span-2">
+            <StatsSection 
+              classCount={4 + uploadedFiles.video.length} 
+              resourceCount={4 + uploadedFiles.resource.length + taxNotesPdfs.length} 
+            />
+          </div>
+          
+          <div className="bg-cyber-darker rounded-lg p-4 border border-neon-blue/30 shadow-glow-sm flex flex-col">
+            <h3 className="text-xl font-bold mb-3 text-neon-blue animated-text">Quick Actions</h3>
+            <div className="grid grid-cols-1 gap-3">
+              <Button 
+                onClick={handleGoLive} 
+                className="bg-red-600 hover:bg-red-700 text-white w-full flex items-center justify-center gap-3"
+              >
+                <Video className="h-4 w-4" />
+                Go Live Now
+              </Button>
+              
+              <Button 
+                onClick={() => setShowMeetingForm(true)} 
+                variant="outline"
+                className="border-neon-purple text-neon-purple hover:bg-neon-purple/10 w-full flex items-center justify-center gap-3"
+              >
+                <Calendar className="h-4 w-4" />
+                Schedule Class
+              </Button>
+              
+              <Button 
+                onClick={() => navigate('/upload-content?type=video')}
+                variant="outline" 
+                className="border-neon-blue text-neon-blue hover:bg-neon-blue/10 w-full flex items-center justify-center gap-3"
+              >
+                <Video className="h-4 w-4" />
+                Upload New Class
+              </Button>
+            </div>
+          </div>
+        </div>
         
         {activeTab === "classes" && (
           <div className="mb-8">
