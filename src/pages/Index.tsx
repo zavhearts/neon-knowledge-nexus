@@ -5,6 +5,39 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, Rocket, BookOpen, Video, Users, FileText, TestTube, Star } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
 import EventsSlider from "@/components/landing/EventsSlider";
+import { useTheme } from "@/components/theme/theme-provider";
+
+// Text typing animation component
+const TypedText = ({ text, delay = 0 }) => {
+  const [displayText, setDisplayText] = useState("");
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    let index = 0;
+    const timer = setTimeout(() => {
+      const typingInterval = setInterval(() => {
+        if (index < text.length) {
+          setDisplayText((prev) => prev + text.charAt(index));
+          index++;
+        } else {
+          setIsComplete(true);
+          clearInterval(typingInterval);
+        }
+      }, 80);
+      
+      return () => clearInterval(typingInterval);
+    }, delay);
+    
+    return () => clearTimeout(timer);
+  }, [text, delay]);
+
+  return (
+    <h2 className="text-xl md:text-2xl font-light mb-8">
+      <span className="high-contrast-text">{displayText}</span>
+      <span className={`inline-block h-5 w-0.5 bg-royal-blue dark:bg-neon-blue ml-1 ${isComplete ? 'animate-pulse' : ''}`}></span>
+    </h2>
+  );
+};
 
 const Counter = ({ end, label, icon: Icon, delay = 0 }) => {
   const [count, setCount] = useState(0);
@@ -44,49 +77,80 @@ const Counter = ({ end, label, icon: Icon, delay = 0 }) => {
 };
 
 const HeroSection = () => {
+  const { theme } = useTheme();
+  
+  // Staggered animation variants
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3
+      }
+    }
+  };
+  
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    }
+  };
+
   return (
-    <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-r from-white to-gray-100 dark:from-dark-blue dark:to-dark-blue/90">
-      <div className="absolute inset-0 bg-gradient-radial from-royal-blue/5 to-transparent opacity-50"></div>
+    <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-r from-white to-gray-100 dark:from-cyber-dark dark:to-cyber-darker">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 bg-cyber-grid opacity-20"></div>
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-radial from-royal-blue/20 to-transparent rounded-full blur-3xl"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-radial from-neon-blue/20 to-transparent rounded-full blur-3xl"></div>
       
       <div className="container mx-auto px-4 py-20 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <motion.div 
             className="text-center lg:text-left"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            variants={container}
+            initial="hidden"
+            animate="show"
           >
             <motion.div 
-              className="inline-block mb-4 px-4 py-1 rounded-full border border-royal-blue/50 bg-royal-blue/5"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              className="inline-block mb-4 px-4 py-1 rounded-full border border-royal-blue/50 bg-royal-blue/5 dark:border-neon-blue/50 dark:bg-cyber-light/30"
+              variants={item}
             >
-              <span className="text-royal-blue text-sm font-medium">The Future of Learning</span>
+              <span className="text-royal-blue dark:text-neon-blue text-sm font-medium breathing-text">The Future of Learning</span>
             </motion.div>
             
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-dark-blue dark:text-white">
-              Easy Win Learning Hub
-            </h1>
+            <motion.h1 
+              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-dark-blue dark:text-white"
+              variants={item}
+            >
+              <span className="block bg-gradient-to-r from-royal-blue to-teal bg-clip-text text-transparent dark:from-neon-blue dark:to-neon-cyan animate-text-shimmer">
+                Easy Win Learning Hub
+              </span>
+            </motion.h1>
             
-            <h2 className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 font-light mb-8">
-              Empowering Learning, Inspiring Future
-            </h2>
+            <motion.div variants={item}>
+              <TypedText text="Empowering Learning, Inspiring Future" delay={600} />
+            </motion.div>
             
             <motion.div
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              variants={item}
             >
               <Link to="/signup">
-                <Button className="bg-royal-blue hover:bg-royal-blue/80 text-white font-semibold px-8 py-6 text-lg rounded-md transition-all">
+                <Button className="bg-royal-blue hover:bg-royal-blue/80 dark:bg-neon-blue dark:hover:bg-neon-blue/80 text-white dark:text-black font-semibold px-8 py-6 text-lg rounded-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                   Start Learning
                   <ChevronRight className="ml-2" size={20} />
                 </Button>
               </Link>
               <Link to="/courses">
-                <Button variant="outline" className="border-royal-blue text-royal-blue hover:bg-royal-blue/10 px-8 py-6 text-lg rounded-md">
+                <Button variant="outline" className="border-royal-blue text-royal-blue hover:bg-royal-blue/10 dark:border-neon-blue dark:text-neon-blue dark:hover:bg-neon-blue/10 px-8 py-6 text-lg rounded-md">
                   Explore Courses
                 </Button>
               </Link>
@@ -97,28 +161,50 @@ const HeroSection = () => {
             className="relative"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
+            transition={{ 
+              duration: 0.7, 
+              delay: 0.3,
+              type: "spring",
+              stiffness: 100
+            }}
           >
             <div className="relative mx-auto max-w-md">
-              <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-royal-blue via-teal to-gold opacity-75 blur-md"></div>
+              {/* Holographic frame effect with improved visibility */}
+              <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-royal-blue via-teal to-gold dark:from-neon-blue dark:via-neon-purple dark:to-neon-pink opacity-75 blur-md animate-pulse-glow"></div>
               
-              <div className="bg-white dark:bg-dark-blue/50 backdrop-blur-sm rounded-2xl p-1 relative">
-                <div className="bg-white dark:bg-dark-blue/80 rounded-xl overflow-hidden">
+              <div className="bg-white dark:bg-cyber-darker/50 backdrop-blur-sm rounded-2xl p-1 relative">
+                <div className="bg-white dark:bg-cyber-darker/80 rounded-xl overflow-hidden">
                   <img 
                     src="/lovable-uploads/6db8a32c-58a8-4d1e-9c82-e1c9efa2a040.png" 
                     alt="Easy Win Learning Hub" 
                     className="w-full h-auto rounded-xl p-8"
                   />
                   
-                  <div className="absolute top-6 right-6 p-3 bg-white/80 dark:bg-dark-blue/80 backdrop-blur-sm rounded-full shadow-lg animate-float">
-                    <Rocket className="text-royal-blue" size={24} />
-                  </div>
+                  <motion.div 
+                    className="absolute top-6 right-6 p-3 bg-white/80 dark:bg-cyber-darker/80 backdrop-blur-sm rounded-full shadow-lg"
+                    animate={{ 
+                      y: [0, -10, 0],
+                      rotate: [0, 5, 0]
+                    }}
+                    transition={{ 
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    <Rocket className="text-royal-blue dark:text-neon-blue" size={24} />
+                  </motion.div>
                   
-                  <div className="absolute bottom-6 left-6 max-w-[80%] p-4 bg-white/80 dark:bg-dark-blue/80 backdrop-blur-sm rounded-lg">
-                    <p className="text-dark-blue dark:text-white text-sm">
+                  <motion.div 
+                    className="absolute bottom-6 left-6 max-w-[80%] p-4 bg-white/80 dark:bg-cyber-darker/80 backdrop-blur-sm rounded-lg"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 1, duration: 0.5 }}
+                  >
+                    <p className="text-dark-blue dark:text-white text-sm high-contrast-text">
                       "The future of education is immersive, interactive, and personalized."
                     </p>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
             </div>
@@ -131,7 +217,7 @@ const HeroSection = () => {
 
 const StatsSection = () => {
   return (
-    <div className="py-20 bg-gray-50 dark:bg-dark-blue/70">
+    <div className="py-20 bg-gray-50 dark:bg-cyber-darker">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-dark-blue dark:text-white mb-2">Our Impact in Numbers</h2>

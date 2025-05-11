@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -96,6 +95,7 @@ export default {
 				'montserrat': ['Montserrat', 'sans-serif'],
 				'open-sans': ['Open Sans', 'sans-serif'],
 				'fira-code': ['Fira Code', 'monospace'],
+				'space-grotesk': ['Space Grotesk', 'sans-serif'], // Added the sci-fi font
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -125,6 +125,43 @@ export default {
 					},
 					'100%': {
 						backgroundPosition: '200% 0'
+					}
+				},
+				'scanner-line': {
+					'0%': {
+						transform: 'translateY(-100%)'
+					},
+					'100%': {
+						transform: 'translateY(100%)'
+					}
+				},
+				'progress-fill': {
+					'0%': {
+						width: '0%',
+						backgroundColor: 'rgba(56, 189, 248, 0.5)'
+					},
+					'50%': {
+						backgroundColor: 'rgba(56, 189, 248, 0.8)'
+					},
+					'100%': {
+						width: '100%',
+						backgroundColor: 'rgba(56, 189, 248, 0.5)'
+					}
+				},
+				'data-rain': {
+					'0%': {
+						transform: 'translateY(-100%)',
+						opacity: '0'
+					},
+					'5%': {
+						opacity: '0.8'
+					},
+					'95%': {
+						opacity: '0.8'
+					},
+					'100%': {
+						transform: 'translateY(100%)',
+						opacity: '0'
 					}
 				},
 				'float': {
@@ -201,6 +238,9 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'pulse-glow': 'pulse-glow 2s infinite',
 				'text-shimmer': 'text-shimmer 5s infinite linear',
+				'scanner-line': 'scanner-line 2s ease-in-out infinite',
+				'progress-fill': 'progress-fill 2s ease-in-out infinite',
+				'data-rain': 'data-rain 3s linear infinite',
 				'float': 'float 3s ease-in-out infinite',
 				'circuit-animation': 'circuit-animation 20s linear infinite',
 				'fade-in': 'fade-in 0.7s ease-out forwards',

@@ -30,12 +30,27 @@ export function ThemeProvider({
   const [theme, setTheme] = useState<Theme>(
     () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
   );
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const root = window.document.documentElement;
+    
+    // Set transitioning state to apply temporary high-contrast styles during switch
+    setIsTransitioning(true);
+    
     root.classList.remove("light", "dark");
     root.classList.add(theme);
+    root.classList.add("theme-transitioning");
+    
     localStorage.setItem(storageKey, theme);
+    
+    // Remove transitioning class after animation completes
+    const timer = setTimeout(() => {
+      root.classList.remove("theme-transitioning");
+      setIsTransitioning(false);
+    }, 500);
+    
+    return () => clearTimeout(timer);
   }, [theme, storageKey]);
 
   const value = {
