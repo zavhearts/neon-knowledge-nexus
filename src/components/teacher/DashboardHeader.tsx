@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Video, Calendar, ExternalLink } from "lucide-react";
+import { Video, Calendar, ExternalLink, Plus, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface DashboardHeaderProps {
@@ -25,7 +25,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onUploadClick, onSche
             <p className="text-white/70">Manage your classes, resources, and students</p>
           </div>
           
-          <div className="mt-4 md:mt-0 space-x-2">
+          <div className="mt-4 md:mt-0 flex flex-wrap gap-2 justify-end">
             {onGoLive && (
               <Button 
                 className="bg-red-600 hover:bg-red-700 text-white"
@@ -41,8 +41,17 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onUploadClick, onSche
               className="border-neon-blue text-neon-blue hover:bg-neon-blue/10"
               onClick={() => onUploadClick("AddClass")}
             >
-              <Video className="h-4 w-4 mr-2" />
+              <Plus className="h-4 w-4 mr-2" />
               Add Class
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              className="border-neon-green text-neon-green hover:bg-neon-green/10"
+              onClick={() => onUploadClick("Resource")}
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              Add Resource
             </Button>
             
             {onScheduleZoom && (

@@ -28,26 +28,26 @@ const StatsCard: React.FC<StatsCardProps> = ({ icon, count, label }) => {
   const getBgClass = () => {
     switch (icon) {
       case "video":
-        return "bg-neon-blue/20";
+        return "bg-neon-blue/10 border-l-4 border-neon-blue";
       case "users":
-        return "bg-neon-purple/20";
+        return "bg-neon-purple/10 border-l-4 border-neon-purple";
       case "resource":
-        return "bg-neon-green/20";
+        return "bg-neon-green/10 border-l-4 border-neon-green";
       case "calendar":
-        return "bg-neon-pink/20";
+        return "bg-neon-pink/10 border-l-4 border-neon-pink";
       default:
-        return "bg-neon-blue/20";
+        return "bg-neon-blue/10 border-l-4 border-neon-blue";
     }
   };
 
   return (
-    <Card className="cyber-card p-6">
-      <div className="flex items-center">
-        <div className={`p-3 ${getBgClass()} rounded-full mr-4`}>
+    <Card className={`cyber-card hover:shadow-lg transition-all ${getBgClass()}`}>
+      <div className="flex items-center p-4">
+        <div className="p-3 rounded-full mr-4">
           {getIconComponent()}
         </div>
         <div>
-          <div className="text-3xl font-bold">{count}</div>
+          <div className="text-2xl font-bold">{count}</div>
           <div className="text-sm text-white/70">{label}</div>
         </div>
       </div>

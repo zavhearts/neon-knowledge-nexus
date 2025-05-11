@@ -261,71 +261,88 @@ const TeacherDashboard = () => {
       />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="col-span-2">
-            <StatsSection 
-              classCount={4 + uploadedFiles.video.length} 
-              resourceCount={4 + uploadedFiles.resource.length + taxNotesPdfs.length} 
-            />
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+          <div className="lg:col-span-3">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-4 text-neon-blue animated-text">Dashboard Overview</h2>
+              <StatsSection 
+                classCount={4 + uploadedFiles.video.length} 
+                resourceCount={4 + uploadedFiles.resource.length + taxNotesPdfs.length} 
+              />
+            </div>
+            
+            {activeTab === "classes" && (
+              <div className="bg-cyber-darker rounded-lg border border-neon-blue/30 shadow-glow-sm p-4 mb-6">
+                <h2 className="text-xl font-semibold mb-4 text-neon-blue animated-text">Upcoming Sessions</h2>
+                <ZoomMeetingsList 
+                  onSelect={handleSelectMeeting}
+                  refreshTrigger={meetingsRefreshTrigger}
+                />
+              </div>
+            )}
           </div>
           
-          <div className="bg-cyber-darker rounded-lg p-4 border border-neon-blue/30 shadow-glow-sm flex flex-col">
-            <h3 className="text-xl font-bold mb-3 text-neon-blue animated-text">Quick Actions</h3>
-            <div className="grid grid-cols-1 gap-3">
-              <Button 
-                onClick={handleGoLive} 
-                className="bg-red-600 hover:bg-red-700 text-white w-full flex items-center justify-center gap-3"
-              >
-                <Video className="h-4 w-4" />
-                Go Live Now
-              </Button>
-              
-              <Button 
-                onClick={() => setShowMeetingForm(true)} 
-                variant="outline"
-                className="border-neon-purple text-neon-purple hover:bg-neon-purple/10 w-full flex items-center justify-center gap-3"
-              >
-                <Calendar className="h-4 w-4" />
-                Schedule Class
-              </Button>
-              
-              <Button 
-                onClick={() => navigate('/upload-content?type=video')}
-                variant="outline" 
-                className="border-neon-blue text-neon-blue hover:bg-neon-blue/10 w-full flex items-center justify-center gap-3"
-              >
-                <Video className="h-4 w-4" />
-                Upload New Class
-              </Button>
+          <div className="lg:col-span-1">
+            <div className="bg-cyber-darker rounded-lg p-4 border border-neon-blue/30 shadow-glow-sm flex flex-col h-full">
+              <h3 className="text-xl font-bold mb-4 text-neon-blue animated-text">Quick Actions</h3>
+              <div className="space-y-3 flex-grow">
+                <Button 
+                  onClick={handleGoLive} 
+                  className="bg-red-600 hover:bg-red-700 text-white w-full flex items-center justify-center gap-3"
+                >
+                  <Video className="h-4 w-4" />
+                  Go Live Now
+                </Button>
+                
+                <Button 
+                  onClick={() => setShowMeetingForm(true)} 
+                  variant="outline"
+                  className="border-neon-purple text-neon-purple hover:bg-neon-purple/10 w-full flex items-center justify-center gap-3"
+                >
+                  <Calendar className="h-4 w-4" />
+                  Schedule Class
+                </Button>
+                
+                <Button 
+                  onClick={() => navigate('/upload-content?type=video')}
+                  variant="outline" 
+                  className="border-neon-blue text-neon-blue hover:bg-neon-blue/10 w-full flex items-center justify-center gap-3"
+                >
+                  <Video className="h-4 w-4" />
+                  Upload New Class
+                </Button>
+                
+                <Button 
+                  onClick={() => handleUploadClick("Resource")}
+                  variant="outline" 
+                  className="border-neon-green text-neon-green hover:bg-neon-green/10 w-full flex items-center justify-center gap-3"
+                >
+                  <Users className="h-4 w-4" />
+                  Manage Students
+                </Button>
+              </div>
             </div>
           </div>
         </div>
         
-        {activeTab === "classes" && (
-          <div className="mb-8">
-            <ZoomMeetingsList 
-              onSelect={handleSelectMeeting}
-              refreshTrigger={meetingsRefreshTrigger}
-            />
-          </div>
-        )}
-        
-        <TabsContainer 
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          handleUploadClick={handleUploadClick}
-          handleFileChange={handleFileChange}
-          handleAction={handleAction}
-          videoFileInputRef={videoFileInputRef}
-          resourceFileInputRef={resourceFileInputRef}
-          videoThumbnailInputRef={videoThumbnailInputRef}
-          resourceThumbnailInputRef={resourceThumbnailInputRef}
-          uploadedFiles={uploadedFiles}
-          handleThumbnailChange={handleThumbnailChange}
-          taxNotesPdfs={taxNotesPdfs}
-        />
+        <div className="bg-cyber-darker rounded-lg border border-neon-blue/30 shadow-glow-sm p-4">
+          <TabsContainer 
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            handleUploadClick={handleUploadClick}
+            handleFileChange={handleFileChange}
+            handleAction={handleAction}
+            videoFileInputRef={videoFileInputRef}
+            resourceFileInputRef={resourceFileInputRef}
+            videoThumbnailInputRef={videoThumbnailInputRef}
+            resourceThumbnailInputRef={resourceThumbnailInputRef}
+            uploadedFiles={uploadedFiles}
+            handleThumbnailChange={handleThumbnailChange}
+            taxNotesPdfs={taxNotesPdfs}
+          />
+        </div>
       </div>
       
       <Dialog open={showMeetingForm} onOpenChange={setShowMeetingForm}>
