@@ -8,6 +8,32 @@ import MainLayout from "@/components/layout/MainLayout";
 import EventsSlider from "@/components/landing/EventsSlider";
 import { useTheme } from "@/components/theme/theme-provider";
 
+// Define proper interface for Circuit class to fix TypeScript errors
+interface CircuitPoint {
+  x: number;
+  y: number;
+}
+
+interface CircuitClass {
+  startX: number;
+  startY: number;
+  points: CircuitPoint[];
+  maxPoints: number;
+  angle: number;
+  speed: number;
+  pulse: number;
+  pulseSpeed: number;
+  color: string;
+  lifespan: number;
+  life: number;
+  branched: boolean;
+  branchChance: number;
+  generatePoints: () => void;
+  update: () => CircuitClass | null;
+  draw: (ctx: CanvasRenderingContext2D) => void;
+  isDead: () => boolean;
+}
+
 // Circuit animation canvas component for the logo
 const CircuitCanvas = ({ className }) => {
   const canvasRef = useRef(null);
@@ -33,22 +59,41 @@ const CircuitCanvas = ({ className }) => {
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
     
-    // Circuit lines
-    class Circuit {
+    // Circuit lines with improved implementation
+    class Circuit implements CircuitClass {
+      startX: number;
+      startY: number;
+      points: CircuitPoint[];
+      maxPoints: number;
+      angle: number;
+      speed: number;
+      pulse: number;
+      pulseSpeed: number;
+      color: string;
+      lifespan: number;
+      life: number;
+      branched: boolean;
+      branchChance: number;
+      
       constructor() {
-        this.startX = logoRect.left + logoRect.width / 2 + (Math.random() * 30 - 15);
-        this.startY = logoRect.top + logoRect.height / 2 + (Math.random() * 30 - 15);
+        // Expanded range to cover more of the logo area
+        this.startX = logoRect.left + (Math.random() * logoRect.width * 0.8) + (logoRect.width * 0.1);
+        this.startY = logoRect.top + (Math.random() * logoRect.height * 0.8) + (logoRect.height * 0.1);
         this.points = [];
-        this.maxPoints = 5 + Math.floor(Math.random() * 5);
+        // Increased number of points for more complex circuits
+        this.maxPoints = 6 + Math.floor(Math.random() * 6);
         this.angle = Math.random() * Math.PI * 2;
-        this.speed = 0.5 + Math.random() * 2;
+        // Reduced speed for slower animation
+        this.speed = 0.2 + Math.random() * 0.8;
         this.pulse = 0;
-        this.pulseSpeed = 0.02 + Math.random() * 0.03;
-        this.color = theme === 'dark' ? '#38bdf8' : '#007BFF';
-        this.lifespan = 100 + Math.random() * 50;
+        // Reduced pulse speed for slower pulsing effect
+        this.pulseSpeed = 0.01 + Math.random() * 0.02;
+        this.color = theme === 'dark' ? '#38bdf8' : '#1E88E5'; // Brighter blue color
+        // Increased lifespan for longer-lasting circuits
+        this.lifespan = 150 + Math.random() * 100;
         this.life = 0;
         this.branched = false;
-        this.branchChance = 0.2;
+        this.branchChance = 0.25; // Increased chance of branching
         
         this.generatePoints();
       }
@@ -61,7 +106,8 @@ const CircuitCanvas = ({ className }) => {
         for (let i = 0; i < this.maxPoints; i++) {
           // Create a path with 90 degree turns
           const turnDirection = Math.floor(Math.random() * 4);
-          let distance = 20 + Math.random() * 100;
+          // Increased distance for longer line segments
+          let distance = 30 + Math.random() * 120;
           
           if (turnDirection === 0) x += distance; // right
           else if (turnDirection === 1) x -= distance; // left
@@ -85,12 +131,13 @@ const CircuitCanvas = ({ className }) => {
         return null;
       }
       
-      draw(ctx) {
+      draw(ctx: CanvasRenderingContext2D) {
         const alpha = Math.sin(this.pulse) * 0.5 + 0.5;
         const fadeOut = Math.max(0, 1 - this.life / this.lifespan);
         
         ctx.strokeStyle = this.color;
-        ctx.lineWidth = 1;
+        // Increased line width for thicker circuits
+        ctx.lineWidth = 2.5;
         ctx.globalAlpha = alpha * fadeOut;
         
         ctx.beginPath();
@@ -104,7 +151,7 @@ const CircuitCanvas = ({ className }) => {
         ctx.stroke();
         
         // Draw pulse
-        const pulseProgress = (this.life / 20) % 1;
+        const pulseProgress = (this.life / 30) % 1; // Slower pulse moving through circuit
         if (pulseProgress < 1 && this.life < this.lifespan - 20) {
           for (let i = 0; i < this.points.length - 1; i++) {
             const segmentLength = Math.sqrt(
@@ -127,11 +174,18 @@ const CircuitCanvas = ({ className }) => {
                 pulseX += dx * segmentPulseProgress;
                 pulseY += dy * segmentPulseProgress;
                 
-                // Draw pulse
+                // Draw larger pulse point
                 ctx.globalAlpha = 1;
                 ctx.beginPath();
-                ctx.arc(pulseX, pulseY, 3, 0, Math.PI * 2);
+                // Increased pulse size
+                ctx.arc(pulseX, pulseY, 4.5, 0, Math.PI * 2);
                 ctx.fillStyle = this.color;
+                ctx.fill();
+                
+                // Add glow effect to pulse
+                ctx.beginPath();
+                ctx.arc(pulseX, pulseY, 8, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(56, 189, 248, 0.3)';
                 ctx.fill();
               }
             }
@@ -151,8 +205,8 @@ const CircuitCanvas = ({ className }) => {
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Create new circuits occasionally
-      if (Math.random() < 0.05 && circuits.length < 20) {
+      // Create new circuits more frequently for denser coverage
+      if (Math.random() < 0.08 && circuits.length < 30) {
         circuits.push(new Circuit());
       }
       
@@ -208,7 +262,7 @@ const TypedText = ({ text, delay = 0 }) => {
   }, [text, delay]);
 
   return (
-    <h2 className="text-xl md:text-2xl font-light mb-8 text-gray-700 dark:text-gray-200">
+    <h2 className="text-xl md:text-2xl font-light mb-8 text-gray-700 dark:text-gray-200 high-contrast-text">
       <span className="relative">
         {displayText}
         <span className={`inline-block h-6 w-0.5 bg-royal-blue dark:bg-neon-blue ml-1 ${isComplete ? 'animate-pulse' : ''}`}></span>
@@ -352,6 +406,7 @@ const HeroSection = () => {
             </motion.h1>
             
             <motion.div variants={item}>
+              {/* Corrected text here */}
               <TypedText text="Empowering Learning, Inspiring Future" delay={600} />
             </motion.div>
             

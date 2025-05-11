@@ -63,12 +63,12 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Custom theme colors
+				// Custom theme colors - kept the same
 				'dark-blue': '#2C3E50',
 				'royal-blue': '#007BFF',
 				'teal': '#17A2B8',
 				'gold': '#FFD700',
-				// New futuristic theme colors
+				// Enhanced futuristic theme colors with brighter blues
 				'mystic-blue': '#1A1F71',
 				'neon-cyan': '#00E5FF',
 				'electric-purple': '#8A2BE2',
@@ -82,7 +82,7 @@ export default {
 				'neon-blue': '#38bdf8',
 				'neon-pink': '#FF1493',
 				'neon-purple': '#8A2BE2',
-				// Professional admin colors
+				// Professional admin colors - kept the same
 				'neutral-50': '#F9FAFB',
 				'neutral-100': '#F3F4F6',
 				'neutral-200': '#E5E7EB',
@@ -93,10 +93,13 @@ export default {
 				'neutral-700': '#374151',
 				'neutral-800': '#1F2937',
 				'neutral-900': '#111827',
-				// Cyber theme colors
+				// Cyber theme colors - kept the same
 				'cyber-darker': '#121620',
 				'cyber-dark': '#1A1F2C',
 				'cyber-light': '#252A3A',
+				// New high-contrast text colors for better visibility during theme transitions
+				'high-contrast-light': '#000000',
+				'high-contrast-dark': '#ffffff',
 			},
 			fontFamily: {
 				'montserrat': ['Montserrat', 'sans-serif'],
@@ -258,7 +261,22 @@ export default {
 				'spin-slow': {
 					'0%': { transform: 'rotate(0deg)' },
 					'100%': { transform: 'rotate(360deg)' }
-				}
+				},
+				// New animation for improved circuit pulse
+				'circuit-pulse': {
+					'0%': { 
+						transform: 'scale(1)',
+						opacity: '0.8'
+					},
+					'50%': {
+						transform: 'scale(1.2)',
+						opacity: '1'
+					},
+					'100%': { 
+						transform: 'scale(1)',
+						opacity: '0.8'
+					}
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -280,9 +298,13 @@ export default {
 				'blink': 'blink 1.5s infinite',
 				'scroll-x': 'scroll-x 20s linear infinite',
 				'spin-slow': 'spin-slow 3s linear infinite',
+				'circuit-pulse': 'circuit-pulse 2s infinite',
 			},
 			backgroundImage: {
-				'gradient-radial': 'radial-gradient(circle, var(--tw-gradient-stops))'
+				'gradient-radial': 'radial-gradient(circle, var(--tw-gradient-stops))',
+				// Add circuit pattern for backgrounds
+				'cyber-grid': 'linear-gradient(to right, rgba(56, 189, 248, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(56, 189, 248, 0.1) 1px, transparent 1px)',
+				'circuit-pattern': "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M10,50 L30,50 M30,50 L30,30 M30,30 L50,30 M50,70 L70,70 M70,70 L70,50 M70,50 L90,50' stroke='%2338bdf8' stroke-opacity='0.2' stroke-width='1' fill='none' /%3E%3Ccircle cx='30' cy='50' r='2' fill='%2338bdf8' fill-opacity='0.4' /%3E%3Ccircle cx='30' cy='30' r='2' fill='%2338bdf8' fill-opacity='0.4' /%3E%3Ccircle cx='50' cy='30' r='2' fill='%2338bdf8' fill-opacity='0.4' /%3E%3Ccircle cx='50' cy='70' r='2' fill='%2338bdf8' fill-opacity='0.4' /%3E%3Ccircle cx='70' cy='70' r='2' fill='%2338bdf8' fill-opacity='0.4' /%3E%3Ccircle cx='70' cy='50' r='2' fill='%2338bdf8' fill-opacity='0.4' /%3E%3Ccircle cx='90' cy='50' r='2' fill='%2338bdf8' fill-opacity='0.4' /%3E%3C/svg%3E\")",
 			},
 			boxShadow: {
 				'neon-glow': '0 0 15px 5px rgba(0, 123, 255, 0.5)',
@@ -290,7 +312,7 @@ export default {
 				'gold-glow': '0 0 15px 5px rgba(255, 193, 7, 0.5)',
 				'cyan-glow': '0 0 15px 5px rgba(0, 229, 255, 0.5)',
 				'purple-glow': '0 0 15px 5px rgba(138, 43, 226, 0.5)',
-			}
+			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],

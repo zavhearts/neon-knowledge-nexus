@@ -51,7 +51,7 @@ export function ThemeProvider({
     const timer = setTimeout(() => {
       root.classList.remove("theme-transitioning");
       setIsTransitioning(false);
-    }, 500);
+    }, 800); // Increased duration for smoother transition
     
     return () => clearTimeout(timer);
   }, [theme, storageKey]);
