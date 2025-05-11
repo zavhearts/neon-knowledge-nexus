@@ -47,7 +47,7 @@
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.7",
     "embla-carousel-react": "^8.3.0",
-    "framer-motion": "^12.4.11",
+    "framer-motion": "^12.10.5",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.487.0",
     "mongoose": "^8.13.2",

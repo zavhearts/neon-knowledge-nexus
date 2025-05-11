@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { format, parseISO } from "date-fns";
 import { toast } from "@/hooks/use-toast";
@@ -11,7 +10,10 @@ import ZoomMeetingForm from "@/components/teacher/ZoomMeetingForm";
 import ZoomMeetingsList from "@/components/teacher/ZoomMeetingsList";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ZoomMeeting } from "@/services/zoomService";
-import { Video, Users, Calendar } from "lucide-react";
+import { Video, Users, Calendar, FileText, Moon, Sun } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "@/components/theme/theme-provider";
 
 const TAX_NOTES_PDFS = [
   { 
@@ -54,6 +56,7 @@ interface UploadedFiles {
 }
 
 const TeacherDashboard = () => {
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("classes");
   const [searchTerm, setSearchTerm] = useState("");
@@ -75,6 +78,10 @@ const TeacherDashboard = () => {
   const [taxNotesPdfs, setTaxNotesPdfs] = useState(TAX_NOTES_PDFS);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [uploadType, setUploadType] = useState<"Video" | "Resource" | "">("");
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   // Function to handle starting a live class
   const handleGoLive = () => {
@@ -252,39 +259,108 @@ const TeacherDashboard = () => {
     setUploadType("");
   };
 
+  const containerAnimation = {
+    hidden: { opacity: 0 },
+    show: { 
+      opacity: 1,
+      transition: { 
+        staggerChildren: 0.1,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const itemAnimation = {
+    hidden: { y: 20, opacity: 0 },
+    show: { 
+      y: 0, 
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-cyber-dark bg-circuit-pattern">
-      <DashboardHeader 
-        onUploadClick={handleUploadClick} 
-        onScheduleZoom={() => setShowMeetingForm(true)}
-        onGoLive={handleGoLive}
-      />
+    <div className={`min-h-screen ${theme === "dark" ? "bg-cyber-dark bg-circuit-pattern" : "bg-gray-50"}`}>
+      <div className="sticky top-0 z-50">
+        <DashboardHeader 
+          onUploadClick={handleUploadClick} 
+          onScheduleZoom={() => setShowMeetingForm(true)}
+          onGoLive={handleGoLive}
+        />
+        
+        <div className={`flex justify-end px-6 py-2 ${theme === "dark" ? "bg-cyber-darker/80" : "bg-white"} backdrop-blur-md border-b border-blue-500/20`}>
+          <div className="flex items-center space-x-2">
+            <Sun className="h-4 w-4 text-yellow-500" />
+            <Switch 
+              checked={theme === "dark"}
+              onCheckedChange={toggleTheme}
+              className={theme === "dark" ? "bg-blue-700" : "bg-gray-300"}
+            />
+            <Moon className="h-4 w-4 text-blue-400" />
+          </div>
+        </div>
+      </div>
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-          <div className="lg:col-span-3">
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-4 text-neon-blue animated-text">Dashboard Overview</h2>
+      <motion.div 
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+        variants={containerAnimation}
+        initial="hidden"
+        animate="show"
+      >
+        <motion.div 
+          className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8"
+          variants={containerAnimation}
+        >
+          <motion.div 
+            className="lg:col-span-9"
+            variants={itemAnimation}
+          >
+            <motion.div 
+              className="mb-6"
+              variants={itemAnimation}
+            >
+              <h2 className={`text-xl font-semibold mb-4 ${theme === "dark" ? "text-neon-blue animated-text" : "text-blue-700"}`}>
+                Dashboard Overview
+              </h2>
               <StatsSection 
                 classCount={4 + uploadedFiles.video.length} 
                 resourceCount={4 + uploadedFiles.resource.length + taxNotesPdfs.length} 
               />
-            </div>
+            </motion.div>
             
-            {activeTab === "classes" && (
-              <div className="bg-cyber-darker rounded-lg border border-neon-blue/30 shadow-glow-sm p-4 mb-6">
-                <h2 className="text-xl font-semibold mb-4 text-neon-blue animated-text">Upcoming Sessions</h2>
-                <ZoomMeetingsList 
-                  onSelect={handleSelectMeeting}
-                  refreshTrigger={meetingsRefreshTrigger}
-                />
-              </div>
-            )}
-          </div>
+            <AnimatePresence mode="wait">
+              {activeTab === "classes" && (
+                <motion.div 
+                  className={`${theme === "dark" ? "bg-cyber-darker" : "bg-white"} rounded-lg border ${theme === "dark" ? "border-neon-blue/30" : "border-blue-200"} ${theme === "dark" ? "shadow-glow-sm" : "shadow-lg"} p-4 mb-6`}
+                  variants={itemAnimation}
+                  initial="hidden"
+                  animate="show"
+                  exit={{ opacity: 0, y: -20 }}
+                >
+                  <h2 className={`text-xl font-semibold mb-4 ${theme === "dark" ? "text-neon-blue animated-text" : "text-blue-700"}`}>
+                    Upcoming Sessions
+                  </h2>
+                  <ZoomMeetingsList 
+                    onSelect={handleSelectMeeting}
+                    refreshTrigger={meetingsRefreshTrigger}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
           
-          <div className="lg:col-span-1">
-            <div className="bg-cyber-darker rounded-lg p-4 border border-neon-blue/30 shadow-glow-sm flex flex-col h-full">
-              <h3 className="text-xl font-bold mb-4 text-neon-blue animated-text">Quick Actions</h3>
+          <motion.div 
+            className="lg:col-span-3"
+            variants={itemAnimation}
+          >
+            <motion.div 
+              className={`${theme === "dark" ? "bg-cyber-darker" : "bg-white"} rounded-lg p-4 ${theme === "dark" ? "border border-neon-blue/30 shadow-glow-sm" : "border border-blue-200 shadow-lg"} flex flex-col h-full`}
+              variants={itemAnimation}
+            >
+              <h3 className={`text-xl font-bold mb-4 ${theme === "dark" ? "text-neon-blue animated-text" : "text-blue-700"}`}>Quick Actions</h3>
               <div className="space-y-3 flex-grow">
                 <Button 
                   onClick={handleGoLive} 
@@ -297,7 +373,7 @@ const TeacherDashboard = () => {
                 <Button 
                   onClick={() => setShowMeetingForm(true)} 
                   variant="outline"
-                  className="border-neon-purple text-neon-purple hover:bg-neon-purple/10 w-full flex items-center justify-center gap-3"
+                  className={`${theme === "dark" ? "border-neon-purple text-neon-purple hover:bg-neon-purple/10" : "border-purple-500 text-purple-600 hover:bg-purple-50"} w-full flex items-center justify-center gap-3`}
                 >
                   <Calendar className="h-4 w-4" />
                   Schedule Class
@@ -306,7 +382,7 @@ const TeacherDashboard = () => {
                 <Button 
                   onClick={() => navigate('/upload-content?type=video')}
                   variant="outline" 
-                  className="border-neon-blue text-neon-blue hover:bg-neon-blue/10 w-full flex items-center justify-center gap-3"
+                  className={`${theme === "dark" ? "border-neon-blue text-neon-blue hover:bg-neon-blue/10" : "border-blue-500 text-blue-600 hover:bg-blue-50"} w-full flex items-center justify-center gap-3`}
                 >
                   <Video className="h-4 w-4" />
                   Upload New Class
@@ -315,17 +391,29 @@ const TeacherDashboard = () => {
                 <Button 
                   onClick={() => handleUploadClick("Resource")}
                   variant="outline" 
-                  className="border-neon-green text-neon-green hover:bg-neon-green/10 w-full flex items-center justify-center gap-3"
+                  className={`${theme === "dark" ? "border-neon-green text-neon-green hover:bg-neon-green/10" : "border-green-500 text-green-600 hover:bg-green-50"} w-full flex items-center justify-center gap-3`}
+                >
+                  <FileText className="h-4 w-4" />
+                  Upload Resources
+                </Button>
+                
+                <Button 
+                  onClick={() => navigate('/admin')}
+                  variant="outline" 
+                  className={`${theme === "dark" ? "border-amber-500 text-amber-400 hover:bg-amber-500/10" : "border-amber-500 text-amber-600 hover:bg-amber-50"} w-full flex items-center justify-center gap-3 mt-auto`}
                 >
                   <Users className="h-4 w-4" />
                   Manage Students
                 </Button>
               </div>
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
         
-        <div className="bg-cyber-darker rounded-lg border border-neon-blue/30 shadow-glow-sm p-4">
+        <motion.div 
+          className={`${theme === "dark" ? "bg-cyber-darker rounded-lg border border-neon-blue/30 shadow-glow-sm" : "bg-white rounded-lg border border-blue-200 shadow-lg"} p-4`}
+          variants={itemAnimation}
+        >
           <TabsContainer 
             activeTab={activeTab}
             setActiveTab={setActiveTab}
@@ -342,11 +430,11 @@ const TeacherDashboard = () => {
             handleThumbnailChange={handleThumbnailChange}
             taxNotesPdfs={taxNotesPdfs}
           />
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
       
       <Dialog open={showMeetingForm} onOpenChange={setShowMeetingForm}>
-        <DialogContent className="bg-cyber-darker border-neon-blue/50 max-w-2xl">
+        <DialogContent className={`${theme === "dark" ? "bg-cyber-darker border-neon-blue/50" : "bg-white border-blue-200"} max-w-2xl`}>
           <ZoomMeetingForm 
             onSuccess={handleMeetingSuccess}
             onCancel={() => setShowMeetingForm(false)}
@@ -355,30 +443,32 @@ const TeacherDashboard = () => {
       </Dialog>
       
       <Dialog open={!!selectedMeeting} onOpenChange={handleCloseMeetingDialog}>
-        <DialogContent className="bg-cyber-darker border-neon-blue/50">
+        <DialogContent className={`${theme === "dark" ? "bg-cyber-darker border-neon-blue/50" : "bg-white border-blue-200"}`}>
           {selectedMeeting && (
             <div className="space-y-4">
-              <h2 className="text-xl font-bold animated-text">{selectedMeeting.topic}</h2>
+              <h2 className={`text-xl font-bold ${theme === "dark" ? "animated-text" : "text-blue-700"}`}>
+                {selectedMeeting.topic}
+              </h2>
               
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <p className="text-sm text-white/70">Date & Time</p>
+                  <p className={`text-sm ${theme === "dark" ? "text-white/70" : "text-gray-500"}`}>Date & Time</p>
                   <p>{format(parseISO(selectedMeeting.start_time), "PPP p")}</p>
                 </div>
                 
                 <div className="space-y-1">
-                  <p className="text-sm text-white/70">Duration</p>
+                  <p className={`text-sm ${theme === "dark" ? "text-white/70" : "text-gray-500"}`}>Duration</p>
                   <p>{selectedMeeting.duration} minutes</p>
                 </div>
                 
                 <div className="space-y-1 col-span-2">
-                  <p className="text-sm text-white/70">Join URL</p>
+                  <p className={`text-sm ${theme === "dark" ? "text-white/70" : "text-gray-500"}`}>Join URL</p>
                   <div className="flex items-center space-x-2">
                     <input 
                       type="text" 
                       value={selectedMeeting.join_url} 
                       readOnly
-                      className="bg-cyber-dark border border-neon-blue/30 rounded p-2 flex-1"
+                      className={`${theme === "dark" ? "bg-cyber-dark border border-neon-blue/30" : "bg-gray-50 border border-blue-200"} rounded p-2 flex-1`}
                     />
                     <Button 
                       size="sm"
@@ -391,7 +481,7 @@ const TeacherDashboard = () => {
                 
                 {selectedMeeting.password && (
                   <div className="space-y-1">
-                    <p className="text-sm text-white/70">Password</p>
+                    <p className={`text-sm ${theme === "dark" ? "text-white/70" : "text-gray-500"}`}>Password</p>
                     <p>{selectedMeeting.password}</p>
                   </div>
                 )}
@@ -401,11 +491,12 @@ const TeacherDashboard = () => {
                 <Button 
                   variant="outline"
                   onClick={handleCloseMeetingDialog}
+                  className={theme === "dark" ? "" : "border-blue-300"}
                 >
                   Close
                 </Button>
                 <Button 
-                  className="cyber-button"
+                  className={theme === "dark" ? "cyber-button" : "bg-blue-600 hover:bg-blue-700"}
                   onClick={() => window.open(selectedMeeting.join_url, '_blank')}
                 >
                   Join Meeting
@@ -417,19 +508,19 @@ const TeacherDashboard = () => {
       </Dialog>
       
       <Dialog open={showUploadForm} onOpenChange={setShowUploadForm}>
-        <DialogContent className="bg-cyber-darker border-neon-blue/50 max-w-2xl">
+        <DialogContent className={`${theme === "dark" ? "bg-cyber-darker border-neon-blue/50" : "bg-white border-blue-200"} max-w-2xl`}>
           <div className="space-y-4">
-            <h2 className="text-xl font-bold animated-text">
+            <h2 className={`text-xl font-bold ${theme === "dark" ? "animated-text" : "text-blue-700"}`}>
               Upload {uploadType === "Video" ? "Video" : "Resource"}
             </h2>
             
             <div className="space-y-6 py-4">
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-white/70">
+                <label className={`block text-sm font-medium ${theme === "dark" ? "text-white/70" : "text-gray-600"}`}>
                   Select {uploadType} File
                 </label>
                 <div 
-                  className="border-2 border-dashed border-neon-blue/50 rounded-lg p-8 text-center cursor-pointer hover:bg-neon-blue/5 transition-colors"
+                  className={`border-2 border-dashed ${theme === "dark" ? "border-neon-blue/50 hover:bg-neon-blue/5" : "border-blue-300 hover:bg-blue-50"} rounded-lg p-8 text-center cursor-pointer transition-colors`}
                   onClick={() => uploadType === "Video" ? videoFileInputRef.current?.click() : resourceFileInputRef.current?.click()}
                 >
                   <input 
@@ -439,7 +530,7 @@ const TeacherDashboard = () => {
                     onChange={(e) => handleFileChange(e, uploadType)} 
                     accept={uploadType === "Video" ? "video/*" : "*/*"}
                   />
-                  <p className="text-white/70 mb-2">Click to select or drag and drop your file here</p>
+                  <p className={`${theme === "dark" ? "text-white/70" : "text-gray-500"} mb-2`}>Click to select or drag and drop your file here</p>
                   <Button size="sm">
                     Select File
                   </Button>
@@ -447,11 +538,11 @@ const TeacherDashboard = () => {
               </div>
               
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-white/70">
+                <label className={`block text-sm font-medium ${theme === "dark" ? "text-white/70" : "text-gray-600"}`}>
                   Add Thumbnail (Required)
                 </label>
                 <div 
-                  className="border-2 border-dashed border-neon-pink/50 rounded-lg p-8 text-center cursor-pointer hover:bg-neon-pink/5 transition-colors"
+                  className={`border-2 border-dashed ${theme === "dark" ? "border-neon-pink/50 hover:bg-neon-pink/5" : "border-pink-300 hover:bg-pink-50"} rounded-lg p-8 text-center cursor-pointer transition-colors`}
                   onClick={() => uploadType === "Video" ? videoThumbnailInputRef.current?.click() : resourceThumbnailInputRef.current?.click()}
                 >
                   <input 
@@ -461,7 +552,7 @@ const TeacherDashboard = () => {
                     onChange={(e) => handleThumbnailChange(e, uploadType === "Video" ? "Video" : "Resource")} 
                     accept="image/*"
                   />
-                  <p className="text-white/70 mb-2">Add a thumbnail image for your {uploadType.toLowerCase()}</p>
+                  <p className={`${theme === "dark" ? "text-white/70" : "text-gray-500"} mb-2`}>Add a thumbnail image for your {uploadType.toLowerCase()}</p>
                   <Button size="sm">
                     Select Image
                   </Button>
@@ -473,11 +564,12 @@ const TeacherDashboard = () => {
               <Button 
                 variant="outline"
                 onClick={handleCloseUploadForm}
+                className={theme === "dark" ? "" : "border-blue-300"}
               >
                 Cancel
               </Button>
               <Button 
-                className="cyber-button"
+                className={theme === "dark" ? "cyber-button" : "bg-blue-600 hover:bg-blue-700"}
                 onClick={handleCloseUploadForm}
               >
                 Finish Upload
