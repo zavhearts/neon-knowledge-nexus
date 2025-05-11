@@ -44,6 +44,9 @@ export function ThemeProvider({
     
     localStorage.setItem(storageKey, theme);
     
+    // Add data attribute for more reliable CSS targeting
+    root.setAttribute("data-theme", theme);
+    
     // Remove transitioning class after animation completes
     const timer = setTimeout(() => {
       root.classList.remove("theme-transitioning");

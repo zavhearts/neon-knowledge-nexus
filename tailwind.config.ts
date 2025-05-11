@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -79,6 +80,8 @@ export default {
 				'dark-highlight': '#9b87f5',
 				'neon-green': '#39FF14',
 				'neon-blue': '#38bdf8',
+				'neon-pink': '#FF1493',
+				'neon-purple': '#8A2BE2',
 				// Professional admin colors
 				'neutral-50': '#F9FAFB',
 				'neutral-100': '#F3F4F6',
@@ -90,12 +93,16 @@ export default {
 				'neutral-700': '#374151',
 				'neutral-800': '#1F2937',
 				'neutral-900': '#111827',
+				// Cyber theme colors
+				'cyber-darker': '#121620',
+				'cyber-dark': '#1A1F2C',
+				'cyber-light': '#252A3A',
 			},
 			fontFamily: {
 				'montserrat': ['Montserrat', 'sans-serif'],
 				'open-sans': ['Open Sans', 'sans-serif'],
 				'fira-code': ['Fira Code', 'monospace'],
-				'space-grotesk': ['Space Grotesk', 'sans-serif'], // Added the sci-fi font
+				'space-grotesk': ['Space Grotesk', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -231,6 +238,26 @@ export default {
 					'50%': {
 						textShadow: '0 0 15px rgba(0, 229, 255, 1), 0 0 30px rgba(0, 229, 255, 0.8)'
 					}
+				},
+				'shine': {
+					'0%': {
+						transform: 'translateX(-100%)'
+					},
+					'100%': {
+						transform: 'translateX(100%)'
+					}
+				},
+				'blink': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.5' }
+				},
+				'scroll-x': {
+					'0%': { transform: 'translateX(0)' },
+					'100%': { transform: 'translateX(-100%)' }
+				},
+				'spin-slow': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(360deg)' }
 				}
 			},
 			animation: {
@@ -248,7 +275,11 @@ export default {
 				'glow-pulse': 'glow-pulse 2s infinite',
 				'count-up': 'count-up 2s forwards',
 				'neon-pulse': 'neon-pulse 2s infinite',
-				'cyber-glow': 'cyber-glow 2s infinite'
+				'cyber-glow': 'cyber-glow 2s infinite',
+				'shine': 'shine 1.5s forwards',
+				'blink': 'blink 1.5s infinite',
+				'scroll-x': 'scroll-x 20s linear infinite',
+				'spin-slow': 'spin-slow 3s linear infinite',
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(circle, var(--tw-gradient-stops))'

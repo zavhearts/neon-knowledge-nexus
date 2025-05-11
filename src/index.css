@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
@@ -82,6 +83,22 @@
     --input: 230 22% 25%;
     --ring: 262 80% 75%;
   }
+  
+  /* Improved transitions for theme switching */
+  .theme-transitioning * {
+    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, opacity 0.5s ease;
+  }
+
+  /* Improved high contrast for text during theme transition */
+  .theme-transitioning .high-contrast-text {
+    color: #000000 !important;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.5) !important;
+  }
+
+  .dark.theme-transitioning .high-contrast-text {
+    color: #ffffff !important;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.7) !important;
+  }
 }
 
 @layer base {
@@ -121,6 +138,10 @@
     font-family: 'Fira Code', monospace;
   }
   
+  .font-space-grotesk {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  
   .animated-text {
     @apply text-white;
     text-shadow: 0 0 10px theme('colors.blue.400'), 0 0 20px rgba(0, 200, 255, 0.5);
@@ -128,7 +149,7 @@
   }
   
   .sci-fi-text {
-    @apply font-['Space_Grotesk'] tracking-wider;
+    @apply font-space-grotesk tracking-wider;
     text-shadow: 0 0 5px currentColor, 0 0 15px rgba(56, 189, 248, 0.6);
   }
   
@@ -144,7 +165,7 @@
   }
   
   .cyber-font {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
   }
   
   .holographic-bg {
@@ -399,6 +420,47 @@
   .dark .sci-fi-card::before {
     background: linear-gradient(90deg, theme('colors.neon-blue'), theme('colors.neon-purple'));
   }
+  
+  /* Nav parallelogram styles */
+  .nav-parallelogram-container {
+    @apply px-2 py-1;
+    perspective: 1000px;
+  }
+  
+  .nav-links-container {
+    @apply flex items-center gap-1;
+  }
+  
+  /* Circuit animation for logo */
+  .circuit-animation-container {
+    @apply relative overflow-hidden;
+  }
+  
+  .pulse-origin {
+    @apply absolute rounded-full;
+    width: 5px;
+    height: 5px;
+    background-color: #007BFF;
+    animation: pulsate 1.5s infinite;
+  }
+  
+  .dark .pulse-origin {
+    background-color: #38bdf8;
+  }
+  
+  /* New animations */
+  .animate-shine {
+    animation: shine 1.5s forwards;
+  }
+  
+  .animate-spin-slow {
+    animation: spin 3s linear infinite;
+  }
+  
+  .animate-scanner-line {
+    animation: scanLine 2s linear infinite;
+  }
+  
 }
 
 @keyframes textPulse {
@@ -497,6 +559,45 @@
   }
 }
 
+/* Circuit animation for logo */
+@keyframes pulsate {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+  }
+  70% {
+    transform: scale(3);
+    opacity: 0;
+    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+  }
+}
+
+/* Shine animation for buttons */
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Slow spin animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Add new utility classes */
 @layer utilities {
   .border-royal-blue {
@@ -558,5 +659,13 @@
   
   .animate-glow-pulse {
     animation: glowPulse 2s ease-in-out infinite;
+  }
+  
+  .shadow-glow {
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+  }
+  
+  .dark .shadow-glow {
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
   }
 }
