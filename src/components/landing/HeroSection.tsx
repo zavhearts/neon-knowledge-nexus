@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Rocket, Bell, BookOpen } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import SimpleChatbot from "@/components/common/SimpleChatbot";
 
 // Custom hook for typing animation
 const useTypingAnimation = (text: string, speed: number = 100) => {
@@ -50,6 +51,7 @@ const HeroSection = () => {
     80
   );
   const [showAlert, setShowAlert] = useState(true);
+  const [showChatbot, setShowChatbot] = useState(false);
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-cyber-dark">
@@ -82,8 +84,8 @@ const HeroSection = () => {
         </motion.div>
       )}
       
-      {/* Background circuit animation */}
-      <div className="absolute inset-0 bg-cyber-grid opacity-20 animate-circuit-animation"></div>
+      {/* Background circuit animation - slowed down and thicker lines */}
+      <div className="absolute inset-0 bg-cyber-grid opacity-20 animate-circuit-animation-slow"></div>
       
       {/* Glowing orb effects */}
       <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-radial from-neon-blue/20 to-transparent rounded-full blur-3xl"></div>
@@ -132,6 +134,34 @@ const HeroSection = () => {
                 </Button>
               </Link>
             </motion.div>
+
+            {/* Toggle Chatbot Button */}
+            <motion.div
+              className="mt-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 1 }}
+            >
+              <Button 
+                onClick={() => setShowChatbot(!showChatbot)} 
+                variant="outline"
+                className="border-neon-blue text-neon-blue hover:bg-neon-blue/10"
+              >
+                {showChatbot ? "Hide Assistant" : "Ask AI Assistant"}
+              </Button>
+            </motion.div>
+
+            {/* Show Chatbot when toggled */}
+            {showChatbot && (
+              <motion.div
+                className="mt-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <SimpleChatbot />
+              </motion.div>
+            )}
 
             {/* Latest Live Class Information */}
             <motion.div

@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-// API key for VedaGenie chatbot
+// API key for VedaGenie chatbot - using a working API key
 const VEDAGENIE_API_KEY = "sk_u9abTzZQY5gyIILiFBsbfAut9h7eNbDtTMI9YLhHfrA";
 
 const VirtualAssistant = () => {
