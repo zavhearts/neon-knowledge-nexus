@@ -77,8 +77,8 @@ const SimpleChatbot = () => {
   };
 
   return (
-    <div className="glassmorphic rounded-xl overflow-hidden border border-neon-blue/30">
-      <div className="bg-cyber-darker p-3 border-b border-neon-blue/30">
+    <div className="glassmorphic rounded-xl overflow-hidden border border-neon-cyan-30">
+      <div className="bg-cyber-darker p-3 border-b border-neon-cyan-30">
         <h2 className="text-white font-medium">EasyWin Assistant</h2>
       </div>
       
@@ -98,7 +98,7 @@ const SimpleChatbot = () => {
               className={`inline-block p-2 rounded-lg ${
                 msg.role === "user" 
                   ? "bg-mystic-blue text-white ml-auto rounded-tr-none" 
-                  : "bg-charcoal-black border border-neon-blue/30 text-white mr-auto rounded-tl-none"
+                  : "bg-charcoal-black border border-neon-cyan-30 text-white mr-auto rounded-tl-none"
               } max-w-[80%]`}
             >
               {msg.content}
@@ -120,7 +120,7 @@ const SimpleChatbot = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyPress}
-          className="bg-charcoal-black/80 text-white border-neon-blue/30 focus-visible:ring-neon-blue/30"
+          className="bg-charcoal-black/80 text-white border-neon-cyan-30 focus-visible:ring-neon-cyan-30"
           placeholder="Type your question..."
         />
         <Button 

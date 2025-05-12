@@ -61,6 +61,12 @@ export default {
         "royal-blue": "#4F46E5",
         "teal": "#0ED3CF",
         "dark-blue": "#0F172A",
+        "neon-cyan": {
+          DEFAULT: "#00E5FF",
+          '30': 'rgba(0, 229, 255, 0.3)',
+          '50': 'rgba(0, 229, 255, 0.5)',
+          '80': 'rgba(0, 229, 255, 0.8)',
+        },
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

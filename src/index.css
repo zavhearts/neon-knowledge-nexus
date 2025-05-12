@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
@@ -223,7 +222,7 @@
   }
 
   .cyber-card {
-    @apply bg-mystic-blue/10 border border-neon-cyan/30 p-6 rounded-lg transition-transform duration-300 hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] relative overflow-hidden text-white;
+    @apply bg-mystic-blue/10 border border-neon-cyan-30 p-6 rounded-lg transition-transform duration-300 hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] relative overflow-hidden text-white;
   }
   
   .dark .cyber-card {
@@ -277,7 +276,7 @@
   }
 
   .cyber-button {
-    @apply bg-neon-cyan text-charcoal-black font-semibold relative overflow-hidden transition-all duration-300 border border-neon-cyan/80 shadow-[0_0_10px_rgba(0,229,255,0.5)];
+    @apply bg-neon-cyan text-charcoal-black font-semibold relative overflow-hidden transition-all duration-300 border border-neon-cyan-80 shadow-[0_0_10px_rgba(0,229,255,0.5)];
   }
   
   .cyber-button:hover {
@@ -310,20 +309,20 @@
   }
   
   .bg-cyber-grid {
-    background-size: 50px 50px;
+    background-size: 80px 80px; /* Increased from 50px for thicker lines */
     background-image:
-      linear-gradient(to right, rgba(0, 229, 255, 0.1) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0, 229, 255, 0.1) 1px, transparent 1px);
+      linear-gradient(to right, rgba(0, 229, 255, 0.2) 2px, transparent 2px), /* Increased opacity from 0.1 to 0.2 and thickness from 1px to 2px */
+      linear-gradient(to bottom, rgba(0, 229, 255, 0.2) 2px, transparent 2px); /* Increased opacity from 0.1 to 0.2 and thickness from 1px to 2px */
   }
 
   .dark .bg-cyber-grid {
     background-image:
-      linear-gradient(to right, rgba(110, 140, 255, 0.1) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(110, 140, 255, 0.1) 1px, transparent 1px);
+      linear-gradient(to right, rgba(110, 140, 255, 0.2) 2px, transparent 2px), /* Increased opacity from 0.1 to 0.2 and thickness from 1px to 2px */
+      linear-gradient(to bottom, rgba(110, 140, 255, 0.2) 2px, transparent 2px); /* Increased opacity from 0.1 to 0.2 and thickness from 1px to 2px */
   }
 
   .neon-border {
-    @apply border border-neon-cyan/50 shadow-[0_0_10px_rgba(0,229,255,0.5)];
+    @apply border border-neon-cyan-50 shadow-[0_0_10px_rgba(0,229,255,0.5)];
   }
 
   .neon-text {
