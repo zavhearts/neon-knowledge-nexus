@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -43,6 +44,7 @@ const AnimatedText = ({ text }: { text: string }) => {
 };
 
 const HeroSection = () => {
+  // Fixed the typo in the text from "Epowering" to "Empowering"
   const { displayText, isTypingComplete } = useTypingAnimation(
     "Empowering Learning, Inspiring Future",
     80

@@ -7,6 +7,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 
+// API key for VedaGenie chatbot
+const VEDAGENIE_API_KEY = "sk_u9abTzZQY5gyIILiFBsbfAut9h7eNbDtTMI9YLhHfrA";
+
 const VirtualAssistant = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
@@ -82,25 +85,29 @@ const VirtualAssistant = () => {
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
-    setChatHistory([...chatHistory, { sender: 'user', text: message }]);
+    // Add user message to chat history
+    setChatHistory(prev => [...prev, { sender: 'user', text: message }]);
     
+    // Set loading state
     setIsLoading(true);
     
     const userMsg = message;
     setMessage('');
     
     try {
-      const response = await fetchAIResponse(userMsg);
+      // Call the API with the user's message
+      const response = await fetchVedaGenieResponse(userMsg);
       setChatHistory(prev => [...prev, { sender: 'bot', text: response }]);
     } catch (error) {
       console.error('Error fetching AI response:', error);
       
       toast({
         title: "Connection Error",
-        description: "Could not connect to AI service. Using fallback responses.",
+        description: "Could not connect to VedaGenie AI service. Using fallback responses.",
         variant: "destructive"
       });
       
+      // Fallback to local response if API fails
       let fallbackResponse = generateFallbackResponse(userMsg);
       setChatHistory(prev => [...prev, { sender: 'bot', text: fallbackResponse }]);
     } finally {
@@ -124,17 +131,60 @@ const VirtualAssistant = () => {
     }
   };
 
-  const fetchAIResponse = async (userMessage: string) => {
-    // Simple fallback responses without requiring API key
-    const context = chatHistory
-      .slice(-5)
-      .map(msg => `${msg.sender === 'user' ? 'User' : 'VedaGenie'}: ${msg.text}`)
-      .join('\n');
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    return generateFallbackResponse(userMessage);
+  const fetchVedaGenieResponse = async (userMessage: string) => {
+    try {
+      // Get recent conversation context (last 5 messages)
+      const context = chatHistory
+        .slice(-5)
+        .map(msg => `${msg.sender === 'user' ? 'User' : 'VedaGenie'}: ${msg.text}`)
+        .join('\n');
+      
+      // Prepare the API request body
+      const requestBody = {
+        messages: [
+          {
+            role: "system",
+            content: "You are VedaGenie, an educational AI assistant that helps students with their learning journey. You provide helpful, accurate, and concise responses. Your tone is friendly and encouraging. You have expertise in various subjects including mathematics, science, literature, history, and more. You can explain complex concepts in simple terms."
+          },
+          ...chatHistory.map(msg => ({
+            role: msg.sender === 'user' ? 'user' : 'assistant',
+            content: msg.text
+          })),
+          {
+            role: "user",
+            content: userMessage
+          }
+        ],
+        max_tokens: 2048,
+        temperature: 0.7
+      };
+      
+      // Make API request to VedaGenie service
+      const response = await fetch('https://api.together.xyz/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${VEDAGENIE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Extract assistant message from response
+      if (data.choices && data.choices.length > 0 && data.choices[0].message) {
+        return data.choices[0].message.content;
+      } else {
+        throw new Error('Invalid response format from API');
+      }
+    } catch (error) {
+      console.error('Error calling VedaGenie API:', error);
+      throw error;
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -207,8 +257,7 @@ const VirtualAssistant = () => {
         actionMessage = 'I need help with this topic.';
     }
     
-    setChatHistory([...chatHistory, { sender: 'user', text: actionMessage }]);
-    setMessage('');
+    setMessage(actionMessage);
     
     setTimeout(() => {
       handleSendMessage();

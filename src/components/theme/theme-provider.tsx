@@ -61,7 +61,7 @@ export function ThemeProvider({
       root.classList.remove("theme-transitioning");
       root.classList.remove("transitioning-to-light", "transitioning-to-dark");
       setIsTransitioning(false);
-    }, 900); // Increased duration for smoother transition
+    }, 1000); // Adjusted duration for smoother transition
     
     return () => clearTimeout(timer);
   }, [theme, storageKey]);
