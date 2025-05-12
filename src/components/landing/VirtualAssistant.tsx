@@ -139,8 +139,9 @@ const VirtualAssistant = () => {
         .map(msg => `${msg.sender === 'user' ? 'User' : 'VedaGenie'}: ${msg.text}`)
         .join('\n');
       
-      // Prepare the API request body
+      // Updated API request using mistralai/Mistral-7B-Instruct-v0.2 model
       const requestBody = {
+        model: "mistralai/Mistral-7B-Instruct-v0.2",
         messages: [
           {
             role: "system",
@@ -159,7 +160,9 @@ const VirtualAssistant = () => {
         temperature: 0.7
       };
       
-      // Make API request to VedaGenie service
+      console.log("Sending request to VedaGenie API:", JSON.stringify(requestBody, null, 2));
+      
+      // Make API request to Together.xyz service
       const response = await fetch('https://api.together.xyz/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -170,10 +173,13 @@ const VirtualAssistant = () => {
       });
       
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`API returned status ${response.status}: ${errorText}`);
         throw new Error(`API request failed with status ${response.status}`);
       }
       
       const data = await response.json();
+      console.log("API Response:", JSON.stringify(data, null, 2));
       
       // Extract assistant message from response
       if (data.choices && data.choices.length > 0 && data.choices[0].message) {

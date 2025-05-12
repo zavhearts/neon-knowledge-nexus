@@ -44,7 +44,7 @@ const AnimatedText = ({ text }: { text: string }) => {
 };
 
 const HeroSection = () => {
-  // Fixed the typo in the text from "Epowering" to "Empowering"
+  // Fixed the spelling of "Empowering"
   const { displayText, isTypingComplete } = useTypingAnimation(
     "Empowering Learning, Inspiring Future",
     80
