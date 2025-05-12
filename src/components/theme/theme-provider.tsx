@@ -47,11 +47,21 @@ export function ThemeProvider({
     // Add data attribute for more reliable CSS targeting
     root.setAttribute("data-theme", theme);
     
+    // Apply high-contrast text classes for better visibility during transition
+    if (theme === "light") {
+      root.classList.add("transitioning-to-light");
+      root.classList.remove("transitioning-to-dark");
+    } else {
+      root.classList.add("transitioning-to-dark");
+      root.classList.remove("transitioning-to-light");
+    }
+    
     // Remove transitioning class after animation completes
     const timer = setTimeout(() => {
       root.classList.remove("theme-transitioning");
+      root.classList.remove("transitioning-to-light", "transitioning-to-dark");
       setIsTransitioning(false);
-    }, 800); // Increased duration for smoother transition
+    }, 900); // Increased duration for smoother transition
     
     return () => clearTimeout(timer);
   }, [theme, storageKey]);

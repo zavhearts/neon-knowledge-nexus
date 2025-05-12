@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -83,14 +82,14 @@ const CircuitCanvas = ({ className }) => {
         // Increased number of points for more complex circuits
         this.maxPoints = 6 + Math.floor(Math.random() * 6);
         this.angle = Math.random() * Math.PI * 2;
-        // Reduced speed for slower animation
-        this.speed = 0.2 + Math.random() * 0.8;
+        // Reduced speed to 0.3 for slower animation
+        this.speed = 0.06 + Math.random() * 0.24; // Reduced from 0.2-1.0 to 0.06-0.3 range (0.3 speed)
         this.pulse = 0;
         // Reduced pulse speed for slower pulsing effect
-        this.pulseSpeed = 0.01 + Math.random() * 0.02;
+        this.pulseSpeed = 0.005 + Math.random() * 0.01; // Reduced further for slower pulse
         this.color = theme === 'dark' ? '#38bdf8' : '#1E88E5'; // Brighter blue color
         // Increased lifespan for longer-lasting circuits
-        this.lifespan = 150 + Math.random() * 100;
+        this.lifespan = 250 + Math.random() * 150; // Increased lifespan for slower movement
         this.life = 0;
         this.branched = false;
         this.branchChance = 0.25; // Increased chance of branching
@@ -137,7 +136,7 @@ const CircuitCanvas = ({ className }) => {
         
         ctx.strokeStyle = this.color;
         // Increased line width for thicker circuits
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = 3.5; // Increased from 2.5 to 3.5 for more thickness
         ctx.globalAlpha = alpha * fadeOut;
         
         ctx.beginPath();
@@ -150,8 +149,8 @@ const CircuitCanvas = ({ className }) => {
         
         ctx.stroke();
         
-        // Draw pulse
-        const pulseProgress = (this.life / 30) % 1; // Slower pulse moving through circuit
+        // Draw pulse with enhanced glow effect
+        const pulseProgress = (this.life / 50) % 1; // Even slower pulse (changed from 30 to 50)
         if (pulseProgress < 1 && this.life < this.lifespan - 20) {
           for (let i = 0; i < this.points.length - 1; i++) {
             const segmentLength = Math.sqrt(
@@ -178,15 +177,18 @@ const CircuitCanvas = ({ className }) => {
                 ctx.globalAlpha = 1;
                 ctx.beginPath();
                 // Increased pulse size
-                ctx.arc(pulseX, pulseY, 4.5, 0, Math.PI * 2);
+                ctx.arc(pulseX, pulseY, 5.5, 0, Math.PI * 2); // Increased from 4.5 to 5.5
                 ctx.fillStyle = this.color;
                 ctx.fill();
                 
-                // Add glow effect to pulse
+                // Add enhanced glow effect to pulse
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 15;  // Enhanced glow effect
                 ctx.beginPath();
-                ctx.arc(pulseX, pulseY, 8, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(56, 189, 248, 0.3)';
+                ctx.arc(pulseX, pulseY, 10, 0, Math.PI * 2); // Increased from 8 to 10
+                ctx.fillStyle = 'rgba(56, 189, 248, 0.4)'; // Slightly more opaque
                 ctx.fill();
+                ctx.shadowBlur = 0; // Reset shadow for performance
               }
             }
           }
@@ -205,8 +207,8 @@ const CircuitCanvas = ({ className }) => {
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Create new circuits more frequently for denser coverage
-      if (Math.random() < 0.08 && circuits.length < 30) {
+      // Create new circuits less frequently for slower appearance but same density
+      if (Math.random() < 0.05 && circuits.length < 30) { // Reduced from 0.08 to 0.05
         circuits.push(new Circuit());
       }
       
@@ -406,7 +408,7 @@ const HeroSection = () => {
             </motion.h1>
             
             <motion.div variants={item}>
-              {/* Corrected text here */}
+              {/* Corrected text spelling here */}
               <TypedText text="Empowering Learning, Inspiring Future" delay={600} />
             </motion.div>
             

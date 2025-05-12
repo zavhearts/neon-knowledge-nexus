@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -277,6 +276,16 @@ export default {
 						opacity: '0.8'
 					}
 				},
+				'theme-transition-text': {
+					'0%': { 
+						color: 'var(--initial-text-color)',
+						textShadow: '0 0 5px var(--initial-text-shadow-color)'
+					},
+					'100%': { 
+						color: 'var(--target-text-color)',
+						textShadow: '0 0 0 transparent'
+					}
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -299,6 +308,7 @@ export default {
 				'scroll-x': 'scroll-x 20s linear infinite',
 				'spin-slow': 'spin-slow 3s linear infinite',
 				'circuit-pulse': 'circuit-pulse 2s infinite',
+				'theme-transition-text': 'theme-transition-text 0.9s ease-in-out forwards'
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(circle, var(--tw-gradient-stops))',
