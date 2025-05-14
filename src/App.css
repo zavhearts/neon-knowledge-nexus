@@ -2,13 +2,13 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   text-align: center;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   #root {
-    padding: 1rem;
+    padding: 2rem;
   }
 }
 
@@ -18,9 +18,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #00E5FFAA);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #00E5FFAA);
 }
@@ -41,12 +43,12 @@
 }
 
 .card {
-  padding: 2em;
+  padding: 1em;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   .card {
-    padding: 1em;
+    padding: 2em;
   }
 }
 
@@ -68,7 +70,7 @@
   }
 }
 
-/* Mobile specific optimizations */
+/* Mobile optimization classes */
 @media (max-width: 768px) {
   .mobile-p-reduced {
     padding: 0.5rem !important;
@@ -86,6 +88,17 @@
     gap: 0.25rem !important;
   }
   
+  /* Reduce animation intensity on mobile */
+  .animated-text, .animate-pulse-glow, .animate-float {
+    animation-duration: 3s;
+  }
+  
+  /* Improve tap targets on mobile */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
   /* High contrast text for mobile specifically */
   .mobile-high-contrast {
     color: #ffffff !important;
@@ -95,6 +108,17 @@
   .dark .mobile-high-contrast {
     color: #ffffff !important;
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.8) !important;
+  }
+  
+  /* Optimize scrolling on mobile */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Reduce layout shift on mobile */
+  img, video {
+    height: auto;
+    max-width: 100%;
   }
 }
 
@@ -107,4 +131,54 @@
 .dark .cyber-card a:not(.neon-text):not(.text-neon-blue),
 .dark .cyber-card span:not(.neon-text):not(.text-neon-blue) {
   color: rgba(255, 255, 255, 0.9);
+}
+
+/* Improved loading states */
+.content-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.content-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: loading-shimmer 1.2s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Fast content display */
+.content-ready {
+  animation: fade-in 0.3s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Critical content priority */
+.critical-content {
+  content-visibility: auto;
 }

@@ -1,12 +1,19 @@
-
-/* Spinner for loading states */
+/* Spinner for loading states - optimized for better performance */
 .cyber-spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px solid rgba(0, 183, 255, 0.3);
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(0, 183, 255, 0.2);
   border-radius: 50%;
   border-top-color: rgb(0, 183, 255);
-  animation: cyber-spin 1s linear infinite;
+  animation: cyber-spin 0.8s linear infinite;
+  will-change: transform;
+}
+
+@media (min-width: 768px) {
+  .cyber-spinner {
+    width: 30px;
+    height: 30px;
+  }
 }
 
 @keyframes cyber-spin {
@@ -15,7 +22,7 @@
   }
 }
 
-/* Animated glow for meeting cards */
+/* Animated glow for meeting cards - performance optimized */
 .meeting-card-glow {
   position: relative;
   overflow: hidden;
@@ -31,11 +38,19 @@
   background: conic-gradient(
     from 0deg,
     transparent 0%,
-    rgba(0, 183, 255, 0.1) 25%,
+    rgba(0, 183, 255, 0.05) 25%,
     transparent 50%
   );
-  animation: rotate 4s linear infinite;
+  animation: rotate 6s linear infinite;
   z-index: -1;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meeting-card-glow::before {
+    animation: none;
+    opacity: 0.1;
+  }
 }
 
 @keyframes rotate {
@@ -47,7 +62,7 @@
   }
 }
 
-/* Live class indicator pulse */
+/* Live class indicator pulse - better for battery life */
 .live-indicator {
   position: relative;
 }
@@ -57,22 +72,29 @@
   position: absolute;
   top: -5px;
   right: -5px;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   background-color: #ff007a;
   border-radius: 50%;
-  animation: pulse 1.5s ease-in-out infinite;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@media (min-width: 768px) {
+  .live-indicator::before {
+    width: 12px;
+    height: 12px;
+  }
 }
 
 @keyframes pulse {
   0% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(255, 0, 122, 0.7);
+    box-shadow: 0 0 0 0 rgba(255, 0, 122, 0.5);
   }
   
   70% {
     transform: scale(1);
-    box-shadow: 0 0 0 10px rgba(255, 0, 122, 0);
+    box-shadow: 0 0 0 6px rgba(255, 0, 122, 0);
   }
   
   100% {
@@ -81,21 +103,34 @@
   }
 }
 
-/* Zoom meeting slider specific styles */
+/* Zoom meeting slider specific styles - mobile optimized */
 .zoom-meeting-card {
   transition: all 0.3s ease;
   transform: perspective(1000px) rotateY(0deg);
   backface-visibility: hidden;
 }
 
-.zoom-meeting-card:hover {
-  transform: perspective(1000px) rotateY(5deg) translateZ(10px);
-  box-shadow: -5px 5px 15px rgba(0, 183, 255, 0.2);
+@media (min-width: 768px) {
+  .zoom-meeting-card:hover {
+    transform: perspective(1000px) rotateY(5deg) translateZ(10px);
+    box-shadow: -5px 5px 15px rgba(0, 183, 255, 0.2);
+  }
+}
+
+/* Mobile devices - simpler animations to save battery */
+@media (max-width: 767px) {
+  .zoom-meeting-card:active {
+    transform: scale(0.98);
+  }
+  
+  .animated-effects {
+    animation-duration: 50% !important;
+  }
 }
 
 /* Time remaining counter */
 .time-remaining {
-  background: linear-gradient(90deg, rgba(0, 183, 255, 0.2), rgba(255, 0, 122, 0.2));
+  background: linear-gradient(90deg, rgba(0, 183, 255, 0.15), rgba(255, 0, 122, 0.15));
   border-radius: 4px;
   padding: 2px 8px;
   font-size: 0.75rem;
@@ -103,47 +138,72 @@
   letter-spacing: 0.5px;
 }
 
-/* Custom Video Player Styles */
+/* Custom Video Player Styles - Mobile optimized */
 .shadow-glow {
-  box-shadow: 0 0 10px rgba(0, 183, 255, 0.8);
+  box-shadow: 0 0 8px rgba(0, 183, 255, 0.6);
 }
 
 .shadow-glow-sm {
-  box-shadow: 0 0 5px rgba(0, 183, 255, 0.5);
+  box-shadow: 0 0 4px rgba(0, 183, 255, 0.4);
 }
 
 .shadow-glow-lg {
-  box-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
+  box-shadow: 0 0 12px rgba(0, 183, 255, 0.6);
 }
 
-/* Caption animation */
-@keyframes typeAnimation {
-  from { width: 0; opacity: 0.5; }
-  to { width: 100%; opacity: 1; }
+@media (min-width: 768px) {
+  .shadow-glow {
+    box-shadow: 0 0 10px rgba(0, 183, 255, 0.8);
+  }
+  
+  .shadow-glow-sm {
+    box-shadow: 0 0 5px rgba(0, 183, 255, 0.5);
+  }
+  
+  .shadow-glow-lg {
+    box-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
+  }
 }
 
-.typing-animation {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  animation: typeAnimation 1s steps(40, end);
+/* Caption animation - conditionally enabled for performance */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes typeAnimation {
+    from { width: 0; opacity: 0.5; }
+    to { width: 100%; opacity: 1; }
+  }
+
+  .typing-animation {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typeAnimation 1s steps(30, end);
+  }
 }
 
-/* Video brightness filter */
+/* Video brightness filter - battery-friendly */
 .brightness-filter {
   filter: brightness(1);
   transition: filter 0.3s ease;
 }
 
-/* Course Card Hover Effect */
+/* Course Card Hover Effect - simplified for mobile */
 .course-card {
   transition: all 0.3s ease;
   transform: translateY(0);
 }
 
-.course-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 183, 255, 0.2);
+@media (min-width: 768px) {
+  .course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 183, 255, 0.2);
+  }
+}
+
+@media (max-width: 767px) {
+  .course-card:active {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 183, 255, 0.15);
+  }
 }
 
 /* Analytics Animations */

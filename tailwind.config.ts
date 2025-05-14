@@ -8,8 +8,16 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: {
+        DEFAULT: "1rem",
+        sm: "1.5rem",
+        lg: "2rem"
+      },
       screens: {
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
         "2xl": "1400px",
       },
     },
@@ -117,11 +125,19 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "circuit-animation": "circuit-animation 20s linear infinite",
-        // Slow circuit animation with thicker lines
+        // Slow circuit animation with thicker lines for better performance and visual appeal
         "circuit-animation-slow": "circuit-animation 60s linear infinite",
         "scanner-line": "scanner-line 8s linear infinite",
         "float": "float 4s ease-in-out infinite",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+      },
+      screens: {
+        'xs': '480px',
+        // Ensure better targeting for smaller mobile devices
+        'mobile': {'max': '767px'},
+        'tablet': {'min': '768px', 'max': '1023px'},
+        'laptop': {'min': '1024px', 'max': '1279px'},
+        'desktop': {'min': '1280px'},
       },
     },
   },
