@@ -581,10 +581,14 @@
   }
 }
 
-/* Circuit animation for logo */
+/* Circuit animation for logo - fixed syntax */
 @keyframes circuit-animation {
-  "0%": { backgroundPosition: "0% 0%" },
-  "100%": { backgroundPosition: "100% 100%" },
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
 }
 
 /* Slow circuit animation with thicker lines for better performance and visual appeal */
