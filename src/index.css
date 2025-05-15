@@ -309,16 +309,16 @@
   }
   
   .bg-cyber-grid {
-    background-size: 80px 80px; /* Increased from 50px for thicker lines */
+    background-size: 120px 120px; /* Increased from 80px to 120px for slower apparent motion */
     background-image:
-      linear-gradient(to right, rgba(0, 229, 255, 0.2) 2px, transparent 2px), /* Increased opacity from 0.1 to 0.2 and thickness from 1px to 2px */
-      linear-gradient(to bottom, rgba(0, 229, 255, 0.2) 2px, transparent 2px); /* Increased opacity from 0.1 to 0.2 and thickness from 1px to 2px */
+      linear-gradient(to right, rgba(0, 229, 255, 0.15) 2px, transparent 2px), /* Reduced opacity from 0.2 to 0.15 */
+      linear-gradient(to bottom, rgba(0, 229, 255, 0.15) 2px, transparent 2px); /* Reduced opacity from 0.2 to 0.15 */
   }
 
   .dark .bg-cyber-grid {
     background-image:
-      linear-gradient(to right, rgba(110, 140, 255, 0.2) 2px, transparent 2px), /* Increased opacity from 0.1 to 0.2 and thickness from 1px to 2px */
-      linear-gradient(to bottom, rgba(110, 140, 255, 0.2) 2px, transparent 2px); /* Increased opacity from 0.1 to 0.2 and thickness from 1px to 2px */
+      linear-gradient(to right, rgba(110, 140, 255, 0.15) 2px, transparent 2px), /* Reduced opacity from 0.2 to 0.15 */
+      linear-gradient(to bottom, rgba(110, 140, 255, 0.15) 2px, transparent 2px); /* Reduced opacity from 0.2 to 0.15 */
   }
 
   .neon-border {
@@ -460,6 +460,29 @@
     animation: scanLine 2s linear infinite;
   }
   
+  .animate-circuit-animation {
+    animation: circuit-animation 40s linear infinite; /* Increased from 20s to 40s */
+  }
+  
+  .animate-circuit-animation-slow {
+    animation: circuit-animation 90s linear infinite; /* Increased from 60s to 90s */
+  }
+  
+  .animate-glitch {
+    animation: glitch 10s infinite;
+  }
+  
+  .animate-glow-pulse {
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+  
+  .shadow-glow {
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+  }
+  
+  .dark .shadow-glow {
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+  }
 }
 
 @keyframes textPulse {
@@ -559,6 +582,12 @@
 }
 
 /* Circuit animation for logo */
+@keyframes circuit-animation {
+  "0%": { backgroundPosition: "0% 0%" },
+  "100%": { backgroundPosition: "100% 100%" },
+}
+
+/* Slow circuit animation with thicker lines for better performance and visual appeal */
 @keyframes pulsate {
   0% {
     transform: scale(1);

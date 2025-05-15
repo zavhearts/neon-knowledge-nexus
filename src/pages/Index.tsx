@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useRef } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -79,20 +80,21 @@ const CircuitCanvas = ({ className }) => {
         this.startX = logoRect.left + (Math.random() * logoRect.width * 0.8) + (logoRect.width * 0.1);
         this.startY = logoRect.top + (Math.random() * logoRect.height * 0.8) + (logoRect.height * 0.1);
         this.points = [];
-        // Increased number of points for more complex circuits
-        this.maxPoints = 6 + Math.floor(Math.random() * 6);
+        // REDUCED number of points for simpler circuits (from 6-12 to 4-8)
+        this.maxPoints = 4 + Math.floor(Math.random() * 4);
         this.angle = Math.random() * Math.PI * 2;
-        // Reduced speed to 0.3 for slower animation
-        this.speed = 0.06 + Math.random() * 0.24; // Reduced from 0.2-1.0 to 0.06-0.3 range (0.3 speed)
+        // FURTHER reduced speed for even slower animation
+        this.speed = 0.04 + Math.random() * 0.12; // Reduced from 0.06-0.3 to 0.04-0.16 range
         this.pulse = 0;
-        // Reduced pulse speed for slower pulsing effect
-        this.pulseSpeed = 0.005 + Math.random() * 0.01; // Reduced further for slower pulse
+        // FURTHER reduced pulse speed for more gentle pulsing
+        this.pulseSpeed = 0.003 + Math.random() * 0.006; // Reduced further for slower pulse
         this.color = theme === 'dark' ? '#38bdf8' : '#1E88E5'; // Brighter blue color
-        // Increased lifespan for longer-lasting circuits
-        this.lifespan = 250 + Math.random() * 150; // Increased lifespan for slower movement
+        // INCREASED lifespan for longer-lasting, fewer circuits
+        this.lifespan = 350 + Math.random() * 250; // Increased for much longer visibility
         this.life = 0;
         this.branched = false;
-        this.branchChance = 0.25; // Increased chance of branching
+        // REDUCED branch chance to lower overall circuit density
+        this.branchChance = 0.15; // Reduced from 0.25 to 0.15 for fewer branches
         
         this.generatePoints();
       }
@@ -105,8 +107,8 @@ const CircuitCanvas = ({ className }) => {
         for (let i = 0; i < this.maxPoints; i++) {
           // Create a path with 90 degree turns
           const turnDirection = Math.floor(Math.random() * 4);
-          // Increased distance for longer line segments
-          let distance = 30 + Math.random() * 120;
+          // INCREASED distance for longer, fewer line segments
+          let distance = 40 + Math.random() * 140; // Increased from 30-120 to 40-180
           
           if (turnDirection === 0) x += distance; // right
           else if (turnDirection === 1) x -= distance; // left
@@ -121,8 +123,8 @@ const CircuitCanvas = ({ className }) => {
         this.pulse += this.pulseSpeed;
         this.life++;
         
-        // Create branches randomly
-        if (!this.branched && this.life > 20 && Math.random() < this.branchChance) {
+        // Create branches randomly (less frequently now)
+        if (!this.branched && this.life > 40 && Math.random() < this.branchChance) {
           this.branched = true;
           return new Circuit();
         }
@@ -135,9 +137,9 @@ const CircuitCanvas = ({ className }) => {
         const fadeOut = Math.max(0, 1 - this.life / this.lifespan);
         
         ctx.strokeStyle = this.color;
-        // Increased line width for thicker circuits
-        ctx.lineWidth = 3.5; // Increased from 2.5 to 3.5 for more thickness
-        ctx.globalAlpha = alpha * fadeOut;
+        // Maintained thicker line width for better visibility
+        ctx.lineWidth = 3.5;
+        ctx.globalAlpha = alpha * fadeOut * 0.85; // Slightly reduced overall opacity
         
         ctx.beginPath();
         ctx.moveTo(this.points[0].x, this.points[0].y);
@@ -149,8 +151,8 @@ const CircuitCanvas = ({ className }) => {
         
         ctx.stroke();
         
-        // Draw pulse with enhanced glow effect
-        const pulseProgress = (this.life / 50) % 1; // Even slower pulse (changed from 30 to 50)
+        // Draw pulse with enhanced glow effect, but slower
+        const pulseProgress = (this.life / 75) % 1; // EVEN SLOWER pulse (changed from 50 to 75)
         if (pulseProgress < 1 && this.life < this.lifespan - 20) {
           for (let i = 0; i < this.points.length - 1; i++) {
             const segmentLength = Math.sqrt(
@@ -174,19 +176,19 @@ const CircuitCanvas = ({ className }) => {
                 pulseY += dy * segmentPulseProgress;
                 
                 // Draw larger pulse point
-                ctx.globalAlpha = 1;
+                ctx.globalAlpha = 0.85; // Slightly reduced for subtlety
                 ctx.beginPath();
-                // Increased pulse size
-                ctx.arc(pulseX, pulseY, 5.5, 0, Math.PI * 2); // Increased from 4.5 to 5.5
+                // Maintained larger pulse size
+                ctx.arc(pulseX, pulseY, 5.5, 0, Math.PI * 2);
                 ctx.fillStyle = this.color;
                 ctx.fill();
                 
                 // Add enhanced glow effect to pulse
                 ctx.shadowColor = this.color;
-                ctx.shadowBlur = 15;  // Enhanced glow effect
+                ctx.shadowBlur = 15;
                 ctx.beginPath();
-                ctx.arc(pulseX, pulseY, 10, 0, Math.PI * 2); // Increased from 8 to 10
-                ctx.fillStyle = 'rgba(56, 189, 248, 0.4)'; // Slightly more opaque
+                ctx.arc(pulseX, pulseY, 10, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(56, 189, 248, 0.3)'; // Slightly more transparent
                 ctx.fill();
                 ctx.shadowBlur = 0; // Reset shadow for performance
               }
@@ -207,8 +209,8 @@ const CircuitCanvas = ({ className }) => {
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Create new circuits less frequently for slower appearance but same density
-      if (Math.random() < 0.05 && circuits.length < 30) { // Reduced from 0.08 to 0.05
+      // REDUCED circuit generation rate for fewer total circuits
+      if (Math.random() < 0.03 && circuits.length < 20) { // Reduced from 0.05 to 0.03 and max from 30 to 20
         circuits.push(new Circuit());
       }
       

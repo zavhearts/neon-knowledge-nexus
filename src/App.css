@@ -27,6 +27,7 @@
   filter: drop-shadow(0 0 2em #00E5FFAA);
 }
 
+/* Reduced speed of logo spin animation */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -38,7 +39,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+    animation: logo-spin infinite 30s linear; /* Increased from 20s to 30s */
   }
 }
 
@@ -56,17 +57,17 @@
   color: #888;
 }
 
-/* Text glow animation for better visibility */
+/* Text glow animation with reduced intensity and slower speed */
 .text-glow {
-  animation: textGlow 2s infinite alternate;
+  animation: textGlow 3s infinite alternate; /* Increased from 2s to 3s */
 }
 
 @keyframes textGlow {
   from {
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.4); /* Reduced intensity */
   }
   to {
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 20px rgba(0, 229, 255, 0.6);
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.7), 0 0 16px rgba(0, 229, 255, 0.5); /* Reduced intensity */
   }
 }
 
@@ -133,7 +134,7 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* Improved loading states */
+/* Improved loading states with reduced animation intensity */
 .content-loading {
   position: relative;
   overflow: hidden;
@@ -144,15 +145,15 @@
   position: absolute;
   top: 0;
   left: -100%;
-  width: 50%;
+  width: 30%; /* Reduced from 50% to 30% */
   height: 100%;
   background: linear-gradient(
     to right,
     transparent,
-    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.08), /* Reduced opacity from 0.1 to 0.08 */
     transparent
   );
-  animation: loading-shimmer 1.2s infinite;
+  animation: loading-shimmer 2s infinite; /* Slowed from 1.2s to 2s */
 }
 
 @keyframes loading-shimmer {
@@ -164,9 +165,9 @@
   }
 }
 
-/* Fast content display */
+/* Fast content display with gentler fade-in */
 .content-ready {
-  animation: fade-in 0.3s ease-out;
+  animation: fade-in 0.5s ease-out; /* Slowed from 0.3s to 0.5s */
 }
 
 @keyframes fade-in {
