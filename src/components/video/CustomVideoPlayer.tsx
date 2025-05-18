@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "@/components/ui/use-toast";
 
 interface Note {
   time: number;
@@ -23,15 +24,36 @@ interface Resource {
 }
 
 interface CustomVideoPlayerProps {
-  videoUrl: string;
+  videoUrl?: string;
   title: string;
   resources?: Resource[];
 }
 
+// Convert Google Drive sharing URL to direct link
+const getGoogleDriveDirectLink = (url: string): string => {
+  // Extract the file ID from the Google Drive URL
+  const match = url.match(/[-\w]{25,}/);
+  if (match && match[0]) {
+    return `https://drive.google.com/uc?export=download&id=${match[0]}`;
+  }
+  return url;
+};
+
 const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
-  videoUrl,
-  title,
-  resources = []
+  videoUrl = "https://drive.google.com/file/d/15wEjyeY8pP4cj-q1BtLyFqpty0Yg8amc/view?usp=drive_link",
+  title = "Educational Video Player Demo",
+  resources = [
+    {
+      type: "PDF",
+      name: "Lecture Notes",
+      url: "#"
+    },
+    {
+      type: "XLSX",
+      name: "Exercise Sheet",
+      url: "#"
+    }
+  ]
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
@@ -49,6 +71,10 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
   const [isDraggingVolume, setIsDraggingVolume] = useState(false);
   const [isDraggingBrightness, setIsDraggingBrightness] = useState(false);
   const [showNotes, setShowNotes] = useState(true);
+  const [videoError, setVideoError] = useState<string | null>(null);
+
+  // Process the Google Drive URL to get a direct link
+  const processedVideoUrl = getGoogleDriveDirectLink(videoUrl);
 
   // Sample captions and notes
   const captions: Caption[] = [
@@ -73,6 +99,10 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
 
     const handleLoadedMetadata = () => {
       setDuration(video.duration);
+      toast({
+        title: "Video loaded",
+        description: `Duration: ${formatTime(video.duration)}`,
+      });
     };
 
     const handleTimeUpdate = () => {
@@ -80,12 +110,37 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
       updateCaptions();
     };
 
+    const handleError = (e: any) => {
+      console.error("Video error:", e);
+      setVideoError("Error loading video. Please check the URL or your internet connection.");
+      toast({
+        variant: "destructive",
+        title: "Video Error",
+        description: "Could not load the video. Check console for details.",
+      });
+    };
+
     video.addEventListener('loadedmetadata', handleLoadedMetadata);
     video.addEventListener('timeupdate', handleTimeUpdate);
+    video.addEventListener('error', handleError);
 
     return () => {
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
       video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('error', handleError);
+    };
+  }, []);
+
+  // Monitor fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
     };
   }, []);
 
@@ -100,7 +155,14 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     if (!video) return;
 
     if (video.paused) {
-      video.play();
+      video.play().catch(err => {
+        console.error("Error playing video:", err);
+        toast({
+          variant: "destructive",
+          title: "Playback Error",
+          description: "Could not play the video. Auto-play might be blocked by your browser.",
+        });
+      });
       setIsPlaying(true);
     } else {
       video.pause();
@@ -188,11 +250,14 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     if (!document.fullscreenElement) {
       container.requestFullscreen().catch(err => {
         console.error('Error attempting to enable fullscreen mode:', err);
+        toast({
+          variant: "destructive",
+          title: "Fullscreen Error", 
+          description: "Could not enter fullscreen mode."
+        });
       });
-      setIsFullscreen(true);
     } else {
       document.exitFullscreen();
-      setIsFullscreen(false);
     }
   };
 
@@ -208,7 +273,9 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     if (videoRef.current) {
       videoRef.current.currentTime = time;
       if (videoRef.current.paused) {
-        videoRef.current.play();
+        videoRef.current.play().catch(err => {
+          console.error("Error playing video after jump:", err);
+        });
         setIsPlaying(true);
       }
     }
@@ -256,14 +323,24 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
             style={{ minHeight: "360px" }}
           >
             {/* Video Element */}
-            <video 
-              ref={videoRef} 
-              className="w-full h-full object-cover bg-black"
-              onClick={togglePlayPause}
-              src={videoUrl}
-            >
-              Your browser does not support HTML5 video.
-            </video>
+            {videoError ? (
+              <div className="w-full h-full flex items-center justify-center bg-black text-white p-4 text-center">
+                <div>
+                  <p className="text-red-500 mb-2">⚠️ {videoError}</p>
+                  <p className="text-sm opacity-75">Try checking the video URL or your internet connection</p>
+                </div>
+              </div>
+            ) : (
+              <video 
+                ref={videoRef} 
+                className="w-full h-full object-cover bg-black"
+                onClick={togglePlayPause}
+                src={processedVideoUrl}
+                poster="https://via.placeholder.com/640x360.png?text=Loading+Video..."
+              >
+                Your browser does not support HTML5 video.
+              </video>
+            )}
             
             {/* Caption Container */}
             {currentCaption && (
