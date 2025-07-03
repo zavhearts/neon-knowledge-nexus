@@ -411,7 +411,7 @@ const HeroSection = () => {
             
             <motion.div variants={item}>
               {/* Corrected text spelling here */}
-              <TypedText text="Empowering Learning, Inspiring Future" delay={600} />
+              <TypedText text="Empowering" delay={600} />
             </motion.div>
             
             <motion.div
