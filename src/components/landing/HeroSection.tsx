@@ -49,7 +49,7 @@ const AnimatedText = ({ text }: { text: string }) => {
 const HeroSection = () => {
   // Slower typing speed
   const { displayText, isTypingComplete } = useTypingAnimation(
-    "Empowering Learning, Inspiring Future",
+    "Empowering Learning Inspiring Future",
     120 // Increased from 80 to 120ms
   );
   const [showAlert, setShowAlert] = useState(true);
