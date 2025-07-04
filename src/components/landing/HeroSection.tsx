@@ -15,6 +15,10 @@ const useTypingAnimation = (text: string, speed: number = 130) => { // Increased
   const [isTypingComplete, setIsTypingComplete] = useState(false);
 
   useEffect(() => {
+    // Reset state when text changes
+    setDisplayText("");
+    setIsTypingComplete(false);
+    
     let i = 0;
     const timer = setInterval(() => {
       if (i < text.length) {
