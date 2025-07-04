@@ -20,9 +20,12 @@ const useTypingAnimation = (text: string, speed: number = 130) => { // Increased
     setIsTypingComplete(false);
     
     let i = 0;
+    console.log("Starting typing animation with text:", text);
     const timer = setInterval(() => {
       if (i < text.length) {
-        setDisplayText((prev) => prev + text.charAt(i));
+        const nextChar = text.charAt(i);
+        console.log(`Adding character at index ${i}:`, nextChar);
+        setDisplayText((prev) => prev + nextChar);
         i++;
       } else {
         setIsTypingComplete(true);
